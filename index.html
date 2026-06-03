@@ -1,0 +1,2301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Orvex Intelligence — Cyber Intelligence Platform</title>
+<meta name="description" content="Orvex Intelligence — Cyber Intelligence Software e Consulenza di Sicurezza Enterprise. SOC monitoring, incident response, digital forensics e threat intelligence per aziende, governi e privati."/>
+<meta name="keywords" content="cyber security, intelligence, SOC, incident response, digital forensics, threat intelligence, enterprise security, GDPR, HIPAA, Italy"/>
+<meta name="author" content="Orvex Intelligence"/>
+<meta name="robots" content="index, follow"/>
+<!-- Open Graph -->
+<meta property="og:title" content="Orvex Intelligence — Cyber Intelligence Platform"/>
+<meta property="og:description" content="Advanced cybersecurity platform and expert consulting for enterprise, government, healthcare, and private sector clients."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://orvexintelligence.com"/>
+<meta property="og:locale" content="it_IT"/>
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Orvex Intelligence — Cyber Intelligence Platform"/>
+<meta name="twitter:description" content="Cyber Intelligence Software & Enterprise Security Consulting"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#080c14;color:#c8d8e8;font-family:'Inter',system-ui,sans-serif;overflow-x:hidden;font-size:13px;line-height:1.5}
+canvas{display:block}
+button{font-family:'Inter',system-ui,sans-serif;cursor:pointer}
+input,select,textarea{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:#0c1220}
+::-webkit-scrollbar-thumb{background:#1e2d42;border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:#243448}
+::selection{background:rgba(42,127,255,.22)}
+
+/* ── View routing ─────────────────────────────────────────────────────────── */
+.view{display:none;flex-direction:column;height:100%}
+.view.active{display:flex}
+
+/* ── Animations ───────────────────────────────────────────────────────────── */
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes slide-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes scan-h{0%{transform:translateX(-100%)}100%{transform:translateX(100vw)}}
+@keyframes row-in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modal-in{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.anim-up{animation:slide-up .7s both}
+.anim-up-1{animation:slide-up .7s .12s both}
+.anim-up-2{animation:slide-up .7s .24s both}
+.anim-up-3{animation:slide-up .7s .36s both}
+
+/* ── Animated dots ────────────────────────────────────────────────────────── */
+.live-dot{width:7px;height:7px;border-radius:50%;background:#2eb87a;animation:pulse-dot 1.4s ease-in-out infinite;display:inline-block;flex-shrink:0}
+.crit-dot{width:7px;height:7px;border-radius:50%;background:#e53935;animation:pulse-dot .9s ease-in-out infinite;display:inline-block;flex-shrink:0}
+
+/* ── Scanner line ─────────────────────────────────────────────────────────── */
+.scan-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#2a7fff,transparent);animation:scan-h 12s linear infinite;opacity:.2;pointer-events:none}
+
+/* ── Cards / Panels ───────────────────────────────────────────────────────── */
+.glass{background:rgba(16,24,40,.7);border:1px solid #1e2d42;border-radius:8px;backdrop-filter:blur(16px)}
+.glass:hover{border-color:#2a3a54}
+.panel{background:#0c1220;border:1px solid #1e2d42;border-radius:6px;overflow:hidden}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #1e2d42;background:#101828}
+.panel-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#7a92aa;letter-spacing:.1em;text-transform:uppercase}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn-pri{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:5px;background:#2a7fff;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;border:none;transition:opacity .18s,transform .18s;white-space:nowrap}
+.btn-pri:hover{opacity:.88;transform:translateY(-1px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:5px;padding:7px 16px;border-radius:5px;border:1px solid #1e2d42;color:#7a92aa;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;background:transparent;transition:all .18s;white-space:nowrap}
+.btn-ghost:hover{border-color:#2a7fff;color:#c8d8e8;background:rgba(42,127,255,.08)}
+.btn-danger{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:5px;background:#e53935;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:opacity .18s}
+.btn-danger:hover{opacity:.88}
+
+/* ── Nav tabs ─────────────────────────────────────────────────────────────── */
+.nav-tab{height:44px;padding:0 13px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#7a92aa;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;background:none;cursor:pointer;white-space:nowrap;border-top:none;border-left:none;border-right:none}
+.nav-tab:hover{color:#c8d8e8}
+.nav-tab.active{color:#c8d8e8;border-bottom-color:#2a7fff}
+
+/* ── Sector sub-nav ───────────────────────────────────────────────────────── */
+#sector-subnav{display:none}
+#sector-subnav.visible{display:flex}
+.sector-tab-btn{padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.05em;border:1px solid transparent;cursor:pointer;background:transparent;color:#7a92aa;transition:all .15s;white-space:nowrap}
+.sector-tab-btn.active{background:var(--sb-bg,rgba(42,127,255,.1));border-color:var(--sb-brd,rgba(42,127,255,.3));color:var(--sb-txt,#2a7fff)}
+
+/* ── Platform tabs ────────────────────────────────────────────────────────── */
+.plat-tab{padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;border-radius:5px 5px 0 0;border:1px solid transparent;cursor:pointer;color:#7a92aa;background:none;transition:all .16s;margin-top:4px}
+.plat-tab.active{background:#0c1220;border-color:#1e2d42;border-bottom-color:#0c1220;color:#c8d8e8}
+
+/* ── Sector CSS variable themes ───────────────────────────────────────────── */
+.sec-ent{--sa:#2a7fff;--sb-bg:rgba(42,127,255,.1);--sb-txt:#2a7fff;--sb-brd:rgba(42,127,255,.3);--sbg:#080c14;--spanel:#0c1220;--scard:#101828;--sborder:#1e2d42;--stxt:#c8d8e8;--ssub:#7a92aa}
+.sec-gov{--sa:#2563a8;--sb-bg:rgba(37,99,168,.12);--sb-txt:#5a9fd4;--sb-brd:rgba(37,99,168,.35);--sbg:#06080f;--spanel:#090d18;--scard:#0c1220;--sborder:#18253a;--stxt:#b8cce0;--ssub:#6882a0}
+.sec-hlt{--sa:#1a9a7a;--sb-bg:rgba(26,154,122,.1);--sb-txt:#2ab893;--sb-brd:rgba(26,154,122,.3);--sbg:#060c0e;--spanel:#091310;--scard:#0c1a16;--sborder:#163028;--stxt:#c0d8d0;--ssub:#6a9888}
+.sec-vip{--sa:#b8962a;--sb-bg:rgba(184,150,42,.08);--sb-txt:#c8a84a;--sb-brd:rgba(184,150,42,.28);--sbg:#08070a;--spanel:#0e0c12;--scard:#131018;--sborder:#2a2530;--stxt:#d8cce8;--ssub:#8a7898}
+
+/* ── Form fields ──────────────────────────────────────────────────────────── */
+.field{background:#0a1018;border:1px solid #1e2d42;border-radius:5px;color:#c8d8e8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:9px 12px;width:100%;outline:none;transition:border-color .18s}
+.field:focus{border-color:#2a7fff}
+.field::placeholder{color:#4a6078}
+select.field option{background:#101828}
+.field-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:#5a7898;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+/* ── SOC event rows ───────────────────────────────────────────────────────── */
+.ev-row{display:grid;align-items:center;padding:4px 12px;border-bottom:1px solid #1e2d42;cursor:pointer;transition:background .1s;font-family:'JetBrains Mono',monospace;font-size:10px;grid-template-columns:22px 62px 70px 60px 1fr 88px 28px}
+.ev-row:hover{background:#141e30}
+.ev-row.sel{background:rgba(42,127,255,.1);border-left:2px solid #2a7fff}
+.ev-row.new{animation:row-in .4s both}
+
+/* ── Severity badges ──────────────────────────────────────────────────────── */
+.sev{display:inline-flex;align-items:center;padding:1px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.sev-CRITICAL{background:#7f1a1a;color:#e53935}
+.sev-HIGH{background:#7a4800;color:#ef8c00}
+.sev-MEDIUM{background:#6a5a20;color:#e6c84a}
+.sev-LOW{background:#1a4a30;color:#3aaa6e}
+.sev-INFO{background:rgba(90,143,191,.15);color:#5a8fbf}
+
+/* ── Progress bars ────────────────────────────────────────────────────────── */
+.prog-track{height:3px;background:#0f1623;border-radius:1px;overflow:hidden}
+.prog-fill{height:100%;border-radius:1px;transition:width .6s ease}
+
+/* ── Tags ─────────────────────────────────────────────────────────────────── */
+.tag{display:inline-flex;padding:2px 7px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:9px;background:rgba(42,127,255,.1);color:#2a7fff;border:1px solid rgba(42,127,255,.2)}
+
+/* ── Modal ────────────────────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;z-index:9000;background:rgba(4,8,16,.88);display:flex;align-items:center;justify-content:center;padding:16px;animation:fade-in .2s both}
+.modal-box{background:#101828;border:1px solid #243448;border-radius:10px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:modal-in .28s cubic-bezier(.16,1,.3,1) both;position:relative}
+.modal-box::-webkit-scrollbar{width:3px}
+.modal-box::-webkit-scrollbar-thumb{background:#1e2d42}
+
+/* ── Legal modal ──────────────────────────────────────────────────────────── */
+.legal-overlay{position:fixed;inset:0;z-index:9500;background:rgba(2,5,12,.92);display:flex;align-items:center;justify-content:center;padding:20px;animation:fade-in .2s both}
+.legal-box{background:#0c1220;border:1px solid #1e2d42;border-radius:10px;width:100%;max-width:720px;max-height:88vh;display:flex;flex-direction:column;animation:modal-in .25s cubic-bezier(.16,1,.3,1) both}
+.legal-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #1e2d42;flex-shrink:0}
+.legal-title{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#c8d8e8}
+.legal-body{overflow-y:auto;padding:22px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa;line-height:1.85}
+.legal-body h2{font-size:11px;font-weight:700;color:#2a7fff;text-transform:uppercase;letter-spacing:.1em;margin:18px 0 8px}
+.legal-body h2:first-child{margin-top:0}
+.legal-body p{margin-bottom:10px}
+.legal-body ul{margin:0 0 10px 18px}
+.legal-body li{margin-bottom:4px}
+.legal-body strong{color:#c8d8e8}
+.legal-body a{color:#2a7fff;text-decoration:none}
+.legal-ft{padding:12px 20px;border-top:1px solid #1e2d42;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.legal-ft-txt{font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a6078}
+/* Footer legal links bar */
+#legal-bar{background:#060c14;border-top:1px solid #1e2d42;padding:6px 16px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;flex-shrink:0;margin-bottom:32px}
+.legal-link{font-family:'JetBrains Mono',monospace;font-size:8px;color:#4a6078;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:color .15s}
+.legal-link:hover{color:#2a7fff}
+/* ── Launch Intelligence button ───────────────────────────────────────────── */
+.nav-launch{display:inline-flex;align-items:center;height:28px;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.07em;color:#0066ff;border:1px solid #0066ff;border-radius:3px;background:transparent;text-decoration:none;white-space:nowrap;transition:color .18s,background .18s,border-color .18s;cursor:pointer;align-self:center}
+.nav-launch:hover{color:#fff;background:#0066ff;border-color:#0066ff}
+
+@media(max-width:640px){
+  .hide-sm{display:none!important}
+  .two-col{grid-template-columns:1fr!important}
+  .nav-launch{font-size:9px;padding:0 8px;height:24px}
+  .nav-sep{display:none!important}
+}
+@media(max-width:900px){
+  .hide-md{display:none!important}
+}
+</style>
+</head>
+<body style="height:100vh;overflow:hidden;display:flex;flex-direction:column">
+<!-- ═══════════════════════════ TOP NAV ═════════════════════════════════════ -->
+<nav id="topnav" style="background:#101828;border-bottom:1px solid #1e2d42;flex-shrink:0;position:relative;z-index:200">
+  <!-- Primary row -->
+  <div style="height:44px;display:flex;align-items:center;padding:0 16px;gap:0">
+
+    <!-- Logo -->
+    <div style="display:flex;align-items:center;gap:8px;margin-right:20px;flex-shrink:0;cursor:pointer" onclick="nav('landing')">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-label="Orvex Intelligence">
+        <polygon points="12,2 22,7 22,17 12,22 2,17 2,7" fill="none" stroke="#2a7fff" stroke-width="1.5"/>
+        <circle cx="12" cy="12" r="3.5" fill="#2a7fff" opacity=".8"/>
+        <polygon points="12,6 18,9.5 18,15.5 12,19 6,15.5 6,9.5" fill="none" stroke="#2a7fff" stroke-width=".6" opacity=".4"/>
+      </svg>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#c8d8e8;letter-spacing:.04em">ORVEX<span style="color:#2a7fff"> / INTEL</span></span>
+    </div>
+
+    <!-- Main nav tabs -->
+    <button class="nav-tab active" data-view="landing" data-i18n-nav="nav_overview" onclick="nav('landing')">Overview</button>
+    <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
+    <button class="nav-tab" data-view="soc" data-i18n-nav="nav_soc" onclick="nav('soc')">SOC Operations</button>
+    <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
+    <button class="nav-tab" data-view="services" data-i18n-nav="nav_services" onclick="nav('services')">Services</button>
+    <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
+    <button id="sectors-btn" class="nav-tab" data-i18n-nav="nav_sectors" onclick="nav('sector/enterprise')">Sectors ▾</button>
+    <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
+    <a href="https://app.orvexintelligence.com" target="_blank" rel="noopener" class="nav-launch">Launch Intelligence</a>
+
+    <div style="flex:1"></div>
+
+    <!-- Live indicator -->
+    <div style="display:flex;align-items:center;gap:6px;margin-right:14px">
+      <div class="live-dot"></div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#2eb87a">LIVE</span>
+      <span id="eps-counter" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-left:4px">847 eps</span>
+    </div>
+
+    <!-- Critical badge -->
+    <div id="crit-badge" style="display:none;align-items:center;gap:5px;background:#7f1a1a;border:1px solid #e53935;border-radius:4px;padding:3px 8px;margin-right:10px">
+      <div class="crit-dot"></div>
+      <span id="crit-count" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#e53935;font-weight:700">0 CRIT</span>
+    </div>
+
+    <!-- Language toggle -->
+    <button id="lang-btn" onclick="toggleLang()" style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;color:#7a92aa;background:transparent;border:1px solid #1e2d42;border-radius:4px;padding:4px 10px;cursor:pointer;transition:all .18s;margin-right:12px">IT / EN</button>
+
+  </div>
+
+  <!-- Sector sub-nav strip -->
+  <div id="sector-subnav" style="height:30px;align-items:center;padding:0 16px;gap:4px;border-top:1px solid #1e2d42;background:#0c1220">
+    <span id="sector-label-txt" data-i18n-nav="nav_sector_label" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a6078;letter-spacing:.1em;text-transform:uppercase;margin-right:8px">SECTOR:</span>
+    <button class="sector-tab-btn sec-ent active" data-sector="enterprise" data-i18n-nav="nav_enterprise" onclick="navSector('enterprise')">🏢 Enterprise</button>
+    <button class="sector-tab-btn sec-gov" data-sector="government" data-i18n-nav="nav_government" onclick="navSector('government')">🔬 Research</button>
+    <button class="sector-tab-btn sec-hlt" data-sector="healthcare" data-i18n-nav="nav_healthcare" onclick="navSector('healthcare')">🏥 Healthcare</button>
+    <button class="sector-tab-btn sec-vip" data-sector="vip" data-i18n-nav="nav_vip" onclick="navSector('vip')">◆ VIP</button>
+  </div>
+</nav>
+
+<!-- Metrics strip (SOC only) -->
+<div id="metrics-strip" style="display:none;background:#101828;border-bottom:1px solid #1e2d42;flex-shrink:0">
+  <div style="display:flex;flex-wrap:wrap">
+    <div style="flex:1;padding:7px 14px;border-right:1px solid #1e2d42;min-width:0">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">TOTAL EVENTS</div>
+      <div id="m-total" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:#c8d8e8;line-height:1">40</div>
+    </div>
+    <div style="flex:1;padding:7px 14px;border-right:1px solid #1e2d42;min-width:0">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">CRITICAL OPEN</div>
+      <div id="m-crit" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:#e53935;line-height:1">0</div>
+    </div>
+    <div style="flex:1;padding:7px 14px;border-right:1px solid #1e2d42;min-width:0">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">HIGH OPEN</div>
+      <div id="m-high" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:#ef8c00;line-height:1">0</div>
+    </div>
+    <div class="hide-sm" style="flex:1;padding:7px 14px;border-right:1px solid #1e2d42;min-width:0">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">ACK RATE</div>
+      <div id="m-ack" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:#2eb87a;line-height:1">0%</div>
+    </div>
+    <div class="hide-sm" style="flex:1;padding:7px 14px;border-right:1px solid #1e2d42;min-width:0">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">MEAN TTR</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:#00b8d9;line-height:1">00:08:34</div>
+    </div>
+    <div class="hide-sm" style="flex:1;padding:7px 14px;min-width:0">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">INGEST</div>
+      <div id="m-eps" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:#7a92aa;line-height:1">847 eps</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ VIEWS CONTAINER ══════════════════════════════ -->
+<div id="views" style="flex:1;overflow:hidden;position:relative">
+
+<!-- ╔══════════════════════════════════════╗
+     ║  VIEW: LANDING                        ║
+     ╚══════════════════════════════════════╝ -->
+<div id="view-landing" class="view active" style="overflow-y:auto;background:#080c14">
+
+  <!-- Hero -->
+  <section style="position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden">
+    <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,#080c14 100%);pointer-events:none"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(42,127,255,.1) 0%,transparent 65%);pointer-events:none"></div>
+    <div class="scan-line"></div>
+    <div style="position:relative;z-index:10;padding:100px clamp(24px,7vw,100px) 60px;max-width:900px">
+      <div class="anim-up" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a7fff;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px">◈ CYBER INTELLIGENCE PLATFORM — ENTERPRISE GRADE</div>
+      <h1 class="anim-up-1" style="font-family:'JetBrains Mono',monospace;font-weight:700;line-height:1.08;font-size:clamp(28px,5vw,62px);margin-bottom:20px;letter-spacing:-.01em">
+        <span style="color:#c8d8e8">ORVEX </span><span style="color:#2a7fff">INTELLIGENCE</span><br>
+        <span style="font-size:clamp(15px,2.2vw,28px);color:#7a92aa;font-weight:400;line-height:1.5" data-i18n="hero_sub">Cyber Intelligence Software &amp; Enterprise Security Consulting</span>
+      </h1>
+      <p class="anim-up-2" data-i18n="hero_body" style="font-size:clamp(12px,1.3vw,15px);color:#7a92aa;max-width:540px;line-height:1.8;margin-bottom:32px">Advanced cybersecurity platform and expert consulting for enterprise, government, healthcare, and private sector clients. AI-powered detection, real-time monitoring, and seasoned incident response — unified.</p>
+      <div class="anim-up-3" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+        <button class="btn-pri" data-i18n="btn_demo" onclick="openModal('demo')">Request Consultation →</button>
+        <button class="btn-ghost" data-i18n="btn_soc" onclick="nav('soc')">Enter SOC Platform</button>
+      </div>
+      <!-- Sector pills -->
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span onclick="navSector('enterprise')" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#2a7fff;background:rgba(42,127,255,.1);border:1px solid rgba(42,127,255,.3);border-radius:3px;padding:3px 10px;cursor:pointer;transition:all .18s">🏢 Enterprise</span>
+        <span onclick="navSector('government')" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5a9fd4;background:rgba(37,99,168,.1);border:1px solid rgba(37,99,168,.3);border-radius:3px;padding:3px 10px;cursor:pointer;transition:all .18s">🔬 Research</span>
+        <span onclick="navSector('healthcare')" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#2ab893;background:rgba(26,154,122,.1);border:1px solid rgba(26,154,122,.3);border-radius:3px;padding:3px 10px;cursor:pointer;transition:all .18s">🏥 Healthcare</span>
+        <span onclick="navSector('vip')" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#c8a84a;background:rgba(184,150,42,.08);border:1px solid rgba(184,150,42,.28);border-radius:3px;padding:3px 10px;cursor:pointer;transition:all .18s">◆ VIP</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Capabilities -->
+  <section style="padding:56px clamp(24px,5vw,80px);background:#0c1220">
+    <div style="max-width:1100px;margin:0 auto">
+      <div data-i18n="cap_label" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a7fff;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">◈ CORE PLATFORM CAPABILITIES</div>
+      <h2 data-i18n="cap_title" style="font-family:'JetBrains Mono',monospace;font-size:clamp(18px,2.8vw,28px);font-weight:700;color:#c8d8e8;margin-bottom:24px">Enterprise Security Suite</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px">
+        <div class="glass" style="padding:16px 18px">
+          <div style="font-size:20px;margin-bottom:9px">🛡️</div>
+          <div data-i18n="cap_ai_title" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#c8d8e8;margin-bottom:7px">AI Threat Detection</div>
+          <p data-i18n="cap_ai_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7">Real-time behavioral analysis engine processing endpoint, network, and cloud telemetry against 14,220 MITRE-mapped rules.</p>
+        </div>
+        <div class="glass" style="padding:16px 18px">
+          <div style="font-size:20px;margin-bottom:9px">🔍</div>
+          <div data-i18n="cap_vuln_title" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#c8d8e8;margin-bottom:7px">Vulnerability Scanner</div>
+          <p data-i18n="cap_vuln_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7">Continuous CVE enumeration across all assets with EPSS-weighted prioritization and automated patch SLA tracking.</p>
+        </div>
+        <div class="glass" style="padding:16px 18px">
+          <div style="font-size:20px;margin-bottom:9px">🔬</div>
+          <div data-i18n="cap_df_title" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#c8d8e8;margin-bottom:7px">Digital Forensics</div>
+          <p data-i18n="cap_df_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7">Court-admissible investigations with memory forensics, malware RE, and full chain-of-custody enforcement.</p>
+        </div>
+        <div class="glass" style="padding:16px 18px">
+          <div style="font-size:20px;margin-bottom:9px">📊</div>
+          <div data-i18n="cap_soc_title" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#c8d8e8;margin-bottom:7px">SOC Dashboard</div>
+          <p data-i18n="cap_soc_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7">Mission-control visibility across endpoints, networks, and cloud. 500+ automation playbooks. SIEM-native.</p>
+        </div>
+        <div class="glass" style="padding:16px 18px">
+          <div style="font-size:20px;margin-bottom:9px">⚡</div>
+          <div data-i18n="cap_ir_title" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#c8d8e8;margin-bottom:7px">Incident Response</div>
+          <p data-i18n="cap_ir_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7">Global IR team deployable within 4 hours. Containment, eradication, recovery, and executive communication.</p>
+        </div>
+        <div class="glass" style="padding:16px 18px">
+          <div style="font-size:20px;margin-bottom:9px">🏗️</div>
+          <div data-i18n="cap_arch_title" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#c8d8e8;margin-bottom:7px">Security Architecture</div>
+          <p data-i18n="cap_arch_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7">Zero-trust design, CSPM, and security architecture for enterprise, government, healthcare, and private clients.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact strip -->
+  <section style="padding:40px clamp(24px,5vw,80px);background:#080c14">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px" class="two-col">
+      <div>
+        <div data-i18n="cta_main" style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#c8d8e8;margin-bottom:8px">Ready to deploy Orvex Intelligence?</div>
+        <p data-i18n="cta_sub" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa;line-height:1.7;margin-bottom:18px">Our team delivers precision security for every context — government, healthcare, enterprise, or private.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-pri" data-i18n="btn_demo" onclick="openModal('demo')">Request Consultation</button>
+          <button class="btn-ghost" data-i18n="btn_soc" onclick="nav('soc')">Enter SOC Platform</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="glass" style="padding:12px 16px;display:flex;gap:12px;align-items:center">
+          <span style="font-size:16px">📧</span>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a6078;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">General Inquiries</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#2a7fff">contact@orvexintelligence.com</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-top:1px">Sales, partnerships, media</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /view-landing -->
+<!-- ╔══════════════════════════════════════╗
+     ║  VIEW: SOC DASHBOARD                  ║
+     ╚══════════════════════════════════════╝ -->
+<div id="view-soc" class="view" style="overflow:hidden;height:100%">
+  <div style="display:grid;grid-template-columns:1fr 330px;grid-template-rows:1fr 220px;gap:8px;padding:8px;padding-bottom:40px;height:100%;min-height:0;overflow:hidden">
+
+    <!-- Event stream -->
+    <div class="panel" style="display:flex;flex-direction:column;min-height:0">
+      <div class="panel-hd">
+        <span class="panel-title">Event Stream</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span id="ev-count" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078">40/40</span>
+          <button class="btn-ghost" style="font-size:10px;padding:3px 8px" onclick="resetFilters()">RESET</button>
+        </div>
+      </div>
+      <div style="padding:6px 10px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid #1e2d42;background:#0f1623;flex-shrink:0">
+        <input class="field" id="ev-search" placeholder="Search host / technique / IP…" oninput="filterEvents()" style="flex:1;min-width:120px;font-size:11px;padding:5px 8px"/>
+        <select class="field" id="ev-sev" onchange="filterEvents()" style="font-size:11px;padding:4px 6px;width:auto">
+          <option value="">All Severity</option><option>CRITICAL</option><option>HIGH</option><option>MEDIUM</option><option>LOW</option><option>INFO</option>
+        </select>
+        <select class="field" id="ev-src" onchange="filterEvents()" style="font-size:11px;padding:4px 6px;width:auto">
+          <option value="">All Sources</option><option>EDR</option><option>SIEM</option><option>FW</option><option>IDS</option><option>PROXY</option><option>DNS</option><option>AUTH</option><option>CLOUD</option>
+        </select>
+      </div>
+      <!-- Column headers -->
+      <div style="display:grid;grid-template-columns:22px 62px 70px 60px 1fr 88px 28px;padding:3px 12px;border-bottom:1px solid #1e2d42;background:#101828;flex-shrink:0">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4a6078"></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4a6078;text-transform:uppercase;letter-spacing:.06em">TIME</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4a6078;text-transform:uppercase;letter-spacing:.06em">SEV</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4a6078;text-transform:uppercase;letter-spacing:.06em">SRC</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4a6078;text-transform:uppercase;letter-spacing:.06em">DESCRIPTION</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4a6078;text-transform:uppercase;letter-spacing:.06em">TECHNIQUE</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#4a6078;text-transform:uppercase;letter-spacing:.06em">ACK</span>
+      </div>
+      <div id="ev-list" style="flex:1;overflow-y:auto;min-height:0"></div>
+    </div>
+
+    <!-- Right column -->
+    <div style="display:flex;flex-direction:column;gap:8px;min-height:0;overflow-y:auto;overflow-x:hidden">
+      <!-- Incident detail -->
+      <div class="panel" style="height:180px;flex-shrink:0;display:flex;flex-direction:column">
+        <div class="panel-hd" id="inc-hd"><span class="panel-title">Incident Detail</span></div>
+        <div id="inc-body" style="flex:1;overflow-y:auto;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa">Select an event</div>
+      </div>
+      <!-- Topology -->
+      <div class="panel" style="height:190px;flex-shrink:0">
+        <div class="panel-hd"><span class="panel-title">Network Topology</span><div class="live-dot"></div></div>
+        <div style="padding:6px;overflow:auto">
+          <svg id="topo-svg" width="300" height="148" style="display:block;overflow:visible"></svg>
+        </div>
+      </div>
+      <!-- Severity distribution -->
+      <div class="panel" style="height:155px;flex-shrink:0;overflow:hidden">
+        <div class="panel-hd"><span class="panel-title">Severity Distribution</span></div>
+        <div id="sev-dist" style="padding:8px 12px"></div>
+      </div>
+      <!-- MITRE ATT&CK Heatmap -->
+      <div class="panel" style="flex-shrink:0;overflow:hidden">
+        <div class="panel-hd">
+          <span class="panel-title">MITRE ATT&amp;CK — 24h</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <div class="live-dot" style="width:5px;height:5px"></div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2eb87a">LIVE</span>
+          </div>
+        </div>
+        <div id="mitre-heatmap" style="padding:8px 10px"></div>
+      </div>
+    </div>
+
+    <!-- Bottom row: spans full width, 4 equal panels -->
+    <div style="grid-column:1/-1;display:grid;grid-template-columns:1fr 340px 280px 240px;gap:8px;min-height:0">
+      <div class="panel" style="display:flex;flex-direction:column;min-height:0">
+        <div class="panel-hd">
+          <span class="panel-title">AI Analysis Engine</span>
+          <div style="display:flex;align-items:center;gap:5px">
+            <div class="live-dot" style="width:5px;height:5px"></div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2eb87a">ACTIVE</span>
+          </div>
+        </div>
+        <div id="ai-log" style="flex:1;overflow-y:auto;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa"></div>
+      </div>
+      <div class="panel" style="min-height:0;max-height:100%;display:flex;flex-direction:column;overflow:hidden">
+        <div class="panel-hd">
+          <span class="panel-title">Telemetry Ingest</span>
+          <span id="tele-eps" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#2a7fff">847 eps</span>
+        </div>
+        <div style="padding:8px 10px;flex-shrink:0">
+          <canvas id="tele-canvas" width="270" height="48" style="width:100%;height:48px;display:block"></canvas>
+        </div>
+        <!-- Globe radar — NODE INTEL panel -->
+        <div style="border-top:1px solid #1e2d42;flex:1;display:flex;flex-direction:column;overflow:hidden">
+          <div style="padding:5px 10px;background:#101828;border-bottom:1px solid #1e2d42;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#00b8d9;letter-spacing:.1em;text-transform:uppercase" data-i18n="globe_title">NODE INTEL</span>
+            <div style="display:flex;align-items:center;gap:4px">
+              <div class="live-dot" style="width:5px;height:5px"></div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#2eb87a;letter-spacing:.06em">LIVE</span>
+            </div>
+          </div>
+          <div style="padding:8px 10px;display:flex;gap:8px;align-items:center;flex:1">
+            <!-- Smaller globe so text has room -->
+            <div style="flex-shrink:0">
+              <canvas id="globe-canvas" width="72" height="72" style="display:block;width:72px;height:72px;border-radius:50%;border:1px solid #1e2d42;box-shadow:0 0 8px rgba(0,184,217,.12)"></canvas>
+            </div>
+            <!-- Data rows — label on top, value below for full readability -->
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0" data-i18n="globe_loc_label">LOC</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c8d8e8;font-weight:600">ITALY (IT)</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0" data-i18n="globe_uplink_label">UPLINK</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2eb87a;font-weight:600" data-i18n="globe_uplink_status">ACTIVE</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0">PING</span>
+                <span id="globe-ping" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#00b8d9;font-weight:600">12ms</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0" data-i18n="globe_enc_label">ENC</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2eb87a" data-i18n="globe_enc_status">AES-256 ✓</span>
+              </div>
+              <div style="margin-top:4px;height:2px;background:#0f1623;border-radius:1px;overflow:hidden">
+                <div id="globe-ping-bar" style="height:100%;width:25%;background:#00b8d9;border-radius:1px;transition:width .5s ease"></div>
+              </div>
+              <div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078;line-height:1.5">
+                EU-ROME-01 · ENCRYPTED
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Top Attacked Hosts -->
+      <div class="panel" style="min-height:0;display:flex;flex-direction:column;overflow:hidden">
+        <div class="panel-hd">
+          <span class="panel-title">Top Attacked Hosts</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <div class="live-dot" style="width:5px;height:5px"></div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2eb87a">LIVE</span>
+          </div>
+        </div>
+        <div id="top-hosts" style="flex:1;overflow-y:auto;padding:6px 10px;display:flex;flex-direction:column;gap:4px"></div>
+      </div>
+      <!-- Live Threat Feed -->
+      <div class="panel" style="min-height:0;display:flex;flex-direction:column;overflow:hidden">
+        <div class="panel-hd">
+          <span class="panel-title">Threat Feed</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <div class="crit-dot" style="width:5px;height:5px"></div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#e53935">IOC</span>
+          </div>
+        </div>
+        <div id="threat-feed" style="flex:1;overflow-y:auto;padding:5px 8px;display:flex;flex-direction:column;gap:3px"></div>
+      </div>
+    </div>
+    <div style="min-height:0"></div>
+  </div>
+</div><!-- /view-soc -->
+
+<!-- ╔══════════════════════════════════════╗
+     ║  VIEW: PLATFORM                       ║
+     ╚══════════════════════════════════════╝ -->
+<div id="view-platform" class="view" style="overflow-y:auto;background:#080c14">
+  <div style="padding:24px;max-width:1100px">
+    <div style="margin-bottom:18px">
+      <div data-i18n="plat_label" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a7fff;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">◈ SAAS PLATFORM — CYBERSECURITY SUITE</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <h1 data-i18n="plat_title" style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#c8d8e8">Platform Overview</h1>
+        <div style="display:flex;gap:8px">
+          <button class="btn-pri" onclick="openModal('demo')">Request Consultation</button>
+          <button class="btn-ghost" onclick="openModal('platform')">Request Access</button>
+        </div>
+      </div>
+    </div>
+    <div id="plat-tabs" style="display:flex;gap:2px;border-bottom:1px solid #1e2d42;margin-bottom:14px;flex-wrap:wrap">
+      <button class="plat-tab active" onclick="setPlatTab(0)">🛡️ AI Threat Detection</button>
+      <button class="plat-tab" onclick="setPlatTab(1)">🔍 Vulnerability Scanner</button>
+      <button class="plat-tab" onclick="setPlatTab(2)">🔬 Digital Forensics</button>
+      <button class="plat-tab" onclick="setPlatTab(3)">📊 Live Monitoring</button>
+    </div>
+    <div id="plat-content" style="margin-bottom:20px"></div>
+    <div class="glass" style="padding:24px 28px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;border-color:rgba(42,127,255,.3)">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8;margin-bottom:4px">Ready to protect your infrastructure?</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa">Request a live demo or speak with our team about your security requirements.</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-pri" onclick="openModal('demo')">Request Consultation</button>
+        <button class="btn-ghost" onclick="openModal('contact')">Talk to Sales</button>
+      </div>
+    </div>
+
+    <!-- Live Module Output Terminal -->
+    <div style="margin-top:24px;margin-bottom:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a7fff;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">◈ LIVE MODULE OUTPUT</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#c8d8e8">Real-Time Engine Terminal</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="live-dot"></div>
+          <span id="plat-term-label" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#2eb87a">AI THREAT DETECTION — ACTIVE</span>
+        </div>
+      </div>
+      <div style="background:#060a10;border:1px solid #1e2d42;border-radius:6px;overflow:hidden">
+        <!-- Terminal title bar -->
+        <div style="background:#0c1220;border-bottom:1px solid #1e2d42;padding:6px 14px;display:flex;align-items:center;gap:8px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#e53935;opacity:.8"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#e6c84a;opacity:.8"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#2eb87a;opacity:.8"></div>
+          <span id="plat-term-title" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-left:8px">orvex@engine:~$ ./run_module --live</span>
+        </div>
+        <!-- Terminal output -->
+        <div id="plat-terminal" style="height:320px;overflow-y:auto;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.8;color:#2eb87a"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /view-platform -->
+
+<!-- ╔══════════════════════════════════════╗
+     ║  VIEW: SERVICES                       ║
+     ╚══════════════════════════════════════╝ -->
+<div id="view-services" class="view" style="overflow-y:auto;background:#080c14">
+  <div style="padding:24px;max-width:1200px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
+      <div>
+        <div data-i18n="svc_label" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a7fff;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">◈ PROFESSIONAL SERVICES DIVISION</div>
+        <h1 data-i18n="svc_title" style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#c8d8e8">Consulting Services</h1>
+      </div>
+      <button data-i18n="btn_consultation" class="btn-pri" onclick="openModal('contact')">Request Consultation</button>
+    </div>
+    <!-- Emergency banner -->
+    <div class="panel" style="margin-bottom:16px;padding:12px 16px;border-color:#e53935;background:rgba(229,57,53,.07);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="crit-dot"></div>
+        <div>
+          <div data-i18n="banner_title" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#e53935">ORVEX CRITICAL RESPONSE</div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:3px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa">+39 379-3160147 · contact@orvexintelligence.com</span>
+            <a href="https://wa.me/393793160147?text=Richiesta%20supporto%20urgente%20Incident%20Response%20Orvex" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#2eb87a;background:rgba(46,184,122,.12);border:1px solid rgba(46,184,122,.35);border-radius:4px;padding:3px 10px;text-decoration:none;transition:all .18s" onmouseover="this.style.background='rgba(46,184,122,.22)'" onmouseout="this.style.background='rgba(46,184,122,.12)'">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span data-i18n="btn_whatsapp">Canale di Emergenza Criptato</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <button data-i18n="btn_activate_ir" class="btn-danger" onclick="openModal('contact')">Activate Emergency Protocol</button>
+    </div>
+    <!-- Service cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:10px">
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">IR-001</div><div data-i18n="svc_ir_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Strategic Incident Response</div></div></div><p data-i18n="svc_ir_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Specialist intervention for cyber crisis management. Analysis of the compromised perimeter, proactive threat isolation and technical coordination for restoring operational continuity.</p><div data-i18n-tags="svc_ir_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Crisis Management</span><span class="tag">Threat Containment</span><span class="tag">Operational Recovery</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">DF-002</div><div data-i18n="svc_df_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Forensic Intelligence &amp; Investigative Analysis</div></div></div><p data-i18n="svc_df_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Acquisition and technical analysis of compromised systems to international evidentiary standards. Forensic reconstruction of event timelines, reverse engineering of malicious artefacts and production of legally admissible reports to support executive decisions.</p><div data-i18n-tags="svc_df_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Timeline Forensics</span><span class="tag">Malware Analysis</span><span class="tag">Legal-Grade Evidence</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">SA-003</div><div data-i18n="svc_sa_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Security Posture Assessment</div></div></div><p data-i18n="svc_sa_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Structured evaluation of enterprise cyber resilience. Risk perimeter analysis through international frameworks (NIST CSF, CIS Controls v8) with critical exposure mapping and a strategic deliverable defining intervention priorities.</p><div data-i18n-tags="svc_sa_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Risk Exposure</span><span class="tag">NIST CSF</span><span class="tag">Executive Reporting</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">RA-004</div><div data-i18n="svc_ra_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Cyber Risk Governance &amp; Strategic Advisory</div></div></div><p data-i18n="svc_ra_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Quantitative modelling of cyber risk to translate technical exposure into measurable economic impact. We define a security investment roadmap based on real risk priorities, aligned with business objectives and sustainable over the long term.</p><div data-i18n-tags="svc_ra_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Risk Quantification</span><span class="tag">Investment Roadmap</span><span class="tag">Board Advisory</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">AR-005</div><div data-i18n="svc_ar_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Security Architecture &amp; Infrastructure Design</div></div></div><p data-i18n="svc_ar_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Enterprise-grade security architecture design. Zero Trust model implementation, cloud posture management (CSPM) and infrastructure segmentation to contain the attack surface. Technology supply chain and third-party vendor risk assessment.</p><div data-i18n-tags="svc_ar_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Zero Trust</span><span class="tag">CSPM</span><span class="tag">Supply Chain Security</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">TI-006</div><div data-i18n="svc_ti_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Threat Intelligence &amp; Digital Risk Monitoring</div></div></div><p data-i18n="svc_ti_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Continuous digital risk monitoring across open sources, deep web and dark web. Sector-specific IOC feed management, threat actor tracking and proactive alerting on credential exposures, corporate assets or brand reputation. Operational and strategic intelligence tailored to your environment.</p><div data-i18n-tags="svc_ti_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Dark Web Intelligence</span><span class="tag">IOC Management</span><span class="tag">Adversary Tracking</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">CS-007</div><div data-i18n="svc_cs_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Cybersecurity Engineering &amp; Proprietary Development</div></div></div><p data-i18n="svc_cs_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Development of custom defensive solutions, advanced cryptographic implementations and security process automation. We design proprietary tools for high-complexity enterprise environments.</p><div data-i18n-tags="svc_cs_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Custom Engineering</span><span class="tag">Cryptographic Design</span><span class="tag">Secure Automation</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">RS-008</div><div data-i18n="svc_rs_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Remote Security Operations &amp; Infrastructure Support</div></div></div><p data-i18n="svc_rs_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Remote operational support for critical infrastructure environments. Deployment of encrypted channels for high-priority technical interventions, proactive hardening of exposed systems and operational continuity monitoring. Dedicated remote coverage for organisations requiring immediate responsiveness.</p><div data-i18n-tags="svc_rs_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Encrypted Operations</span><span class="tag">Infrastructure Hardening</span><span class="tag">Continuity Monitoring</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+    </div>
+  </div>
+</div><!-- /view-services -->
+
+<!-- ╔══════════════════════════════════════╗
+     ║  VIEW: SECTOR (shared shell)          ║
+     ╚══════════════════════════════════════╝ -->
+<div id="view-sector" class="view" style="overflow-y:auto">
+  <canvas id="sector-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.55"></canvas>
+  <div style="position:relative;z-index:1">
+
+    <!-- Sector hero -->
+    <section style="min-height:88vh;display:flex;align-items:center;position:relative;overflow:hidden">
+      <div id="sec-grad" style="position:absolute;inset:0;pointer-events:none"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 25%,var(--sbg,#080c14) 100%);pointer-events:none"></div>
+      <div class="scan-line"></div>
+      <div style="position:relative;z-index:10;padding:100px clamp(24px,7vw,100px) 60px;max-width:900px">
+        <div style="margin-bottom:16px"><span id="sec-badge-text" style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 12px;border-radius:3px;letter-spacing:.1em;text-transform:uppercase"></span></div>
+        <h1 id="sec-title" style="font-family:'JetBrains Mono',monospace;font-weight:700;line-height:1.08;font-size:clamp(26px,5vw,58px);margin-bottom:20px;letter-spacing:-.01em"></h1>
+        <p id="sec-body" style="font-size:clamp(12px,1.3vw,15px);max-width:540px;line-height:1.8;margin-bottom:32px;color:var(--ssub,#7a92aa)"></p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+          <button id="sec-cta1" class="btn-pri" onclick="openModal('contact')">Request Consultation →</button>
+          <button class="btn-ghost" onclick="nav('soc')">Enter SOC Platform</button>
+        </div>
+        <div id="sec-stats" style="display:flex;gap:0;flex-wrap:wrap"></div>
+      </div>
+    </section>
+
+    <!-- Features grid -->
+    <section style="padding:48px clamp(24px,5vw,80px);background:var(--spanel,#0c1220)">
+      <div style="max-width:1100px;margin:0 auto">
+        <div id="sec-feat-label" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px"></div>
+        <h2 id="sec-feat-title" style="font-family:'JetBrains Mono',monospace;font-size:clamp(18px,2.8vw,28px);font-weight:700;color:var(--stxt,#c8d8e8);margin-bottom:20px"></h2>
+        <div id="sec-features" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px"></div>
+      </div>
+    </section>
+
+    <!-- KPIs + topology -->
+    <section style="padding:40px clamp(24px,5vw,80px);background:var(--sbg,#080c14)">
+      <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:20px" class="two-col">
+        <div>
+          <div id="sec-kpi-label" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px"></div>
+          <div id="sec-kpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:16px"></div>
+          <div id="sec-clients" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
+          <div style="background:var(--scard,#101828);border:1px solid var(--sb-brd,rgba(42,127,255,.3));border-radius:6px;padding:18px 22px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px">
+            <div>
+              <div id="sec-cta-title" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--stxt,#c8d8e8);margin-bottom:4px"></div>
+              <div id="sec-cta-sub" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ssub,#7a92aa)"></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button id="sec-cta2" class="btn-pri" onclick="openModal('contact')">Request Consultation</button>
+            </div>
+          </div>
+        </div>
+        <!-- Sector topology -->
+        <div style="background:#0b0f14;border:1px solid var(--sborder,#1e2d42);border-radius:6px;overflow:hidden">
+          <div style="padding:7px 12px;border-bottom:1px solid var(--sborder,#1e2d42);display:flex;justify-content:space-between;align-items:center;background:#0b0f14">
+            <span id="sec-topo-label" style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#3a5a3a;text-transform:uppercase;letter-spacing:.08em"></span>
+            <div class="live-dot"></div>
+          </div>
+          <pre style="margin:0;padding:10px;background:#0b0f14;font-family:'JetBrains Mono',monospace;font-size:10px;color:#3aaa6e;overflow:auto;line-height:1.6">
+            <svg id="sec-topo-svg" width="310" height="230" style="display:block;overflow:visible"></svg>
+          </pre>
+          <div id="sec-topo-stream" style="display:none;padding:5px 12px 8px;background:#0b0f14;border-top:1px solid #1a2a1a">
+            <span id="sec-topo-stream-label" style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#2a6a3a;letter-spacing:.12em;text-transform:uppercase"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sector footer -->
+    <section style="padding:28px clamp(24px,5vw,80px);background:var(--spanel,#0c1220);border-top:1px solid var(--sborder,#1e2d42)">
+      <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--stxt,#c8d8e8);font-weight:600;margin-bottom:4px">Orvex Intelligence</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ssub,#7a92aa)">contact@orvexintelligence.com &nbsp;|&nbsp; Emergency IR: +39 379-3160147</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#3a4a5a;margin-top:4px;letter-spacing:.04em">Dedicated to Incident Response for contracted clients only.</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-ghost" onclick="openModal('demo')">Request Consultation</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div><!-- /view-sector -->
+
+</div><!-- /views -->
+
+<!-- ═══════════════════════════ MODAL ════════════════════════════════════════ -->
+<div id="modal-overlay" class="modal-overlay" style="display:none" onclick="closeModalIfOverlay(event)">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #1e2d42">
+      <div>
+        <div id="modal-badge" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#2a7fff;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px"></div>
+        <div id="modal-title" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#c8d8e8"></div>
+      </div>
+      <button onclick="closeModal()" style="color:#4a6078;font-size:18px;padding:4px 8px;cursor:pointer;background:none;border:none">✕</button>
+    </div>
+    <div id="modal-body" style="padding:18px"></div>
+  </div>
+</div>
+
+<!-- Toast notifications -->
+<div id="toasts" style="position:fixed;bottom:16px;right:16px;z-index:8000;display:flex;flex-direction:column;gap:6px;max-width:340px;pointer-events:none"></div>
+<script>
+'use strict';
+
+// ── Seed data ──────────────────────────────────────────────────────────────
+const TACTICS=['Initial Access','Execution','Persistence','Privilege Escalation','Defense Evasion','Credential Access','Discovery','Lateral Movement','Collection','Exfiltration','Command & Control','Impact'];
+const TECHNIQUES={
+  'Initial Access':['T1190 Exploit Public-Facing App','T1078 Valid Accounts','T1566.001 Spearphishing Attachment'],
+  'Execution':['T1059.001 PowerShell','T1059.003 Windows Command Shell','T1204.002 Malicious File'],
+  'Persistence':['T1547.001 Registry Run Keys','T1053.005 Scheduled Task','T1505.003 Web Shell'],
+  'Privilege Escalation':['T1068 Exploitation for PE','T1055 Process Injection','T1134 Access Token Manipulation'],
+  'Defense Evasion':['T1562.001 Disable Security Tools','T1027 Obfuscated Files','T1070.004 File Deletion'],
+  'Credential Access':['T1003.001 LSASS Memory','T1110.003 Password Spray','T1056.001 Keylogging'],
+  'Discovery':['T1018 Remote System Discovery','T1082 System Info Discovery','T1087 Account Discovery'],
+  'Lateral Movement':['T1021.001 Remote Desktop Protocol','T1021.002 SMB/Windows Admin Shares','T1550.002 Pass the Hash'],
+  'Collection':['T1005 Data from Local System','T1039 Data from Network Drive','T1114 Email Collection'],
+  'Exfiltration':['T1041 Exfiltration Over C2','T1048.003 Exfiltration Over Unencrypted Protocol','T1567 Exfiltration Over Web Service'],
+  'Command & Control':['T1071.001 Web Protocols','T1095 Non-Application Layer Protocol','T1571 Non-Standard Port'],
+  'Impact':['T1486 Data Encrypted for Impact','T1490 Inhibit System Recovery','T1498 Network Denial of Service'],
+};
+const HOSTS=['ws-fin-017','ws-hr-042','srv-dc-001','srv-app-003','srv-db-007','gw-edge-01','fw-core-02','vpn-gw-01','srv-web-011','ws-dev-088','srv-api-05','cloud-k8s-03','srv-mail-01','ws-exec-004','srv-backup-02'];
+const IPS=['10.0.1.14','10.0.1.87','10.0.2.33','10.0.3.101','172.16.0.24','172.16.1.55','192.168.10.8','10.10.0.42','185.220.101.47','91.108.4.200','104.21.14.109','198.41.0.4'];
+const USERS=['svc_backup','jsmith','agarcia','mwilson','svc_deploy','ladmin','bpatel','root','SYSTEM','svc_sql'];
+const SRCS=['EDR','SIEM','FW','IDS','PROXY','DNS','AUTH','CLOUD','EMAIL','VULN'];
+const SEV_C={CRITICAL:'#e53935',HIGH:'#ef8c00',MEDIUM:'#e6c84a',LOW:'#3aaa6e',INFO:'#5a8fbf'};
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const rndInt=(a,b)=>Math.floor(a+Math.random()*(b-a));
+let evId=1000;
+
+const state={
+  events:[],selectedId:null,
+  metrics:{eventsTotal:0,criticalOpen:0,highOpen:0,ackRate:0,ingestRate:847},
+  activeView:'landing',activeSector:'enterprise',
+};
+
+function mkSev(){const r=Math.random();if(r<.1)return'CRITICAL';if(r<.28)return'HIGH';if(r<.56)return'MEDIUM';if(r<.82)return'LOW';return'INFO';}
+
+function mkEvent(sevOvr){
+  const tactic=rnd(TACTICS),tech=rnd(TECHNIQUES[tactic]||['T0000 Unknown']),sev=sevOvr||mkSev();
+  const src=rnd(SRCS),host=rnd(HOSTS),user=rnd(USERS),srcIp=rnd(IPS),dstIp=rnd(IPS);
+  const id='EVT-'+(++evId).toString().padStart(5,'0');
+  const descMap={
+    'Initial Access':`${src}: Exploitation attempt on ${host} from ${srcIp}. ${tech}.`,
+    'Execution':`${src}: Suspicious process spawned by ${user} on ${host}. ${tech}.`,
+    'Persistence':`${src}: Persistence mechanism installed by ${user} on ${host}. ${tech}.`,
+    'Privilege Escalation':`${src}: Privilege escalation detected on ${host}. User: ${user}→SYSTEM. ${tech}.`,
+    'Defense Evasion':`${src}: Security control bypass detected on ${host}. ${tech}.`,
+    'Credential Access':`${src}: Credential extraction from ${host}. ${tech}. Source: ${srcIp}.`,
+    'Discovery':`${src}: Internal reconnaissance from ${host} by ${user}. ${tech}.`,
+    'Lateral Movement':`${src}: Lateral movement ${srcIp}→${host}. Account: ${user}. ${tech}.`,
+    'Collection':`${src}: Bulk data access on ${host} by ${user}. ${tech}.`,
+    'Exfiltration':`${src}: Data exfiltration indicator on ${host}. Destination: ${dstIp}. ${tech}.`,
+    'Command & Control':`${src}: C2 beacon detected ${host}→${dstIp}. ${tech}.`,
+    'Impact':`${src}: Destructive/disruptive activity on ${host}. ${tech}.`,
+  };
+  return{
+    id,ts:Date.now(),severity:sev,source:src,tactic,technique:tech,
+    srcIp,dstIp,hostname:host,user,confidence:rndInt(55,99),
+    status:'OPEN',ack:false,clusterId:'CL-'+String.fromCharCode(65+rndInt(0,8))+'-'+rndInt(10,99),
+    description:descMap[tactic]||`${src}: Security anomaly on ${host}. ${tech}.`,
+    relatedHosts:Array.from({length:rndInt(1,4)},()=>rnd(HOSTS)),
+  };
+}
+
+// Seed 40 historical events
+for(let i=0;i<40;i++){const e=mkEvent();e.ts=Date.now()-(39-i)*18000;state.events.push(e);}
+state.selectedId=state.events[0].id;
+
+// ── Navigation ──────────────────────────────────────────────────────────────
+function nav(view){
+  // Default routing — prevents blank screens
+  if(view==='sector')view='sector/enterprise';
+
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('metrics-strip').style.display='none';
+  document.getElementById('sector-subnav').classList.remove('visible');
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sectors-btn').classList.remove('active');
+
+  const isSector=view.startsWith('sector/');
+  const viewId='view-'+(isSector?'sector':view);
+  const el=document.getElementById(viewId);
+  if(el)el.classList.add('active');
+
+  if(view==='soc'){
+    document.getElementById('metrics-strip').style.display='block';
+    renderEventList();renderTopology('corp');renderSevDist();renderMitreHeatmap();renderTopHosts();renderThreatFeed();
+  }
+  if(view==='platform'){renderPlatformContent(0);startPlatTerminal(0);}
+
+  if(isSector){
+    document.getElementById('sector-subnav').classList.add('visible');
+    document.getElementById('sectors-btn').classList.add('active');
+    const sKey=view.split('/')[1]||'enterprise';
+    // Always re-render so language changes and sector switches work correctly
+    state.activeSector=sKey;
+    applySectorTheme(sKey);
+    renderSectorPage(sKey);
+    document.querySelectorAll('.sector-tab-btn').forEach(b=>b.classList.remove('active'));
+    const btn=document.querySelector('.sector-tab-btn[data-sector="'+sKey+'"]');
+    if(btn)btn.classList.add('active');
+  }
+
+  const mainTab=document.querySelector('.nav-tab[data-view="'+view+'"]');
+  if(mainTab)mainTab.classList.add('active');
+  state.activeView=view;
+  updateMetrics();
+}
+
+function navSector(sector){
+  // Update sub-nav tab highlight
+  document.querySelectorAll('.sector-tab-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.querySelector('.sector-tab-btn[data-sector="'+sector+'"]');
+  if(btn)btn.classList.add('active');
+  // Full nav routing (renders sector page inside)
+  nav('sector/'+sector);
+}
+
+// ── Sector themes ───────────────────────────────────────────────────────────
+const SECTORS={
+  enterprise:{
+    cls:'sec-ent',accent:'#2a7fff',
+    en:{
+      title:'ORVEX <span style="color:#2a7fff">ENTERPRISE</span>',
+      badgeTxt:'🏢 Enterprise — Corporate SOC Operations',
+      body:'Full-stack SOC monitoring, threat detection, and compliance management for multinational enterprises. From endpoint to cloud — unified visibility across your entire attack surface.',
+      stats:[{l:'ENDPOINTS PROTECTED',v:'14,829'},{l:'EVENTS / DAY',v:'4.8B+'},{l:'SOC UPTIME',v:'99.99%'}],
+      features:[
+        {i:'🛡️',t:'Enterprise SOC',d:'24/7 Detection-Focused SOC with automated playbooks, SIEM integration, and dedicated analyst coverage for complex environments.'},
+        {i:'🔍',t:'Vulnerability Management',d:'Continuous CVE scanning across all corporate assets. EPSS-weighted remediation prioritization mapped to business risk.'},
+        {i:'⚖️',t:'Compliance Automation',d:'SOC 2, ISO 27001, PCI DSS, and NIST CSF framework monitoring with real-time posture reporting and evidence collection.'},
+        {i:'🔬',t:'Forensic Investigations',d:'Chain-of-custody IR investigations. Memory forensics and legal-ready evidence bundles for internal and external proceedings.'},
+        {i:'📊',t:'Executive Reporting',d:'Board-level risk dashboards. Financial impact modelling and CISO briefing packages on a weekly cadence.'},
+        {i:'🏗️',t:'Security Architecture',d:'Zero-trust network design, CSPM implementation, and third-party vendor risk assessment programs.'},
+      ],
+      kpis:[{k:'Patch Compliance',v:'94.2%'},{k:'Policy Violations',v:'7'},{k:'Vendor Risk Score',v:'B+'}],
+      clients:['Fortune 500','Big 4 Audit','Global Bank','FTSE 100','Tech Unicorn'],
+      ctaTitle:'Ready to secure your enterprise environment?',
+      ctaSub:'Contact our SOC Analyst team for a sector-specific assessment.',
+      topoLabel:'Corporate Infrastructure — LIVE TOPOLOGY',
+      featLabel:'◈ ENTERPRISE SECURITY POSTURE',featTitle:'Enterprise Security Suite',
+    },
+    it:{
+      title:'ORVEX <span style="color:#2a7fff">ENTERPRISE</span>',
+      badgeTxt:'🏢 Enterprise — Operazioni SOC Aziendali',
+      body:'Monitoraggio SOC full-stack, rilevamento delle minacce e gestione della compliance per imprese multinazionali. Dall\'endpoint al cloud — visibilità unificata su tutta la superficie d\'attacco.',
+      stats:[{l:'ENDPOINT PROTETTI',v:'14.829'},{l:'EVENTI / GIORNO',v:'4,8B+'},{l:'UPTIME SOC',v:'99,99%'}],
+      features:[
+        {i:'🛡️',t:'SOC Enterprise',d:'SOC orientato al rilevamento 24/7 con playbook automatizzati, integrazione SIEM e copertura analitica dedicata per ambienti complessi.'},
+        {i:'🔍',t:'Gestione Vulnerabilità',d:'Scansione CVE continua su tutti gli asset aziendali. Prioritizzazione della remediation con pesatura EPSS mappata al rischio di business.'},
+        {i:'⚖️',t:'Automazione Compliance',d:'Monitoraggio in tempo reale della postura SOC 2, ISO 27001, PCI DSS e NIST CSF con raccolta automatizzata delle evidenze.'},
+        {i:'🔬',t:'Indagini Forensi',d:'Investigazioni IR con catena di custodia certificata. Acquisizione di memoria e pacchetti probatori pronti per procedimenti legali.'},
+        {i:'📊',t:'Reportistica Esecutiva',d:'Dashboard del rischio a livello board. Modellazione dell\'impatto finanziario e pacchetti briefing CISO su cadenza settimanale.'},
+        {i:'🏗️',t:'Architettura di Sicurezza',d:'Progettazione zero-trust, implementazione CSPM e programmi di valutazione del rischio fornitori di terze parti.'},
+      ],
+      kpis:[{k:'Conformità Patch',v:'94,2%'},{k:'Violazioni Policy',v:'7'},{k:'Rischio Fornitore',v:'B+'}],
+      clients:['Fortune 500','Big 4 Audit','Global Bank','FTSE 100','Tech Unicorn'],
+      ctaTitle:'Pronto a proteggere il tuo ambiente enterprise?',
+      ctaSub:'Contatta il nostro team di Analisti SOC per una valutazione settoriale.',
+      topoLabel:'Infrastruttura Aziendale — TOPOLOGIA LIVE',
+      featLabel:'◈ POSTURA DI SICUREZZA ENTERPRISE',featTitle:'Suite di Sicurezza Enterprise',
+    },
+    topoType:'corp',
+  },
+  government:{
+    cls:'sec-gov',accent:'#2563a8',
+    en:{
+      title:'ORVEX <span style="color:#5a9fd4">ADVANCED THREAT RESEARCH</span>',
+      badgeTxt:'🔬 Research — Advanced Threat Analysis & Strategic Intelligence',
+      body:'Independent threat research and proactive intelligence for high-criticality organisations. Zero-trust architecture design, proprietary threat analysis methodologies and strategic advisory to equip internal teams with the visibility required to neutralise threats before they surface.',
+      stats:[{l:'VALIDATED IOCs',v:'ONGOING'},{l:'INTELLIGENCE REPORTS',v:'QUARTERLY'},{l:'TREND ANALYSES',v:'PROPRIETARY'}],
+      features:[
+        {i:'🔬',t:'Independent Threat Research',d:'Autonomous analysis of emerging attack vectors, threat actor TTPs and zero-day exposure — independent from vendor bias and unfiltered by commercial interests.'},
+        {i:'🗺️',t:'Proactive Intelligence',d:'Forward-looking threat modelling and adversary simulation to anticipate attack campaigns before they reach operational environments.'},
+        {i:'🔒',t:'Zero-Trust Architecture',d:'Design and advisory for zero-trust network architectures, identity segmentation and micro-perimeter enforcement tailored to high-criticality environments.'},
+        {i:'📊',t:'Strategic Threat Reports',d:'Proprietary intelligence reports delivered to internal security teams — trend analysis, IOC validation and executive-level risk briefings.'},
+        {i:'🧩',t:'Threat Intelligence Integration',d:'Advisory on integrating external threat feeds, ISAC outputs and sector-specific intelligence into existing detection and response workflows.'},
+        {i:'⚙️',t:'Security Architecture Review',d:'Independent review of existing security architectures to identify structural gaps, misconfigurations and exposure paths not visible through standard assessments.'},
+      ],
+      kpis:[{k:'Validated IOCs',v:'Ongoing'},{k:'Intelligence Reports',v:'Quarterly'},{k:'Proprietary Analyses',v:'Tailored'}],
+      clients:['Research Institutions','Critical Infrastructure','Defence Contractors','Technology Groups','Regulated Entities'],
+      ctaTitle:'Require advanced threat research for your organisation?',
+      ctaSub:'Request a strategic consultation to discuss intelligence requirements and architecture posture.',
+      topoLabel:'Research Infrastructure — THREAT TOPOLOGY',
+      featLabel:'◈ ADVANCED RESEARCH POSTURE',featTitle:'Threat Research & Strategic Intelligence',
+    },
+    it:{
+      title:'ORVEX <span style="color:#5a9fd4">RICERCA AVANZATA SULLE MINACCE</span>',
+      badgeTxt:'🔬 Ricerca — Analisi Avanzata delle Minacce & Intelligence Strategica',
+      body:'Ricerca indipendente sulle minacce e intelligence proattiva per organizzazioni ad elevata criticità. Progettazione di architetture zero-trust, metodologie di analisi proprietarie e advisory strategico per fornire ai team interni la visibilità necessaria a neutralizzare le minacce prima che emergano.',
+      stats:[{l:'IOC VALIDATI',v:'IN CORSO'},{l:'REPORT INTELLIGENCE',v:'TRIMESTRALI'},{l:'ANALISI DI TREND',v:'PROPRIETARIE'}],
+      features:[
+        {i:'🔬',t:'Ricerca Indipendente sulle Minacce',d:'Analisi autonoma di vettori d\'attacco emergenti, TTP degli attori minaccia ed esposizioni zero-day — indipendente da bias di vendor e non filtrata da interessi commerciali.'},
+        {i:'🗺️',t:'Intelligence Proattiva',d:'Modellazione predittiva delle minacce e simulazione avversariale per anticipare campagne d\'attacco prima che raggiungano gli ambienti operativi.'},
+        {i:'🔒',t:'Architettura Zero-Trust',d:'Design e advisory per architetture zero-trust, segmentazione delle identità e micro-perimetri su misura per ambienti ad elevata criticità.'},
+        {i:'📊',t:'Report Strategici sulle Minacce',d:'Report di intelligence proprietari consegnati ai team di sicurezza interni — analisi di trend, validazione IOC e briefing esecutivi sul rischio.'},
+        {i:'🧩',t:'Integrazione Threat Intelligence',d:'Advisory sull\'integrazione di feed di minacce esterni, output ISAC e intelligence settoriale nei workflow di detection e response esistenti.'},
+        {i:'⚙️',t:'Revisione dell\'Architettura di Sicurezza',d:'Revisione indipendente delle architetture di sicurezza esistenti per identificare gap strutturali, errori di configurazione e percorsi di esposizione non visibili attraverso assessment standard.'},
+      ],
+      kpis:[{k:'IOC Validati',v:'In corso'},{k:'Report Intelligence',v:'Trimestrali'},{k:'Analisi Proprietarie',v:'Su misura'}],
+      clients:['Istituti di Ricerca','Infrastrutture Critiche','Contractor della Difesa','Gruppi Tecnologici','Enti Regolamentati'],
+      ctaTitle:'Hai bisogno di ricerca avanzata sulle minacce per la tua organizzazione?',
+      ctaSub:'Richiedi una consulenza strategica per discutere i requisiti di intelligence e la postura architetturale.',
+      topoLabel:'Infrastruttura di Ricerca — TOPOLOGIA DELLE MINACCE',
+      featLabel:'◈ POSTURA DI RICERCA AVANZATA',featTitle:'Ricerca sulle Minacce & Intelligence Strategica',
+    },
+    topoType:'gov',
+  },
+  healthcare:{
+    cls:'sec-hlt',accent:'#1a9a7a',
+    en:{
+      title:'ORVEX <span style="color:#2ab893">HEALTHCARE RESILIENCE ADVISORY</span>',
+      badgeTxt:'🏥 Healthcare — Resilience, Compliance & Architectural Security',
+      body:'Strategic security advisory for healthcare organisations navigating GDPR and HIPAA compliance requirements. Architectural guidance for EHR system resilience, IoMT device security and regulatory posture — delivered as a consultative partnership alongside your internal team.',
+      stats:[{l:'COMPLIANCE FRAMEWORKS',v:'GDPR · HIPAA'},{l:'ADVISORY POSTURE',v:'STRATEGIC'},{l:'ENGAGEMENT MODEL',v:'CONSULTATIVE'}],
+      features:[
+        {i:'🏥',t:'EHR Architecture Advisory',d:'Structural security review of electronic health record systems. Gap analysis against HIPAA Technical Safeguards and GDPR Art. 32 requirements, with actionable remediation roadmap delivered to internal teams. Advisory role only — no direct system administration.'},
+        {i:'📋',t:'Compliance Posture Assessment',d:'Independent evaluation of HIPAA and GDPR compliance posture. Review of data processing agreements, PHI access controls and breach notification readiness — delivered as a strategic report to support internal decision-making.'},
+        {i:'💊',t:'IoMT Security Architecture',d:'Architectural advisory for medical device network segmentation, VLAN design and IoMT asset exposure reduction. Risk-based prioritisation aligned to patient safety requirements. Advisory role only — implementation by internal or dedicated technical teams.'},
+        {i:'🚨',t:'Ransomware Resilience Planning',d:'Strategic resilience consulting against healthcare-targeted ransomware. Architecture review of backup segregation, recovery paths and business continuity design — purely advisory, without operational dependency or direct system management.'},
+        {i:'🔬',t:'Incident Readiness Advisory',d:'Preparedness assessment for PHI breach scenarios. Review of internal IR procedures, HIPAA notification timelines and OCR reporting readiness. Advisory role only — no direct incident management or operational response.'},
+        {i:'⚕️',t:'Clinical Continuity Architecture',d:'Security architecture advisory to ensure life-critical systems maintain availability under adversarial conditions. Strategic input to resilience design and failover architecture — consultative engagement only.'},
+      ],
+      kpis:[{k:'Compliance Frameworks',v:'GDPR · HIPAA'},{k:'Engagement Model',v:'Advisory'},{k:'Delivery',v:'Strategic Report'}],
+      clients:['Hospital Groups','Healthcare Networks','Medical Centres','Private Clinics','Health Tech Firms'],
+      ctaTitle:'Strengthen the security architecture of your clinical environment?',
+      ctaSub:'Request a strategic consultation to assess your compliance posture and architectural resilience.',
+      topoLabel:'Healthcare Infrastructure — ARCHITECTURAL TOPOLOGY',
+      featLabel:'◈ HEALTHCARE RESILIENCE POSTURE',featTitle:'Healthcare Security Advisory',
+    },
+    it:{
+      title:'ORVEX <span style="color:#2ab893">ADVISORY RESILIENZA SANITARIA</span>',
+      badgeTxt:'🏥 Sanità — Resilienza, Conformità & Sicurezza Architetturale',
+      body:'Advisory strategico per organizzazioni sanitarie alle prese con i requisiti di conformità GDPR e HIPAA. Guida architetturale per la resilienza dei sistemi EHR, la sicurezza dei dispositivi IoMT e la postura regolamentare — erogato come partnership consulenziale a fianco del team interno.',
+      stats:[{l:'FRAMEWORK DI CONFORMITÀ',v:'GDPR · HIPAA'},{l:'POSTURA ADVISORY',v:'STRATEGICA'},{l:'MODELLO DI INGAGGIO',v:'CONSULENZIALE'}],
+      features:[
+        {i:'🏥',t:'Advisory Architetturale EHR',d:'Revisione strutturale della sicurezza dei sistemi di cartelle cliniche elettroniche. Gap analysis rispetto ai HIPAA Technical Safeguards e all\'Art. 32 GDPR, con roadmap di remediation consegnata ai team interni. Ruolo esclusivamente advisory — nessuna amministrazione diretta dei sistemi.'},
+        {i:'📋',t:'Valutazione della Postura di Conformità',d:'Valutazione indipendente della postura HIPAA e GDPR. Revisione dei DPA, dei controlli di accesso ai dati PHI e della readiness per la notifica delle violazioni — consegnata come report strategico a supporto delle decisioni interne.'},
+        {i:'💊',t:'Architettura di Sicurezza IoMT',d:'Advisory architetturale per la segmentazione delle reti di dispositivi medici, il design delle VLAN e la riduzione dell\'esposizione degli asset IoMT. Prioritizzazione basata sul rischio per la sicurezza del paziente. Ruolo advisory — implementazione a cura dei team tecnici interni o dedicati.'},
+        {i:'🚨',t:'Pianificazione della Resilienza al Ransomware',d:'Consulenza strategica sulla resilienza contro ransomware specifici per la sanità. Revisione architetturale della segregazione dei backup, dei percorsi di recovery e del design della business continuity — esclusivamente advisory, senza dipendenza operativa o gestione diretta dei sistemi.'},
+        {i:'🔬',t:'Advisory sulla Readiness agli Incidenti',d:'Assessment della preparazione agli scenari di violazione PHI. Revisione delle procedure IR interne, delle tempistiche di notifica HIPAA e della readiness per i report OCR. Ruolo esclusivamente advisory — nessuna gestione diretta degli incidenti o risposta operativa.'},
+        {i:'⚕️',t:'Architettura di Continuità Clinica',d:'Advisory sull\'architettura di sicurezza per garantire la disponibilità dei sistemi life-critical in condizioni avversariali. Contributo strategico al design di resilienza e failover — ingaggio esclusivamente consulenziale.'},
+      ],
+      kpis:[{k:'Framework di Conformità',v:'GDPR · HIPAA'},{k:'Modello di Ingaggio',v:'Advisory'},{k:'Deliverable',v:'Report Strategico'}],
+      clients:['Gruppi Ospedalieri','Reti Sanitarie','Centri Medici','Cliniche Private','Aziende Health Tech'],
+      ctaTitle:'Rafforzare l\'architettura di sicurezza del tuo ambiente clinico?',
+      ctaSub:'Richiedi una consulenza strategica per valutare la postura di conformità e la resilienza architetturale.',
+      topoLabel:'Infrastruttura Sanitaria — TOPOLOGIA ARCHITETTURALE',
+      featLabel:'◈ POSTURA DI RESILIENZA SANITARIA',featTitle:'Advisory Sicurezza Healthcare',
+    },
+    topoType:'health',
+  },
+  vip:{
+    cls:'sec-vip',accent:'#b8962a',
+    en:{
+      title:'ORVEX <span style="color:#c8a84a">CYBER WELLNESS ADVISORY</span>',
+      badgeTxt:'◆ VIP & Private — Strategic Cyber Advisory for C-Suite & HNWI',
+      body:'High-value cyber hardening and strategic advisory for C-Suite executives, Family Offices and high-net-worth individuals. Digital footprint assessment, confidentiality architecture and personalised hardening strategy — delivered with the discretion and precision required at this level.',
+      stats:[{l:'ENGAGEMENT MODEL',v:'STRATEGIC'},{l:'ADVISORY SCOPE',v:'TAILORED'},{l:'CONFIDENTIALITY',v:'ABSOLUTE'}],
+      features:[
+        {i:'◆',t:'Digital Footprint Assessment',d:'Structured analysis of the personal digital exposure surface — online presence, data broker indexing, credential exposure and publicly accessible information requiring remediation.'},
+        {i:'🔒',t:'Strategic Cyber Hardening',d:'Personalised hardening strategy for personal and professional digital environments. Device configuration, network architecture and identity protection tailored to individual risk profile.'},
+        {i:'📱',t:'Device & Endpoint Advisory',d:'Security advisory for personal smartphones, laptops, tablets and smart home infrastructure. Configuration review and hardening roadmap delivered as a strategic report.'},
+        {i:'🌍',t:'Travel Security Advisory',d:'Pre-travel digital risk assessment and hardening protocol. Device preparation guidance and operational security briefings for high-risk or sensitive travel itineraries.'},
+        {i:'🔏',t:'Confidential Communications Architecture',d:'Advisory on secure communications architecture for high-sensitivity professional and personal correspondence — including encrypted messaging, email security and voice protocols.'},
+        {i:'🛡️',t:'Privacy & Exposure Consulting',d:'Strategic consulting on digital privacy, data broker removal strategy and personal information exposure reduction. <strong>No investigative activity — purely advisory and architectural.</strong>'},
+      ],
+      kpis:[{k:'Engagement Model',v:'Strategic'},{k:'Scope',v:'Fully Tailored'},{k:'Confidentiality',v:'Absolute'}],
+      clients:['C-Suite Executives','Family Offices','HNWI','Board Members','Public Figures'],
+      ctaTitle:'Require a personalised cyber hardening strategy?',
+      ctaSub:'Request a discreet strategic consultation to assess your digital exposure and define a hardening roadmap.',
+      topoLabel:'Private Client Infrastructure — ADVISORY TOPOLOGY',
+      featLabel:'◈ CYBER WELLNESS POSTURE',featTitle:'Strategic Cyber Advisory',
+    },
+    it:{
+      title:'ORVEX <span style="color:#c8a84a">CYBER WELLNESS ADVISORY</span>',
+      badgeTxt:'◆ VIP & Privato — Advisory Cyber Strategico per C-Suite & HNWI',
+      body:'Cyber hardening di alto valore e advisory strategico per executive C-Suite, Family Office e individui ad alto patrimonio netto. Assessment dell\'impronta digitale, architettura della riservatezza e strategia di hardening personalizzata — erogati con la discrezione e la precisione richieste a questo livello.',
+      stats:[{l:'MODELLO DI INGAGGIO',v:'STRATEGICO'},{l:'PERIMETRO ADVISORY',v:'SU MISURA'},{l:'RISERVATEZZA',v:'ASSOLUTA'}],
+      features:[
+        {i:'◆',t:'Assessment dell\'Impronta Digitale',d:'Analisi strutturata della superficie di esposizione digitale personale — presenza online, indicizzazione da data broker, esposizione delle credenziali e informazioni pubblicamente accessibili che richiedono remediation.'},
+        {i:'🔒',t:'Cyber Hardening Strategico',d:'Strategia di hardening personalizzata per ambienti digitali personali e professionali. Configurazione dei dispositivi, architettura di rete e protezione delle identità calibrate sul profilo di rischio individuale.'},
+        {i:'📱',t:'Advisory Dispositivi & Endpoint',d:'Advisory di sicurezza per smartphone personali, laptop, tablet e infrastruttura smart home. Revisione delle configurazioni e roadmap di hardening consegnate come report strategico.'},
+        {i:'🌍',t:'Advisory Sicurezza in Viaggio',d:'Assessment del rischio digitale pre-viaggio e protocollo di hardening. Guida alla preparazione dei dispositivi e briefing di sicurezza operativa per itinerari ad alto rischio o di natura sensibile.'},
+        {i:'🔏',t:'Architettura delle Comunicazioni Riservate',d:'Advisory sull\'architettura di comunicazione sicura per corrispondenza professionale e personale ad alta sensibilità — inclusi messaggistica cifrata, sicurezza email e protocolli voce.'},
+        {i:'🛡️',t:'Consulenza Privacy & Esposizione',d:'Consulenza strategica sulla privacy digitale, la strategia di rimozione dai data broker e la riduzione dell\'esposizione delle informazioni personali. <strong>Nessuna attività investigativa — esclusivamente advisory e architetturale.</strong>'},
+      ],
+      kpis:[{k:'Modello di Ingaggio',v:'Strategico'},{k:'Perimetro',v:'Completamente Su Misura'},{k:'Riservatezza',v:'Assoluta'}],
+      clients:['Executive C-Suite','Family Office','HNWI','Membri del CDA','Personaggi Pubblici'],
+      ctaTitle:'Hai bisogno di una strategia di cyber hardening personalizzata?',
+      ctaSub:'Richiedi una consulenza strategica discreta per valutare la tua esposizione digitale e definire una roadmap di hardening.',
+      topoLabel:'Infrastruttura Cliente Privato — TOPOLOGIA ADVISORY',
+      featLabel:'◈ POSTURA CYBER WELLNESS',featTitle:'Advisory Cyber Strategico',
+    },
+    topoType:'vip',
+  },
+};
+
+function applySectorTheme(sector){
+  const s=SECTORS[sector];if(!s)return;
+  const sv=document.getElementById('view-sector');
+  const wasActive=sv.classList.contains('active');
+  sv.className='view';
+  sv.classList.add(s.cls);
+  if(wasActive)sv.classList.add('active');
+}
+
+function renderSectorPage(sector){
+  const s=SECTORS[sector];if(!s)return;
+  const lang=typeof currentLang!=='undefined'?currentLang:'en';
+  const t={...s[lang]||s.en};
+  const a=s.accent;
+  document.getElementById('sec-grad').style.background=`radial-gradient(ellipse at 30% 50%,${a}1e 0%,transparent 65%)`;
+  const bs=document.getElementById('sec-badge-text');
+  bs.textContent=t.badgeTxt;
+  bs.style.cssText=`font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 12px;border-radius:3px;letter-spacing:.1em;text-transform:uppercase;background:${a}1a;color:${a};border:1px solid ${a}44`;
+  document.getElementById('sec-title').innerHTML=t.title;
+  document.getElementById('sec-body').textContent=t.body;
+  document.getElementById('sec-cta1').style.background=a;
+  document.getElementById('sec-cta1').textContent=lang==='it'?'Richiedi Consulenza →':'Request Consultation →';
+  document.getElementById('sec-cta2').style.background=a;
+  document.getElementById('sec-cta2').textContent=lang==='it'?'Richiedi Consulenza':'Request Consultation';
+  document.getElementById('sec-stats').innerHTML=t.stats.map((st,i)=>`<div style="padding:8px 18px;border-left:${i>0?'1px solid '+a+'44':'none'}"><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ssub,#7a92aa);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px">${st.l}</div><div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:${a}">${st.v}</div></div>`).join('');
+  document.getElementById('sec-feat-label').textContent=t.featLabel;
+  document.getElementById('sec-feat-label').style.color=a;
+  document.getElementById('sec-feat-title').textContent=t.featTitle;
+  document.getElementById('sec-features').innerHTML=t.features.map(f=>`<div style="background:var(--scard,#101828);border:1px solid var(--sborder,#1e2d42);border-radius:4px;padding:14px 16px"><div style="font-size:18px;margin-bottom:8px">${f.i}</div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--stxt,#c8d8e8);margin-bottom:6px">${f.t}</div><p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ssub,#7a92aa);line-height:1.7">${f.d}</p></div>`).join('');
+  document.getElementById('sec-kpi-label').textContent=lang==='it'?'INDICATORI CHIAVE DI PRESTAZIONE':'KEY PERFORMANCE INDICATORS';
+  document.getElementById('sec-kpi-label').style.color=a;
+  document.getElementById('sec-kpis').innerHTML=t.kpis.map(k=>`<div style="background:var(--scard,#101828);border:1px solid var(--sborder,#1e2d42);border-radius:4px;padding:10px 14px"><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ssub,#7a92aa);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">${k.k}</div><div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:${a}">${k.v}</div></div>`).join('');
+  document.getElementById('sec-clients').innerHTML=t.clients.map(c=>`<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${a};background:${a}1a;border:1px solid ${a}44;border-radius:3px;padding:3px 10px">${c}</span>`).join('');
+  document.getElementById('sec-cta-title').textContent=t.ctaTitle;
+  document.getElementById('sec-cta-sub').textContent=t.ctaSub;
+  document.getElementById('sec-topo-label').textContent=t.topoLabel;
+  // Show encrypted datastream label only for research/healthcare sectors
+  const streamEl=document.getElementById('sec-topo-stream');
+  const streamLbl=document.getElementById('sec-topo-stream-label');
+  const streamLabels={
+    government:'[DATASTREAM: ENCRYPTED // ORVEX-RESEARCH-NODE-01]',
+    healthcare:'[DATASTREAM: CLINICAL-SEGMENTED // ORVEX-HEALTHCARE-NODE-01]',
+    vip:'[DATASTREAM: DISCREET-ENCRYPTED // ORVEX-PRIVATE-NODE-01]',
+  };
+  if(streamEl&&streamLbl){
+    const lbl=streamLabels[sector];
+    if(lbl){streamLbl.textContent=lbl;streamEl.style.display='block';}
+    else{streamEl.style.display='none';}
+  }
+  drawTopo('sec-topo-svg',s.topoType,a,310,230);
+  initSectorCanvas(a);
+}
+
+// ── Topology node/edge data ─────────────────────────────────────────────────
+const TOPO_DATA={
+  corp:{
+    nodes:[{id:'inet',x:50,y:7,l:'INTERNET',t:'cloud'},{id:'fw-edge',x:50,y:20,l:'fw-edge-01',t:'fw'},{id:'dmz-web',x:24,y:33,l:'srv-web-011',t:'srv'},{id:'dmz-mail',x:50,y:33,l:'srv-mail-01',t:'srv'},{id:'vpn',x:76,y:33,l:'vpn-gw-01',t:'gw'},{id:'fw-core',x:50,y:47,l:'fw-core-02',t:'fw'},{id:'srv-dc',x:22,y:62,l:'srv-dc-001',t:'srv'},{id:'srv-db',x:38,y:62,l:'srv-db-007',t:'srv'},{id:'srv-app',x:62,y:62,l:'srv-app-003',t:'srv'},{id:'k8s',x:78,y:62,l:'cloud-k8s',t:'cloud'},{id:'ws1',x:14,y:80,l:'ws-fin-017',t:'ep'},{id:'ws2',x:30,y:80,l:'ws-hr-042',t:'ep'},{id:'ws3',x:50,y:80,l:'ws-dev-088',t:'ep'},{id:'ws4',x:66,y:80,l:'ws-exec-004',t:'ep'},{id:'bk',x:82,y:80,l:'srv-backup',t:'srv'}],
+    edges:[['inet','fw-edge'],['fw-edge','dmz-web'],['fw-edge','dmz-mail'],['fw-edge','vpn'],['fw-edge','fw-core'],['vpn','fw-core'],['fw-core','srv-dc'],['fw-core','srv-db'],['fw-core','srv-app'],['fw-core','k8s'],['srv-dc','ws1'],['srv-dc','ws2'],['srv-app','ws3'],['srv-app','ws4'],['srv-db','bk']],
+  },
+  gov:{
+    nodes:[{id:'inet',x:50,y:7,l:'INTERNET',t:'cloud'},{id:'ngfw',x:50,y:20,l:'NGFW-CLASSIFIED',t:'fw'},{id:'dmz',x:28,y:33,l:'dmz-secure',t:'srv'},{id:'vpn',x:72,y:33,l:'vpn-classified',t:'gw'},{id:'core',x:50,y:47,l:'core-classified',t:'fw'},{id:'dc1',x:22,y:62,l:'dc-primary',t:'srv'},{id:'dc2',x:50,y:62,l:'dc-secondary',t:'srv'},{id:'scif',x:78,y:62,l:'SCIF-network',t:'cloud'},{id:'ep1',x:18,y:80,l:'classified-ws',t:'ep'},{id:'ep2',x:38,y:80,l:'analyst-ws',t:'ep'},{id:'ep3',x:58,y:80,l:'ops-terminal',t:'ep'},{id:'ep4',x:78,y:80,l:'mobile-sec',t:'ep'}],
+    edges:[['inet','ngfw'],['ngfw','dmz'],['ngfw','vpn'],['ngfw','core'],['vpn','core'],['core','dc1'],['core','dc2'],['core','scif'],['dc1','ep1'],['dc1','ep2'],['dc2','ep3'],['dc2','ep4']],
+  },
+  health:{
+    nodes:[{id:'inet',x:50,y:7,l:'INTERNET',t:'cloud'},{id:'fw',x:50,y:20,l:'fw-clinical',t:'fw'},{id:'ehr',x:22,y:33,l:'ehr-system',t:'srv'},{id:'pacs',x:50,y:33,l:'pacs-imaging',t:'srv'},{id:'vpn',x:78,y:33,l:'vpn-staff',t:'gw'},{id:'core',x:50,y:47,l:'clinical-core',t:'fw'},{id:'hl7',x:22,y:62,l:'hl7-interface',t:'srv'},{id:'db',x:42,y:62,l:'patient-db',t:'srv'},{id:'iot',x:62,y:62,l:'iomt-gw',t:'cloud'},{id:'bed',x:78,y:62,l:'bedside-mon',t:'ep'},{id:'ws1',x:18,y:80,l:'clinical-ws',t:'ep'},{id:'ws2',x:38,y:80,l:'radiology-ws',t:'ep'},{id:'ws3',x:58,y:80,l:'pharmacy-ws',t:'ep'},{id:'ws4',x:78,y:80,l:'admin-ws',t:'ep'}],
+    edges:[['inet','fw'],['fw','ehr'],['fw','pacs'],['fw','vpn'],['fw','core'],['vpn','core'],['core','hl7'],['core','db'],['core','iot'],['iot','bed'],['hl7','ws1'],['pacs','ws2'],['db','ws3'],['core','ws4']],
+  },
+  vip:{
+    nodes:[{id:'inet',x:50,y:7,l:'INTERNET',t:'cloud'},{id:'vpn',x:50,y:24,l:'private-vpn',t:'gw'},{id:'fw',x:50,y:40,l:'perimeter-fw',t:'fw'},{id:'cloud',x:22,y:56,l:'private-cloud',t:'cloud'},{id:'home',x:50,y:56,l:'home-network',t:'srv'},{id:'corp',x:78,y:56,l:'corp-network',t:'srv'},{id:'mob',x:22,y:76,l:'mobile-01',t:'ep'},{id:'lap',x:42,y:76,l:'laptop-pri',t:'ep'},{id:'tab',x:62,y:76,l:'tablet-02',t:'ep'},{id:'smh',x:82,y:76,l:'smart-home',t:'ep'}],
+    edges:[['inet','vpn'],['vpn','fw'],['fw','cloud'],['fw','home'],['fw','corp'],['home','mob'],['home','lap'],['corp','tab'],['corp','smh']],
+  },
+};
+
+function drawTopo(svgId,type,accent,W,H){
+  const svg=document.getElementById(svgId);if(!svg)return;
+  const d=TOPO_DATA[type]||TOPO_DATA.corp;
+  const nm=Object.fromEntries(d.nodes.map(n=>[n.id,n]));
+  const sel=state.events.find(e=>e.id===state.selectedId);
+  const hiHosts=sel?sel.relatedHosts:[];
+  svg.setAttribute('width',W);svg.setAttribute('height',H);
+  svg.innerHTML=
+    d.edges.map(([a,b])=>{const an=nm[a],bn=nm[b];if(!an||!bn)return'';return`<line x1="${an.x/100*W}" y1="${an.y/100*H}" x2="${bn.x/100*W}" y2="${bn.y/100*H}" stroke="#1e2d42" stroke-width=".8" opacity=".7"/>`;}).join('')+
+    d.nodes.map(n=>{const px=n.x/100*W,py=n.y/100*H;const hi=hiHosts.some(h=>n.l.startsWith(h.split('-')[0]));const nc=hi?'#e53935':n.t==='fw'?'#ef8c00':accent;return`<g><circle cx="${px}" cy="${py}" r="9" fill="#101828" stroke="${hi?'#e53935':'#1e2d42'}" stroke-width="1" ${hi?'style="filter:drop-shadow(0 0 4px #e53935)"':''}/><circle cx="${px}" cy="${py}" r="2.5" fill="${nc}" opacity=".9"/><text x="${px}" y="${py+17}" text-anchor="middle" style="font-family:monospace;font-size:6px;fill:#4a6078">${n.l}</text></g>`;}).join('');
+}
+
+function renderTopology(type){drawTopo('topo-svg',type,'#2a7fff',300,148);}
+
+// ── Metrics ─────────────────────────────────────────────────────────────────
+function updateMetrics(){
+  const open=state.events.filter(e=>!e.ack);
+  state.metrics.eventsTotal=state.events.length;
+  state.metrics.criticalOpen=open.filter(e=>e.severity==='CRITICAL').length;
+  state.metrics.highOpen=open.filter(e=>e.severity==='HIGH').length;
+  const acked=state.events.filter(e=>e.ack).length;
+  state.metrics.ackRate=state.events.length?Math.round(acked/state.events.length*100):0;
+  const g=id=>document.getElementById(id);
+  const s=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  s('m-total',state.metrics.eventsTotal);
+  s('m-crit',state.metrics.criticalOpen);
+  s('m-high',state.metrics.highOpen);
+  s('m-ack',state.metrics.ackRate+'%');
+  s('m-eps',state.metrics.ingestRate+' eps');
+  s('eps-counter',state.metrics.ingestRate+' eps');
+  s('tele-eps',state.metrics.ingestRate+' eps');
+  const badge=g('crit-badge');
+  if(badge){badge.style.display=state.metrics.criticalOpen>0?'flex':'none';s('crit-count',state.metrics.criticalOpen+' CRIT');}
+}
+
+// ── Event stream ────────────────────────────────────────────────────────────
+function fmtTs(ts){const d=new Date(ts);return[d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>n.toString().padStart(2,'0')).join(':');}
+
+function getFiltered(){
+  const q=(document.getElementById('ev-search')?.value||'').toLowerCase();
+  const sev=document.getElementById('ev-sev')?.value||'';
+  const src=document.getElementById('ev-src')?.value||'';
+  return state.events.filter(e=>{
+    if(sev&&e.severity!==sev)return false;
+    if(src&&e.source!==src)return false;
+    if(q&&![e.id,e.hostname,e.technique,e.tactic,e.srcIp,e.dstIp].some(x=>x.toLowerCase().includes(q)))return false;
+    return true;
+  });
+}
+
+function renderEventList(){
+  const list=document.getElementById('ev-list');if(!list)return;
+  const filtered=getFiltered();
+  const cntEl=document.getElementById('ev-count');
+  if(cntEl)cntEl.textContent=filtered.length+'/'+state.events.length;
+  list.innerHTML=filtered.slice(0,100).map(ev=>{
+    const sel=ev.id===state.selectedId;
+    const dot=ev.ack
+      ?'<span style="color:#4a6078;font-size:10px">✓</span>'
+      :ev.severity==='CRITICAL'
+        ?'<div class="crit-dot" style="width:5px;height:5px"></div>'
+        :`<div style="width:5px;height:5px;border-radius:50%;background:${SEV_C[ev.severity]||'#4a6078'};opacity:.7"></div>`;
+    return `<div class="ev-row${sel?' sel':''}" onclick="selectEvent('${ev.id}')">
+      <div style="display:flex;align-items:center">${dot}</div>
+      <div style="color:#4a6078">${fmtTs(ev.ts)}</div>
+      <div><span class="sev sev-${ev.severity}">${ev.severity}</span></div>
+      <div style="color:#5a8fbf">${ev.source}</div>
+      <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#c8d8e8">${ev.description}</div>
+      <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#7a92aa">${ev.technique.split(' ')[0]}</div>
+      <button style="font-size:9px;padding:2px 5px;border:1px solid ${ev.ack?'#1a5038':'#1e2d42'};border-radius:3px;color:${ev.ack?'#2eb87a':'#4a6078'};background:transparent;cursor:pointer" onclick="event.stopPropagation();ackEvent('${ev.id}')">${ev.ack?'✓':'○'}</button>
+    </div>`;
+  }).join('');
+}
+
+function selectEvent(id){state.selectedId=id;renderEventList();renderIncidentDetail(id);renderSevDist();}
+
+function ackEvent(id){
+  const ev=state.events.find(e=>e.id===id);
+  if(ev){ev.ack=true;ev.status='ACKNOWLEDGED';}
+  updateMetrics();renderEventList();renderSevDist();
+}
+
+function filterEvents(){renderEventList();}
+function resetFilters(){
+  document.getElementById('ev-search').value='';
+  document.getElementById('ev-sev').value='';
+  document.getElementById('ev-src').value='';
+  renderEventList();
+}
+
+function renderIncidentDetail(id){
+  const ev=state.events.find(e=>e.id===id);
+  const body=document.getElementById('inc-body');
+  const hd=document.getElementById('inc-hd');
+  if(!ev||!body)return;
+  hd.innerHTML=`<div style="display:flex;align-items:center;gap:8px"><span class="sev sev-${ev.severity}">${ev.severity}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8d8e8">${ev.id}</span></div><button style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border:1px solid ${ev.ack?'#1a5038':'#1e2d42'};border-radius:3px;color:${ev.ack?'#2eb87a':'#7a92aa'};background:transparent;cursor:pointer" onclick="ackEvent('${ev.id}')">${ev.ack?'✓ ACKED':'ACK'}</button>`;
+  const rows=[
+    ['Event ID',ev.id],['Timestamp',new Date(ev.ts).toLocaleString()],['Source',ev.source],
+    ['Hostname',ev.hostname],['Source IP',ev.srcIp],['Dest IP',ev.dstIp],
+    ['User',ev.user],['MITRE Tactic',ev.tactic],['Technique',ev.technique],
+    ['Cluster',ev.clusterId],['Confidence',ev.confidence+'%'],['Status',ev.status],
+  ];
+  body.innerHTML=`
+    <div style="background:#0f1623;border:1px solid #1e2d42;border-radius:4px;padding:8px 10px;margin-bottom:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#c8d8e8;line-height:1.6">${ev.description}</div>
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#7a92aa">CONFIDENCE</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${ev.confidence>80?'#e53935':ev.confidence>60?'#ef8c00':'#e6c84a'}">${ev.confidence}%</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" style="width:${ev.confidence}%;background:${ev.confidence>80?'#e53935':ev.confidence>60?'#ef8c00':'#e6c84a'}"></div></div>
+    </div>
+    <table style="width:100%;border-collapse:collapse">
+      ${rows.map(([k,v])=>`<tr style="border-bottom:1px solid #1e2d42"><td style="padding:4px 0;font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.06em;width:42%;vertical-align:top">${k}</td><td style="padding:4px 0;font-family:'JetBrains Mono',monospace;font-size:10px;color:#c8d8e8;word-break:break-all;vertical-align:top">${v}</td></tr>`).join('')}
+    </table>
+    <div style="margin-top:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#7a92aa;margin-bottom:5px">CORRELATED ENDPOINTS</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">${ev.relatedHosts.map(h=>`<span class="tag" style="font-size:9px">${h}</span>`).join('')}</div>
+    </div>`;
+}
+
+function renderSevDist(){
+  const el=document.getElementById('sev-dist');if(!el)return;
+  const counts={CRITICAL:0,HIGH:0,MEDIUM:0,LOW:0,INFO:0};
+  state.events.forEach(e=>counts[e.severity]=(counts[e.severity]||0)+1);
+  const total=state.events.length||1;
+  el.innerHTML=Object.entries(counts).map(([sev,cnt])=>`
+    <div style="margin-bottom:5px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:${SEV_C[sev]}">${sev}</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#7a92aa">${cnt}</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" style="width:${(cnt/total*100).toFixed(1)}%;background:${SEV_C[sev]}"></div></div>
+    </div>`).join('');
+}
+
+// ── MITRE ATT&CK Heatmap ──────────────────────────────────────────────────
+const MITRE_TACTICS=[
+  {id:'TA0001',label:'Initial Access',   short:'INIT'},
+  {id:'TA0002',label:'Execution',        short:'EXEC'},
+  {id:'TA0003',label:'Persistence',      short:'PERS'},
+  {id:'TA0004',label:'Priv Escalation',  short:'PRIV'},
+  {id:'TA0005',label:'Defense Evasion',  short:'EVAN'},
+  {id:'TA0006',label:'Cred Access',      short:'CRED'},
+  {id:'TA0007',label:'Discovery',        short:'DISC'},
+  {id:'TA0008',label:'Lateral Move',     short:'LAT'},
+  {id:'TA0009',label:'Collection',       short:'COLL'},
+  {id:'TA0010',label:'Exfiltration',     short:'EXFL'},
+  {id:'TA0011',label:'C2',               short:'C2'},
+  {id:'TA0040',label:'Impact',           short:'IMPT'},
+];
+
+function getMitreHeat(){
+  // Count events per tactic from last 24h window
+  const cutoff=Date.now()-86400000;
+  const counts={};
+  MITRE_TACTICS.forEach(t=>counts[t.label]=0);
+  state.events.filter(e=>e.ts>=cutoff).forEach(e=>{
+    if(counts[e.tactic]!==undefined)counts[e.tactic]++;
+  });
+  return counts;
+}
+
+function heatColor(val,max){
+  if(max===0||val===0)return{bg:'#0c1623',border:'#1e2d42',text:'#2a3a52'};
+  const pct=val/max;
+  if(pct>=.75)return{bg:'rgba(229,57,53,.22)',border:'rgba(229,57,53,.55)',text:'#e53935'};
+  if(pct>=.50)return{bg:'rgba(239,140,0,.18)',border:'rgba(239,140,0,.45)',text:'#ef8c00'};
+  if(pct>=.25)return{bg:'rgba(230,200,74,.14)',border:'rgba(230,200,74,.4)',text:'#e6c84a'};
+  return{bg:'rgba(42,127,255,.12)',border:'rgba(42,127,255,.35)',text:'#2a7fff'};
+}
+
+function renderMitreHeatmap(){
+  const el=document.getElementById('mitre-heatmap');if(!el)return;
+  const counts=getMitreHeat();
+  const max=Math.max(...Object.values(counts),1);
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:6px">
+      ${MITRE_TACTICS.map(t=>{
+        const v=counts[t.label]||0;
+        const c=heatColor(v,max);
+        return`<div title="${t.label}: ${v} events" style="background:${c.bg};border:1px solid ${c.border};border-radius:3px;padding:3px 5px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:7px;font-weight:700;color:${c.text};letter-spacing:.04em">${t.short}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;color:${c.text}">${v}</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" style="width:${max>0?(v/max*100).toFixed(0):0}%;background:${c.text};opacity:.7"></div></div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078;text-transform:uppercase;letter-spacing:.06em">HEAT:</span>
+      ${[['HIGH','rgba(229,57,53,.22)','rgba(229,57,53,.55)','#e53935'],
+         ['MED', 'rgba(239,140,0,.18)','rgba(239,140,0,.45)','#ef8c00'],
+         ['LOW', 'rgba(42,127,255,.12)','rgba(42,127,255,.35)','#2a7fff'],
+         ['NONE','#0c1623',            '#1e2d42',              '#2a3a52']
+        ].map(([l,bg,bd])=>`
+        <div style="display:flex;align-items:center;gap:3px">
+          <div style="width:8px;height:8px;background:${bg};border:1px solid ${bd};border-radius:2px"></div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078">${l}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ── Platform tabs ────────────────────────────────────────────────────────────
+const PLAT=[
+  {label:'AI Threat Detection',metrics:[
+    {k:'Detection Accuracy',  v:'Industry-Leading', c:'#2eb87a'},
+    {k:'MITRE ATT&CK Coverage',v:'Full Framework',  c:'#2a7fff'},
+    {k:'Response Latency',    v:'Sub-Second',       c:'#00b8d9'},
+    {k:'False Positive Rate', v:'Minimized',        c:'#2eb87a'},
+  ],desc:'Real-time AI-driven behavioral analysis engine processing endpoint, network, and cloud telemetry. Full MITRE ATT&CK framework coverage with continuous model refinement against emerging threat actors.'},
+  {label:'Vulnerability Scanner',metrics:[
+    {k:'Asset Coverage',      v:'Unlimited',        c:'#2a7fff'},
+    {k:'CVE Intelligence',    v:'Continuously Updated', c:'#00b8d9'},
+    {k:'Scan Cadence',        v:'Continuous',       c:'#2eb87a'},
+    {k:'Patch SLA Tracking',  v:'Automated',        c:'#2eb87a'},
+  ],desc:'Continuous attack surface enumeration across all connected assets. CVE prioritization using EPSS scoring, exploitability context, and business impact weighting — tuned to your environment.'},
+  {label:'Digital Forensics',metrics:[
+    {k:'Evidence Integrity',  v:'Court-Admissible', c:'#2eb87a'},
+    {k:'Malware Analysis',    v:'Deep Inspection',  c:'#00b8d9'},
+    {k:'Chain of Custody',    v:'Fully Enforced',   c:'#2eb87a'},
+    {k:'Memory Forensics',    v:'Supported',        c:'#2a7fff'},
+  ],desc:'Court-admissible digital evidence collection with full chain of custody enforcement. Automated process tree capture, memory forensics, and malware reverse engineering — legally defensible in any jurisdiction.'},
+  {label:'Live Monitoring',metrics:[
+    {k:'Endpoint Coverage',   v:'Unlimited',        c:'#2a7fff'},
+    {k:'Log Ingestion',       v:'Petabyte-Scale',   c:'#00b8d9'},
+    {k:'Automation Playbooks',v:'500+',             c:'#2eb87a'},
+    {k:'SIEM Integrations',   v:'Major Platforms',  c:'#2a7fff'},
+  ],desc:'Enterprise-scale SOC monitoring with native SIEM integrations. Automated playbook execution dramatically reduces analyst workload on Tier-1 events, freeing your team for high-value investigations.'},
+];
+
+function setPlatTab(i){
+  document.querySelectorAll('.plat-tab').forEach((b,j)=>{if(j===i)b.classList.add('active');else b.classList.remove('active');});
+  renderPlatformContent(i);
+}
+
+function renderPlatformContent(i){
+  const t=PLAT[i];if(!t)return;
+  document.getElementById('plat-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+      ${t.metrics.map(m=>`<div class="glass" style="padding:12px 14px"><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">${m.k}</div><div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:${m.c}">${m.v}</div></div>`).join('')}
+    </div>
+    <div class="glass" style="padding:16px 20px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em">MODULE DESCRIPTION</div>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#c8d8e8;line-height:1.75">${t.desc}</p>
+    </div>`;
+}
+
+// ── AI log ───────────────────────────────────────────────────────────────────
+const AI_LOG=[];
+function addAIMsg(msg){
+  AI_LOG.unshift({ts:Date.now(),msg});
+  if(AI_LOG.length>60)AI_LOG.pop();
+  const log=document.getElementById('ai-log');if(!log)return;
+  log.innerHTML=AI_LOG.slice(0,30).map((m,i)=>`
+    <div style="display:flex;gap:8px;margin-bottom:4px;padding-bottom:4px;border-bottom:1px solid #1e2d42;opacity:${i===0?1:.7}">
+      <span style="color:#4a6078;flex-shrink:0">${fmtTs(m.ts)}</span>
+      <span style="color:#2a7fff;flex-shrink:0">AI»</span>
+      <span style="line-height:1.5;color:${i===0?'#c8d8e8':'#7a92aa'}">${m.msg}</span>
+    </div>`).join('');
+}
+
+// ── Telemetry canvas ─────────────────────────────────────────────────────────
+const teleSeries=Array.from({length:60},()=>Math.floor(600+Math.random()*400));
+function updateTele(){
+  teleSeries.shift();
+  teleSeries.push(Math.floor(600+Math.random()*400+(state.metrics.criticalOpen>0?200:0)));
+  const c=document.getElementById('tele-canvas');if(!c)return;
+  const ctx=c.getContext('2d'),W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const max=Math.max(...teleSeries);
+  const pts=teleSeries.map((v,i)=>({x:(i/(teleSeries.length-1))*W,y:H-(v/max)*H*.9-2}));
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle='#2a7fff';ctx.lineWidth=1.2;ctx.globalAlpha=.7;ctx.stroke();
+  ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+  ctx.fillStyle='#2a7fff';ctx.globalAlpha=.06;ctx.fill();
+  ctx.globalAlpha=1;
+}
+
+// ── Modal system ─────────────────────────────────────────────────────────────
+const MODAL_CFGS={
+  demo:{
+    badge:'REQUEST DEMO',title:'Schedule a Live Platform Demo',
+    fields:[
+      {id:'fn',label:'Full Name',type:'text',ph:'Jane Smith',req:true},
+      {id:'em',label:'Work Email',type:'email',ph:'jane@enterprise.com',req:true},
+      {id:'co',label:'Organisation',type:'text',ph:'Acme Corp',req:true},
+      {id:'ro',label:'Your Role',type:'text',ph:'CISO / VP Security',req:false},
+      {id:'ep',label:'Estimated Endpoints',type:'select',opts:['<500','500–2,000','2,000–10,000','10,000+','100,000+'],req:true},
+      {id:'ne',label:'Primary Security Need',type:'select',opts:['Threat Detection','Vulnerability Management','Digital Forensics','SOC Monitoring','All of the above'],req:true},
+      {id:'ms',label:'Environment Notes',type:'textarea',ph:'Infrastructure context, current tooling, specific challenges…',req:false},
+    ],
+    submit:'Request Consultation',
+  },
+  platform:{
+    badge:'ACCESS PLATFORM',title:'Request Platform Access',
+    fields:[
+      {id:'fn',label:'Full Name',type:'text',ph:'Jane Smith',req:true},
+      {id:'em',label:'Work Email',type:'email',ph:'jane@enterprise.com',req:true},
+      {id:'co',label:'Organisation',type:'text',ph:'Acme Corp',req:true},
+      {id:'ep',label:'Estimated Endpoints',type:'select',opts:['<500','500–2,000','2,000–10,000','10,000+'],req:true},
+      {id:'tl',label:'Deployment Timeline',type:'select',opts:['Immediate','Within 1 month','1–3 months','Evaluating options'],req:false},
+    ],
+    submit:'Request Access',
+  },
+  contact:{
+    badge:'CONTACT SALES',title:'Talk to Our Team',
+    fields:[
+      {id:'fn',label:'Full Name',type:'text',ph:'Jane Smith',req:true},
+      {id:'em',label:'Work Email',type:'email',ph:'jane@enterprise.com',req:true},
+      {id:'co',label:'Organisation',type:'text',ph:'Acme Corp',req:true},
+      {id:'ind',label:'Industry Vertical',type:'select',opts:['Finance / Banking','Government / Defence','Healthcare','Critical Infrastructure','Technology','Other'],req:true},
+      {id:'svc',label:'Service Required',type:'select',opts:['Incident Response','Digital Forensics','Security Audit','Risk Analysis','Security Architecture','Threat Intelligence','Multiple Services'],req:true},
+      {id:'ms',label:'Engagement Context',type:'textarea',ph:'Current incident, audit scope, risk profile, or questions…',req:false},
+    ],
+    submit:'Submit to Professional Services',
+  },
+};
+
+function openModal(type){
+  const cfg=MODAL_CFGS[type];if(!cfg)return;
+  document.getElementById('modal-badge').textContent=cfg.badge;
+  document.getElementById('modal-title').textContent=cfg.title;
+  document.getElementById('modal-body').innerHTML=`
+    <form onsubmit="submitModal(event)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${cfg.fields.map(f=>`
+          <div style="grid-column:${f.type==='textarea'?'1/-1':'auto'}">
+            <label class="field-label">${f.label}${f.req?'<span style="color:#2a7fff"> *</span>':''}</label>
+            ${f.type==='select'
+              ?`<select class="field" style="width:100%">${[''].concat(f.opts).map((o,i)=>`<option value="${o}" ${i===0?'disabled selected':''}>${i===0?'Select…':o}</option>`).join('')}</select>`
+              :f.type==='textarea'
+                ?`<textarea class="field" placeholder="${f.ph}" rows="3" style="resize:vertical;width:100%"></textarea>`
+                :`<input class="field" type="${f.type}" placeholder="${f.ph}" ${f.req?'required':''}>`
+            }
+          </div>`).join('')}
+      </div>
+      <button type="submit" class="btn-pri" style="width:100%;justify-content:center;margin-top:14px">${cfg.submit}</button>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a6078;text-align:center;margin-top:10px">By submitting you agree to our Privacy Policy. We never share your data.</p>
+    </form>`;
+  document.getElementById('modal-overlay').style.display='flex';
+}
+
+function submitModal(e){
+  e.preventDefault();
+  document.getElementById('modal-body').innerHTML=`
+    <div style="text-align:center;padding:28px 0">
+      <div style="width:56px;height:56px;border-radius:50%;border:2px solid #2eb87a;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:#2eb87a">✓</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8;margin-bottom:6px">Submission Received</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa;line-height:1.6">A member of our team will contact you<br>within 2 business hours.</div>
+      <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#2a7fff">contact@orvexintelligence.com</div>
+      <button class="btn-ghost" style="margin-top:16px" onclick="closeModal()">Close</button>
+    </div>`;
+}
+
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+function closeModalIfOverlay(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+// ── Toast notifications ──────────────────────────────────────────────────────
+function showToast(title,msg,sev){
+  const tc=document.getElementById('toasts');
+  const d=document.createElement('div');
+  const c=sev==='CRITICAL'?'#e53935':sev==='HIGH'?'#ef8c00':'#2a7fff';
+  d.style.cssText=`background:#101828;border:1px solid ${c}44;border-radius:5px;padding:9px 12px;display:flex;gap:10px;align-items:flex-start;pointer-events:auto;animation:fade-in .3s both;max-width:320px`;
+  d.innerHTML=`<div style="width:5px;height:5px;border-radius:50%;background:${c};margin-top:4px;flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#c8d8e8;margin-bottom:2px">${title}</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#7a92aa">${msg}</div></div><button style="color:#4a6078;font-size:12px;flex-shrink:0;background:none;border:none;cursor:pointer" onclick="this.parentElement.remove()">✕</button>`;
+  tc.appendChild(d);
+  setTimeout(()=>d.remove(),6000);
+}
+
+// ── Three.js: Landing hero canvas ────────────────────────────────────────────
+function initHeroCanvas(){
+  const canvas=document.getElementById('hero-canvas');
+  if(!canvas||!window.THREE)return;
+  const mobile=window.innerWidth<768;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:!mobile,alpha:true,powerPreference:'high-performance'});
+  const W=()=>canvas.offsetWidth||window.innerWidth;
+  const H=()=>canvas.offsetHeight||window.innerHeight;
+  renderer.setSize(W(),H());
+  renderer.setPixelRatio(mobile?1:Math.min(window.devicePixelRatio,2));
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60,W()/H(),.1,500);
+  camera.position.set(0,0,18);
+
+  // Grid plane
+  const grid=new THREE.Mesh(
+    new THREE.PlaneGeometry(80,80,mobile?20:40,mobile?20:40),
+    new THREE.MeshBasicMaterial({color:0x2a7fff,wireframe:true,transparent:true,opacity:.05})
+  );
+  grid.rotation.x=-Math.PI/2;grid.position.y=-8;scene.add(grid);
+
+  // Core sphere removed for text legibility — only orbital rings and particles retained
+
+  // Orbital rings
+  const rings=[2.4,3.5,5.0].map((r,i)=>{
+    const m=new THREE.Mesh(
+      new THREE.TorusGeometry(r,.012,8,80),
+      new THREE.MeshBasicMaterial({color:i===0?0x2a7fff:0x1a3a7a,transparent:true,opacity:.36-i*.07})
+    );
+    m.rotation.x=Math.PI/3*i;m.rotation.y=Math.PI/5*i;scene.add(m);return m;
+  });
+
+  // Floating nodes
+  const nodes=Array.from({length:mobile?12:26},()=>{
+    const theta=Math.random()*Math.PI*2,phi=Math.random()*Math.PI,r=4+Math.random()*6;
+    const m=new THREE.Mesh(
+      new THREE.SphereGeometry(.1,10,10),
+      new THREE.MeshBasicMaterial({color:0x2a7fff})
+    );
+    m.position.set(r*Math.sin(phi)*Math.cos(theta),(Math.random()-.5)*10,r*Math.sin(phi)*Math.sin(theta));
+    m.userData={oy:m.position.y,speed:.002+Math.random()*.003,phase:Math.random()*Math.PI*2,vx:0};
+    scene.add(m);return m;
+  });
+
+  // Particle field
+  const pc=mobile?100:360;
+  const pp=new Float32Array(pc*3);
+  for(let i=0;i<pc;i++){pp[i*3]=(Math.random()-.5)*60;pp[i*3+1]=(Math.random()-.5)*40;pp[i*3+2]=(Math.random()-.5)*40;}
+  const ptG=new THREE.BufferGeometry();
+  ptG.setAttribute('position',new THREE.BufferAttribute(pp,3));
+  scene.add(new THREE.Points(ptG,new THREE.PointsMaterial({color:0x2a7fff,size:mobile?.04:.06,transparent:true,opacity:.3})));
+
+  const mouse={x:0,y:0};
+  const mPlane=new THREE.Plane(new THREE.Vector3(0,0,1),0);
+  const mWorld=new THREE.Vector3();
+  const raycaster=new THREE.Raycaster();
+
+  if(!mobile){
+    window.addEventListener('mousemove',e=>{
+      mouse.x=(e.clientX/window.innerWidth-.5)*2;
+      mouse.y=-(e.clientY/window.innerHeight-.5)*2;
+    });
+  }
+
+  let fr,t=0;
+  function tick(){
+    fr=requestAnimationFrame(tick);t+=.01;
+    rings[0].rotation.z+=.004;rings[1].rotation.x+=.003;rings[2].rotation.y+=.005;
+    // core sphere removed — no rotation needed
+    if(!mobile){
+      raycaster.setFromCamera(new THREE.Vector2(mouse.x,mouse.y),camera);
+      raycaster.ray.intersectPlane(mPlane,mWorld);
+    }
+    nodes.forEach(n=>{
+      n.position.y=n.userData.oy+Math.sin(t*n.userData.speed*60+n.userData.phase)*.08;
+      if(!mobile){
+        const dx=n.position.x-mWorld.x,dy=n.position.y-mWorld.y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<4.5&&dist>.01){const f=(4.5-dist)/4.5;n.userData.vx+=(dx/dist)*f*.04;}
+        n.userData.vx+=(0-n.userData.vx)*.12;
+        n.position.x+=n.userData.vx;
+      }
+    });
+    camera.position.x+=(mouse.x*1.8-camera.position.x)*.03;
+    camera.position.y+=(mouse.y*.9-camera.position.y)*.03;
+    camera.lookAt(0,0,0);
+    if(state.activeView==='landing')renderer.render(scene,camera);
+    else cancelAnimationFrame(fr);
+  }
+
+  // Restart when landing view becomes active
+  new MutationObserver(()=>{
+    if(document.getElementById('view-landing').classList.contains('active')){
+      cancelAnimationFrame(fr);tick();
+    }
+  }).observe(document.getElementById('view-landing'),{attributes:true,attributeFilter:['class']});
+
+  tick();
+
+  window.addEventListener('resize',()=>{
+    renderer.setSize(W(),H());
+    camera.aspect=W()/H();
+    camera.updateProjectionMatrix();
+  });
+}
+
+// ── Three.js: Sector canvas ──────────────────────────────────────────────────
+let secRenderer=null,secFrame=null;
+function initSectorCanvas(accentHex){
+  if(secFrame)cancelAnimationFrame(secFrame);
+  if(secRenderer){secRenderer.dispose();}
+
+  const canvas=document.getElementById('sector-canvas');
+  if(!canvas||!window.THREE)return;
+  const mobile=window.innerWidth<768;
+  const col=parseInt(accentHex.replace('#',''),16);
+
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:!mobile,alpha:true,powerPreference:'high-performance'});
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setPixelRatio(mobile?1:Math.min(window.devicePixelRatio,2));
+  secRenderer=renderer;
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,.1,500);
+  camera.position.set(0,0,18);
+
+  const grid=new THREE.Mesh(
+    new THREE.PlaneGeometry(60,60,mobile?18:30,mobile?18:30),
+    new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true,opacity:.04})
+  );
+  grid.rotation.x=-Math.PI/2;grid.position.y=-8;scene.add(grid);
+
+  // Core sphere removed for text legibility in sector views
+
+  const rings=[2.2,3.4,4.8].map((r,i)=>{
+    const m=new THREE.Mesh(
+      new THREE.TorusGeometry(r,.012,8,80),
+      new THREE.MeshBasicMaterial({color:i===0?col:0x334466,transparent:true,opacity:.32-i*.07})
+    );
+    m.rotation.x=Math.PI/3*i;m.rotation.y=Math.PI/5*i;scene.add(m);return m;
+  });
+
+  const nodes=Array.from({length:mobile?10:20},()=>{
+    const theta=Math.random()*Math.PI*2,phi=Math.random()*Math.PI,r=3.5+Math.random()*5;
+    const m=new THREE.Mesh(
+      new THREE.SphereGeometry(.1,10,10),
+      new THREE.MeshBasicMaterial({color:col})
+    );
+    m.position.set(r*Math.sin(phi)*Math.cos(theta),(Math.random()-.5)*9,r*Math.sin(phi)*Math.sin(theta));
+    m.userData={oy:m.position.y,speed:.002+Math.random()*.003,phase:Math.random()*Math.PI*2};
+    scene.add(m);return m;
+  });
+
+  const pc=mobile?80:260;
+  const pp=new Float32Array(pc*3);
+  for(let i=0;i<pc;i++){pp[i*3]=(Math.random()-.5)*50;pp[i*3+1]=(Math.random()-.5)*35;pp[i*3+2]=(Math.random()-.5)*35;}
+  const ptG=new THREE.BufferGeometry();
+  ptG.setAttribute('position',new THREE.BufferAttribute(pp,3));
+  scene.add(new THREE.Points(ptG,new THREE.PointsMaterial({color:col,size:mobile?.04:.05,transparent:true,opacity:.25})));
+
+  const mouse={x:0,y:0};
+  if(!mobile){
+    window.addEventListener('mousemove',e=>{
+      mouse.x=(e.clientX/window.innerWidth-.5)*2;
+      mouse.y=-(e.clientY/window.innerHeight-.5)*2;
+    });
+  }
+
+  let t=0;
+  function tick(){
+    secFrame=requestAnimationFrame(tick);t+=.01;
+    rings[0].rotation.z+=.004;rings[1].rotation.x+=.003;rings[2].rotation.y+=.005;
+    // core sphere removed
+    nodes.forEach(n=>{n.position.y=n.userData.oy+Math.sin(t*n.userData.speed*60+n.userData.phase)*.07;});
+    camera.position.x+=(mouse.x*1.6-camera.position.x)*.03;
+    camera.position.y+=(mouse.y*.8-camera.position.y)*.03;
+    camera.lookAt(0,0,0);
+    if(state.activeView.startsWith('sector/'))renderer.render(scene,camera);
+    else cancelAnimationFrame(secFrame);
+  }
+  tick();
+}
+
+// ── Live simulation ───────────────────────────────────────────────────────────
+const AI_TEMPLATES=[
+  e=>`IOC enrichment complete for ${e.hostname}. ${e.technique.split(' ')[0]} — confidence ${e.confidence}%.`,
+  e=>`Behavioral anomaly correlation in progress. Cluster ${e.clusterId} updated with new indicators.`,
+  e=>`Risk score recalculated for ${e.hostname}. Severity: ${e.severity}. Tactic: ${e.tactic}.`,
+  e=>`MITRE mapping applied — ${e.technique}. Lateral spread risk: ${rndInt(2,8)} related hosts.`,
+  ()=>`Baseline recalibration in progress. Noise floor adjusted for current ingest volume.`,
+  ()=>`Ingestion pipeline health: nominal. Buffer utilization: ${rndInt(28,68)}%.`,
+  ()=>`Threat feed synchronization complete. ${rndInt(1200,4800)} new IOCs ingested from external feeds.`,
+  ()=>`Playbook execution triggered. Automated triage running for ${rndInt(2,6)} queued events.`,
+];
+
+function scheduleNextEvent(){
+  const delay=2000+Math.random()*6000;
+  setTimeout(()=>{
+    const ev=mkEvent();
+    state.events.unshift(ev);
+    if(state.events.length>200)state.events.pop();
+
+    const tmpl=AI_TEMPLATES[Math.floor(Math.random()*AI_TEMPLATES.length)];
+    try{addAIMsg(tmpl(ev));}catch(_e){addAIMsg(`Pipeline status nominal. Buffer utilization: ${rndInt(28,68)}%.`);}
+
+    if(ev.severity==='CRITICAL'||ev.severity==='HIGH'){
+      showToast(`${ev.severity} — ${ev.tactic}`,`${ev.hostname}: ${ev.technique.split(' ')[0]}`,ev.severity);
+    }
+
+    // ~60% chance to generate an IOC for any new event
+    if(Math.random()<.6){
+      threatLog.unshift(genIOC(ev));
+      if(threatLog.length>40)threatLog.pop();
+    }
+
+    state.metrics.ingestRate=Math.max(600,state.metrics.ingestRate+rndInt(-30,40));
+    updateMetrics();
+
+    if(state.activeView==='soc'){
+      renderEventList();renderSevDist();renderMitreHeatmap();renderTopHosts();renderThreatFeed();
+    }
+    updateTele();
+    scheduleNextEvent();
+  },delay);
+}
+
+// ── Platform Live Terminal ────────────────────────────────────────────────
+const PLAT_TERM_LINES={
+  0:[
+    ()=>`[${ts()}] RULE_MATCH  T1059.001 — PowerShell encoded cmd on ${rnd(HOSTS)} | score=${rndInt(72,99)}%`,
+    ()=>`[${ts()}] BEHAVIORAL  Anomalous parent-child proc tree: explorer.exe → cmd.exe → powershell.exe`,
+    ()=>`[${ts()}] INGEST      Endpoint telemetry: ${rndInt(800,1400)} eps | queue_depth=${rndInt(0,12)}`,
+    ()=>`[${ts()}] ML_SCORE    ${rnd(HOSTS)}: lateral_move_probability=0.${rndInt(70,97)} → ESCALATE`,
+    ()=>`[${ts()}] IOC_HIT     Hash match: ${Array.from({length:8},()=>rndInt(0,255).toString(16).padStart(2,'0')).join('')} → Emotet v5`,
+    ()=>`[${ts()}] CLUSTER     Correlated ${rndInt(3,9)} events → cluster CL-${String.fromCharCode(65+rndInt(0,7))}-${rndInt(10,99)}`,
+    ()=>`[${ts()}] SUPPRESS    ${rndInt(12,80)} low-noise events suppressed by baseline model`,
+    ()=>`[${ts()}] FEED_SYNC   AlienVault OTX: +${rndInt(200,800)} IOCs ingested`,
+  ],
+  1:[
+    ()=>`[${ts()}] SCAN_START  ${rnd(HOSTS)} — full port sweep initiated (${rndInt(65000,65535)} ports)`,
+    ()=>`[${ts()}] CVE_FOUND   ${rnd(HOSTS)}: CVE-${rndInt(2021,2025)}-${rndInt(1000,59999)} CVSS=${(rndInt(55,100)/10).toFixed(1)} → PATCH_NOW`,
+    ()=>`[${ts()}] EPSS_CALC   Exploitation probability: ${(rndInt(1,89)/100).toFixed(3)} | priority=P${rndInt(1,3)}`,
+    ()=>`[${ts()}] ASSET_INV   ${rndInt(14000,15000)} assets enumerated | ${rndInt(120,400)} exposed services`,
+    ()=>`[${ts()}] PATCH_SLA   ${rndInt(3,28)} assets breaching 30-day patch SLA → alert dispatched`,
+    ()=>`[${ts()}] DELTA_SCAN  ${rndInt(1,12)} new services detected on ${rnd(HOSTS)} since last scan`,
+    ()=>`[${ts()}] VULN_CLOSE  ${rnd(HOSTS)}: CVE-${rndInt(2020,2024)}-${rndInt(1000,9999)} → remediated ✓`,
+    ()=>`[${ts()}] COMPLIANCE  PCI-DSS scan: ${rndInt(94,99)}.${rndInt(0,9)}% controls passing`,
+  ],
+  2:[
+    ()=>`[${ts()}] MEM_ACQ     ${rnd(HOSTS)}: 32GB RAM acquired | integrity=SHA256:verified ✓`,
+    ()=>`[${ts()}] PROC_TREE   Suspicious chain: svchost.exe → mshta.exe → wscript.exe → network`,
+    ()=>`[${ts()}] ARTIFACT    Prefetch: C:\\Users\\${rnd(USERS)}\\AppData\\Temp\\${rndInt(1000,9999)}.exe`,
+    ()=>`[${ts()}] YARA_HIT    Rule: APT29_Cozy_Bear_loader — match on ${rnd(HOSTS)} memory region`,
+    ()=>`[${ts()}] TIMELINE    ${rndInt(400,2000)} filesystem events reconstructed | window: last 72h`,
+    ()=>`[${ts()}] HASH_CHECK  ${Array.from({length:8},()=>rndInt(0,255).toString(16).padStart(2,'0')).join('')} → VT: ${rndInt(18,64)}/72 engines`,
+    ()=>`[${ts()}] CUSTODY     Evidence sealed | case_id=FOR-${rndInt(1000,9999)} | hold=true`,
+    ()=>`[${ts()}] PCAP_PARSE  ${rndInt(10,80)}MB capture decoded | suspicious flows: ${rndInt(1,12)}`,
+  ],
+  3:[
+    ()=>`[${ts()}] PLAYBOOK    PB-${rndInt(100,500)} triggered: auto-isolate ${rnd(HOSTS)} → SUCCESS`,
+    ()=>`[${ts()}] SIEM_SYNC   Splunk HEC: ${rndInt(800,1400)} events/s | buffer_lag=${rndInt(0,200)}ms`,
+    ()=>`[${ts()}] ALERT_TIER  ${rndInt(2,8)} Tier-1 events auto-closed by ML triage engine`,
+    ()=>`[${ts()}] DASHBOARD   ${rndInt(12,40)} analysts active | mean_ack_time=${rndInt(2,12)}m${rndInt(10,59)}s`,
+    ()=>`[${ts()}] CLOUD_CHK   AWS GuardDuty: ${rndInt(0,3)} HIGH findings | S3 exposure: none`,
+    ()=>`[${ts()}] NET_FLOW    ${rndInt(2,8)}GB anomalous egress from ${rnd(HOSTS)} → quarantine triggered`,
+    ()=>`[${ts()}] UPTIME      SOC platform: 99.${rndInt(90,99)}% | last_incident=${rndInt(14,90)}d ago`,
+    ()=>`[${ts()}] REPORT      Weekly brief generated: ${rndInt(3,12)} critical, ${rndInt(8,30)} high`,
+  ],
+};
+function ts(){const d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>x.toString().padStart(2,'0')).join(':');}
+const platTermLog=[];let platTermTimer=null;
+function platTermWrite(line,color){
+  platTermLog.push({line,color:color||'#2eb87a'});
+  if(platTermLog.length>120)platTermLog.shift();
+  const el=document.getElementById('plat-terminal');if(!el)return;
+  el.innerHTML=platTermLog.slice(-60).map(e=>`<div style="color:${e.color};white-space:pre">${e.line}</div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function startPlatTerminal(tabIdx){
+  if(platTermTimer)clearInterval(platTermTimer);
+  const pool=PLAT_TERM_LINES[tabIdx]||PLAT_TERM_LINES[0];
+  const labels=['AI-DETECT','VULN-SCAN','FORENSICS','LIVE-MON'];
+  const cols=['#2eb87a','#ef8c00','#00b8d9','#2a7fff'];
+  const tabNames=['AI THREAT DETECTION','VULNERABILITY SCANNER','DIGITAL FORENSICS','LIVE MONITORING'];
+  const col=cols[tabIdx]||'#2eb87a';
+  const lbl=document.getElementById('plat-term-label');
+  if(lbl)lbl.textContent=(tabNames[tabIdx]||'MODULE')+' — ACTIVE';
+  const titleEl=document.getElementById('plat-term-title');
+  if(titleEl)titleEl.textContent=`orvex@engine:~$ ./run_module --live --module=${labels[tabIdx].toLowerCase()}`;
+  platTermWrite(`[${ts()}] MODULE     ${labels[tabIdx]} engine initializing…`,'#4a6078');
+  platTermWrite(`[${ts()}] LOAD       Rules: ${rndInt(12000,15000)} | Model v${rndInt(3,5)}.${rndInt(0,9)}.${rndInt(0,9)}`,col);
+  platTermWrite(`[${ts()}] STATUS     Pipeline ACTIVE | workers=${rndInt(4,16)} | queue=CLEAR`,col);
+  platTermWrite(`────────────────────────────────────────────────────`,'#1e2d42');
+  platTermTimer=setInterval(()=>{
+    if(state.activeView!=='platform')return;
+    const rawLine=pool[Math.floor(Math.random()*pool.length)]();
+    let lineCol=col;
+    if(/CVE_FOUND|YARA_HIT|ML_SCORE|ESCALATE/.test(rawLine))lineCol='#e53935';
+    else if(/PATCH_SLA|quarantine|ESCALATE/.test(rawLine))lineCol='#ef8c00';
+    else if(/✓|remediated|SUCCESS/.test(rawLine))lineCol='#2eb87a';
+    else if(/INGEST|SYNC|DASHBOARD|UPTIME/.test(rawLine))lineCol='#7a92aa';
+    platTermWrite(rawLine,lineCol);
+  },800+Math.random()*700);
+}
+const _origSetPlatTab=setPlatTab;
+setPlatTab=function(i){_origSetPlatTab(i);startPlatTerminal(i);};
+
+// ── i18n Translation Engine ────────────────────────────────────────────────
+// ── i18n Translation Engine ────────────────────────────────────────────────
+const TRANSLATIONS={
+  en:{
+    // ── Navigation ──
+    nav_overview:'Overview', nav_soc:'SOC Operations', nav_platform:'Platform',
+    nav_services:'Services', nav_sectors:'Sectors ▾', nav_sector_label:'SECTOR:',
+    nav_enterprise:'🏢 Enterprise', nav_government:'🔬 Research',
+    nav_healthcare:'🏥 Healthcare', nav_vip:'◆ VIP',
+    // ── Hero ──
+    hero_sub:'Cyber Intelligence Software &amp; Enterprise Security Consulting',
+    hero_body:'Advanced cybersecurity platform and expert consulting for enterprise, government, healthcare, and private sector clients. AI-powered detection, real-time monitoring, and seasoned incident response — unified.',
+    // ── Buttons ──
+    btn_demo:'Request Consultation →', btn_soc:'Enter SOC Platform', btn_contact:'Request Consultation',
+    btn_request_eng:'Request Engagement', btn_activate_ir:'Activate Emergency Protocol',
+    btn_whatsapp:'Canale di Emergenza Criptato', btn_consultation:'Request Consultation',
+    // ── Landing ──
+    cap_label:'◈ CORE PLATFORM CAPABILITIES', cap_title:'Enterprise Security Suite',
+    cap_ai_title:'AI Threat Detection',
+    cap_ai_desc:'Real-time behavioral analysis engine processing endpoint, network, and cloud telemetry against 14,220 MITRE-mapped rules.',
+    cap_vuln_title:'Vulnerability Scanner',
+    cap_vuln_desc:'Continuous CVE enumeration across all assets with EPSS-weighted prioritization and automated patch SLA tracking.',
+    cap_df_title:'Digital Forensics',
+    cap_df_desc:'Court-admissible investigations with memory forensics, malware RE, and full chain-of-custody enforcement.',
+    cap_soc_title:'SOC Dashboard',
+    cap_soc_desc:'Mission-control visibility across endpoints, networks, and cloud. 500+ automation playbooks. SIEM-native.',
+    cap_ir_title:'Incident Response',
+    cap_ir_desc:'Global IR team deployable within 4 hours. Containment, eradication, recovery, and executive communication.',
+    cap_arch_title:'Security Architecture',
+    cap_arch_desc:'Zero-trust design, CSPM, and security architecture for enterprise, government, healthcare, and private clients.',
+    cta_main:'Ready to deploy Orvex Intelligence?',
+    cta_sub:'Our team delivers precision security for every context — government, healthcare, enterprise, or private.',
+    // ── Platform ──
+    plat_label:'◈ SAAS PLATFORM — CYBERSECURITY SUITE', plat_title:'Platform Overview',
+    // ── Services ──
+    svc_label:'◈ PROFESSIONAL SERVICES DIVISION', svc_title:'Consulting Services',
+    banner_title:'ORVEX CRITICAL RESPONSE',
+    // ── Service cards ──
+    svc_ir_title:'Strategic Incident Response',
+    svc_ir_desc:'Specialist intervention for cyber crisis management. Analysis of the compromised perimeter, proactive threat isolation and technical coordination for restoring operational continuity.',
+    svc_df_title:'Forensic Intelligence & Investigative Analysis',
+    svc_df_desc:'Acquisition and technical analysis of compromised systems to international evidentiary standards. Forensic reconstruction of event timelines, reverse engineering of malicious artefacts and production of legally admissible reports to support executive decisions.',
+    svc_sa_title:'Security Posture Assessment',
+    svc_sa_desc:'Structured evaluation of enterprise cyber resilience. Risk perimeter analysis through international frameworks (NIST CSF, CIS Controls v8) with critical exposure mapping and a strategic deliverable defining intervention priorities.',
+    svc_ra_title:'Cyber Risk Governance & Strategic Advisory',
+    svc_ra_desc:'Quantitative modelling of cyber risk to translate technical exposure into measurable economic impact. We define a security investment roadmap based on real risk priorities, aligned with business objectives and sustainable over the long term.',
+    svc_ar_title:'Security Architecture & Infrastructure Design',
+    svc_ar_desc:'Enterprise-grade security architecture design. Zero Trust model implementation, cloud posture management (CSPM) and infrastructure segmentation to contain the attack surface. Technology supply chain and third-party vendor risk assessment.',
+    svc_ti_title:'Threat Intelligence & Digital Risk Monitoring',
+    svc_ti_desc:'Continuous digital risk monitoring across open sources, deep web and dark web. Sector-specific IOC feed management, threat actor tracking and proactive alerting on credential exposures, corporate assets or brand reputation. Operational and strategic intelligence tailored to your environment.',
+    svc_cs_title:'Cybersecurity Engineering & Proprietary Development',
+    svc_cs_desc:'Development of custom defensive solutions, advanced cryptographic implementations and security process automation. We design proprietary tools for high-complexity enterprise environments.',
+    svc_rs_title:'Remote Security Operations & Infrastructure Support',
+    svc_rs_desc:'Remote operational support for critical infrastructure environments. Deployment of encrypted channels for high-priority technical interventions, proactive hardening of exposed systems and operational continuity monitoring. Dedicated remote coverage for organisations requiring immediate responsiveness.',
+    // ── Service card tags ──
+    svc_ir_tags:['Crisis Management','Threat Containment','Operational Recovery'],
+    svc_df_tags:['Timeline Forensics','Malware Analysis','Legal-Grade Evidence'],
+    svc_sa_tags:['Risk Exposure','NIST CSF','Executive Reporting'],
+    svc_ra_tags:['Risk Quantification','Investment Roadmap','Board Advisory'],
+    svc_ar_tags:['Zero Trust','CSPM','Supply Chain Security'],
+    svc_ti_tags:['Dark Web Intelligence','IOC Management','Adversary Tracking'],
+    svc_cs_tags:['Custom Engineering','Cryptographic Design','Secure Automation'],
+    svc_rs_tags:['Encrypted Operations','Infrastructure Hardening','Operational Continuity'],
+    // ── Modals ──
+    modal_demo_badge:'RICHIEDI CONSULENZA', modal_demo_title:'Richiedi una Consulenza', modal_demo_submit:'Invia Richiesta di Consulenza',
+    modal_contact_badge:'CONTACT SALES', modal_contact_title:'Talk to Our Team', modal_contact_submit:'Submit to Professional Services',
+    modal_platform_badge:'ACCESS PLATFORM', modal_platform_title:'Request Platform Access', modal_platform_submit:'Request Access',
+    form_fullname:'Full Name', form_email:'Work Email', form_org:'Organisation', form_role:'Your Role',
+    form_endpoints:'Estimated Endpoints', form_need:'Primary Security Need', form_notes:'Environment Notes',
+    form_industry:'Industry Vertical', form_service:'Service Required', form_context:'Engagement Context', form_timeline:'Deployment Timeline',
+    form_privacy:'By submitting you agree to our Privacy Policy. We never share your data.',
+    modal_success_title:'Submission Received',
+    modal_success_body:'A member of our team will contact you within 2 business hours.',
+    modal_close:'Close',
+    // ── Globe ──
+    globe_title:'NODE INTEL', globe_loc_label:'Location', globe_uplink_label:'Uplink',
+    globe_uplink_status:'GLOBAL ACTIVE', globe_enc_label:'Encrypt', globe_enc_status:'AES-256 ✓',
+    // ── Legal footer ──
+    legal_copyright:'© 2026 Orvex Intelligence — Operating in Italy & USA',
+    legal_privacy:'Privacy Policy',
+    legal_cookie:'Cookie Policy',
+    legal_terms:'Terms & Conditions',
+    legal_contact:'contact@orvexintelligence.com',
+  },
+  it:{
+    // ── Navigazione ──
+    nav_overview:'Panoramica', nav_soc:'Operazioni SOC', nav_platform:'Piattaforma',
+    nav_services:'Servizi', nav_sectors:'Settori ▾', nav_sector_label:'SETTORE:',
+    nav_enterprise:'🏢 Enterprise', nav_government:'🔬 Ricerca',
+    nav_healthcare:'🏥 Sanità', nav_vip:'◆ VIP & Privato',
+    // ── Hero ──
+    hero_sub:'Software di Cyber Intelligence &amp; Consulenza di Sicurezza Enterprise',
+    hero_body:'Piattaforma avanzata di cybersecurity e consulenza specializzata per imprese, enti governativi, strutture sanitarie e clienti privati. Rilevamento basato su AI, monitoraggio in tempo reale e incident response di alto livello — tutto in un\'unica soluzione.',
+    // ── Pulsanti ──
+    btn_demo:'Richiedi Consulenza →', btn_soc:'Accedi alla Piattaforma SOC', btn_contact:'Richiedi Consulenza',
+    btn_request_eng:'Richiedi un Coinvolgimento', btn_activate_ir:'Attiva Protocollo di Emergenza',
+    btn_whatsapp:'Canale di Emergenza Criptato', btn_consultation:'Richiedi Consulenza',
+    // ── Landing ──
+    cap_label:'◈ CAPACITÀ PRINCIPALI DELLA PIATTAFORMA', cap_title:'Suite di Sicurezza Enterprise',
+    cap_ai_title:'Rilevamento Minacce AI',
+    cap_ai_desc:'Motore di analisi comportamentale in tempo reale che elabora telemetria di endpoint, rete e cloud rispetto a oltre 14.220 regole mappate MITRE ATT&CK.',
+    cap_vuln_title:'Scanner di Vulnerabilità',
+    cap_vuln_desc:'Enumerazione continua dei CVE su tutti gli asset con prioritizzazione ponderata EPSS e tracciamento automatizzato degli SLA delle patch.',
+    cap_df_title:'Digital Forensics',
+    cap_df_desc:'Investigazioni ammissibili in sede giudiziaria con analisi forense della memoria, reverse engineering di malware e applicazione rigorosa della catena di custodia.',
+    cap_soc_title:'Dashboard SOC',
+    cap_soc_desc:'Visibilità in stile mission-control su endpoint, reti e ambienti cloud. Oltre 500 playbook di automazione nativi SIEM.',
+    cap_ir_title:'Incident Response',
+    cap_ir_desc:'Team IR globale attivabile entro 4 ore. Contenimento, eradicazione, ripristino dei sistemi e comunicazioni esecutive di emergenza.',
+    cap_arch_title:'Architettura di Sicurezza',
+    cap_arch_desc:'Progettazione di architetture Zero-Trust, CSPM e ingegneria della sicurezza per clienti aziendali, governativi, sanitari e privati.',
+    cta_main:'Pronto a implementare Orvex Intelligence?',
+    cta_sub:'Il nostro team garantisce sicurezza di precisione per ogni contesto — governativo, sanitario, enterprise o privato.',
+    // ── Piattaforma ──
+    plat_label:'◈ PIATTAFORMA SAAS — SUITE DI CYBERSECURITY', plat_title:'Panoramica della Piattaforma',
+    // ── Servizi ──
+    svc_label:'◈ DIVISIONE SERVIZI PROFESSIONALI', svc_title:'Servizi di Consulenza',
+    banner_title:'ORVEX CRITICAL RESPONSE',
+    // ── Schede servizi ──
+    svc_ir_title:'Incident Response Strategico',
+    svc_ir_desc:'Intervento specialistico per la gestione di crisi cyber. Analisi del perimetro compromesso, isolamento proattivo delle minacce e coordinamento tecnico per il ripristino della continuità operativa.',
+    svc_df_title:'Intelligence Forense & Analisi Investigativa',
+    svc_df_desc:'Acquisizione e analisi tecnica di sistemi compromessi secondo standard probatori internazionali. Ricostruzione forense della timeline degli eventi, reverse engineering di artefatti malevoli e produzione di report con valore giuridico a supporto delle decisioni executive.',
+    svc_sa_title:'Security Posture Assessment',
+    svc_sa_desc:'Valutazione strutturata della resilienza cyber aziendale. Analisi del perimetro di rischio attraverso framework internazionali (NIST CSF, CIS Controls v8) con mappatura delle esposizioni critiche e deliverable strategico per le priorità di intervento.',
+    svc_ra_title:'Cyber Risk Governance & Strategic Advisory',
+    svc_ra_desc:'Modellazione quantitativa del rischio informatico per tradurre l\'esposizione tecnica in impatto economico misurabile. Definiamo una roadmap di investimento in sicurezza basata su priorità di rischio reale, allineata agli obiettivi di business e sostenibile nel lungo periodo.',
+    svc_ar_title:'Security Architecture & Infrastructure Design',
+    svc_ar_desc:'Progettazione di architetture di sicurezza enterprise-grade. Implementazione di modelli Zero Trust, gestione della postura cloud (CSPM) e segmentazione infrastrutturale per contenere la superficie d\'attacco. Valutazione del rischio della supply chain tecnologica e dei fornitori terzi.',
+    svc_ti_title:'Threat Intelligence & Digital Risk Monitoring',
+    svc_ti_desc:'Monitoraggio continuo del rischio digitale su fonti aperte, deep web e dark web. Gestione di feed IOC settoriali, tracciamento di attori malevoli e alerting proattivo su esposizioni di credenziali, asset aziendali o reputazione del brand. Intelligence operativa e strategica su misura.',
+    svc_cs_title:'Cybersecurity Engineering & Proprietary Development',
+    svc_cs_desc:'Sviluppo di soluzioni difensive custom, implementazioni crittografiche avanzate e automazione di processi di sicurezza. Progettiamo tool proprietari per ambienti enterprise ad alta complessità.',
+    svc_rs_title:'Remote Security Operations & Infrastructure Support',
+    svc_rs_desc:'Supporto operativo remoto per ambienti infrastrutturali critici. Deployment di canali cifrati per interventi tecnici ad alta priorità, hardening proattivo dei sistemi esposti e monitoraggio della continuità operativa. Presidio remoto dedicato per organizzazioni che richiedono reattività immediata.',
+    // ── Tag schede servizi ──
+    svc_ir_tags:['Gestione della Crisi','Contenimento Minacce','Ripristino Operativo'],
+    svc_df_tags:['Analisi Timeline','Analisi Malware','Prove Legali'],
+    svc_sa_tags:['Esposizione al Rischio','NIST CSF','Reportistica Esecutiva'],
+    svc_ra_tags:['Quantificazione del Rischio','Roadmap Investimenti','Advisory al Board'],
+    svc_ar_tags:['Zero Trust','CSPM','Sicurezza Supply Chain'],
+    svc_ti_tags:['Intelligence Dark Web','Gestione IOC','Tracciamento Avversari'],
+    svc_cs_tags:['Ingegneria Custom','Design Crittografico','Automazione Sicurezza'],
+    svc_rs_tags:['Operazioni Cifrate','Hardening Infrastrutturale','Monitoraggio Continuità'],
+    // ── Modal ──
+    modal_demo_badge:'RICHIEDI DEMO', modal_demo_title:'Pianifica una Demo Live della Piattaforma', modal_demo_submit:'Richiedi Sessione Demo',
+    modal_contact_badge:'CONTATTA IL TEAM VENDITE', modal_contact_title:'Parla con il Nostro Team', modal_contact_submit:'Invia ai Servizi Professionali',
+    modal_platform_badge:'ACCESSO PIATTAFORMA', modal_platform_title:'Richiedi Accesso alla Piattaforma', modal_platform_submit:'Richiedi Accesso',
+    form_fullname:'Nome e Cognome', form_email:'Email Aziendale', form_org:'Organizzazione', form_role:'Il Tuo Ruolo',
+    form_endpoints:'Endpoint Stimati', form_need:'Esigenza Principale di Sicurezza', form_notes:'Note sull\'Ambiente',
+    form_industry:'Settore Verticale', form_service:'Servizio Richiesto', form_context:'Contesto del Coinvolgimento', form_timeline:'Tempistica di Implementazione',
+    form_privacy:'Inviando accetti la nostra Informativa sulla Privacy. Non condividiamo mai i tuoi dati.',
+    modal_success_title:'Richiesta Ricevuta',
+    modal_success_body:'Un membro del nostro team ti contatterà entro 2 ore lavorative.',
+    modal_close:'Chiudi',
+    // ── Globe ──
+    globe_title:'INFO NODO', globe_loc_label:'Posizione', globe_uplink_label:'Uplink',
+    globe_uplink_status:'GLOBALE ATTIVO', globe_enc_label:'Cifratura', globe_enc_status:'AES-256 ✓',
+    // ── Footer legale ──
+    legal_copyright:'© 2026 Orvex Intelligence — Operativo in Italia e USA',
+    legal_privacy:'Informativa Privacy',
+    legal_cookie:'Cookie Policy',
+    legal_terms:'Termini e Condizioni',
+    legal_contact:'contact@orvexintelligence.com',
+  },
+};
+
+let currentLang='en';
+
+function toggleLang(){
+  currentLang=currentLang==='en'?'it':'en';
+  const btn=document.getElementById('lang-btn');
+  if(btn){
+    btn.textContent=currentLang==='en'?'IT / EN':'EN / IT';
+    btn.style.color=currentLang==='it'?'#2a7fff':'#7a92aa';
+    btn.style.borderColor=currentLang==='it'?'#2a7fff':'#1e2d42';
+  }
+  applyTranslations();
+}
+
+function applyTranslations(){
+  const T=TRANSLATIONS[currentLang];
+
+  // 1. Static data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    if(T[key]!==undefined)el.innerHTML=T[key];
+  });
+
+  // 2. Nav tabs (data-i18n-nav — preserves onclick without breaking routing)
+  document.querySelectorAll('[data-i18n-nav]').forEach(el=>{
+    const key=el.getAttribute('data-i18n-nav');
+    if(T[key]!==undefined)el.textContent=T[key];
+  });
+
+  // 3. Service card tags (data-i18n-tags — array of tag strings)
+  document.querySelectorAll('[data-i18n-tags]').forEach(el=>{
+    const key=el.getAttribute('data-i18n-tags');
+    if(T[key]&&Array.isArray(T[key])){
+      el.innerHTML=T[key].map(t=>`<span class="tag">${t}</span>`).join('');
+    }
+  });
+
+  // 4. Re-render current sector page in new language if on a sector view
+  if(state.activeView&&state.activeView.startsWith('sector/')){
+    renderSectorPage(state.activeSector);
+  }
+}
+
+// Patch openModal to use translated strings at render time
+const _openModalOrig=openModal;
+openModal=function(type){
+  _openModalOrig(type);
+  setTimeout(()=>{
+    const T=TRANSLATIONS[currentLang];
+    const badge=document.getElementById('modal-badge');
+    const title=document.getElementById('modal-title');
+    if(type==='demo'){if(badge)badge.textContent=T.modal_demo_badge;if(title)title.textContent=T.modal_demo_title;}
+    else if(type==='contact'){if(badge)badge.textContent=T.modal_contact_badge;if(title)title.textContent=T.modal_contact_title;}
+    else if(type==='platform'){if(badge)badge.textContent=T.modal_platform_badge;if(title)title.textContent=T.modal_platform_title;}
+    // Translate field labels
+    const labelMap={
+      'Full Name':T.form_fullname,'Work Email':T.form_email,'Organisation':T.form_org,
+      'Your Role':T.form_role,'Estimated Endpoints':T.form_endpoints,
+      'Primary Security Need':T.form_need,'Environment Notes':T.form_notes,
+      'Industry Vertical':T.form_industry,'Service Required':T.form_service,
+      'Engagement Context':T.form_context,'Deployment Timeline':T.form_timeline,
+    };
+    document.querySelectorAll('#modal-body .field-label').forEach(l=>{
+      const baseText=l.textContent.replace(/\s*\*/,'').trim();
+      if(labelMap[baseText]){
+        const star=l.querySelector('span');
+        l.childNodes[0].nodeValue=labelMap[baseText];
+        if(star)l.appendChild(star);
+      }
+    });
+    const submitBtn=document.querySelector('#modal-body button[type="submit"]');
+    if(submitBtn){
+      if(type==='demo')submitBtn.textContent=T.modal_demo_submit;
+      else if(type==='contact')submitBtn.textContent=T.modal_contact_submit;
+      else if(type==='platform')submitBtn.textContent=T.modal_platform_submit;
+    }
+    const privacy=document.querySelector('#modal-body p');
+    if(privacy)privacy.textContent=T.form_privacy;
+  },0);
+};
+
+// Patch submitModal for translated success screen
+const _submitModalOrig=submitModal;
+submitModal=function(e){
+  e.preventDefault();
+  const T=TRANSLATIONS[currentLang];
+  document.getElementById('modal-body').innerHTML=`
+    <div style="text-align:center;padding:28px 0">
+      <div style="width:56px;height:56px;border-radius:50%;border:2px solid #2eb87a;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:#2eb87a">✓</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8;margin-bottom:6px">${T.modal_success_title}</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa;line-height:1.6">${T.modal_success_body}</div>
+      <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#2a7fff">contact@orvexintelligence.com</div>
+      <button class="btn-ghost" style="margin-top:16px" onclick="closeModal()">${T.modal_close}</button>
+    </div>`;
+};
+
+// ── Globe Radar Widget (Three.js — embedded in SOC Telemetry panel) ───────────
+function initGlobe(){
+  const canvas=document.getElementById('globe-canvas');
+  if(!canvas||!window.THREE)return;
+  const W=72,H=72;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,1,.1,100);
+  camera.position.set(0,0,3.2);camera.lookAt(0,0,0);
+
+  // Wireframe globe
+  const gMat=new THREE.MeshBasicMaterial({color:0x00b8d9,wireframe:true,transparent:true,opacity:.2});
+  const globe=new THREE.Mesh(new THREE.SphereGeometry(1,22,14),gMat);scene.add(globe);
+
+  // Surface point cloud
+  const ptN=260,pp=new Float32Array(ptN*3);
+  for(let i=0;i<ptN;i++){const phi=Math.acos(2*Math.random()-1),th=Math.random()*Math.PI*2,r=1.01;pp[i*3]=r*Math.sin(phi)*Math.cos(th);pp[i*3+1]=r*Math.sin(phi)*Math.sin(th);pp[i*3+2]=r*Math.cos(phi);}
+  const ptG=new THREE.BufferGeometry();ptG.setAttribute('position',new THREE.BufferAttribute(pp,3));
+  scene.add(new THREE.Points(ptG,new THREE.PointsMaterial({color:0x00b8d9,size:.03,transparent:true,opacity:.55})));
+
+  // Equator ring
+  scene.add(new THREE.Mesh(new THREE.TorusGeometry(1.005,.003,8,60),new THREE.MeshBasicMaterial({color:0x00b8d9,transparent:true,opacity:.4})));
+
+  // Italy/Europe ping — lat 42°N lon 12°E
+  const lat=42*Math.PI/180,lon=12*Math.PI/180,pr=1.04;
+  const px=pr*Math.cos(lat)*Math.cos(lon),py=pr*Math.sin(lat),pz=pr*Math.cos(lat)*Math.sin(lon);
+  const prMat=new THREE.MeshBasicMaterial({color:0xe53935,side:THREE.DoubleSide,transparent:true,opacity:.9});
+  const pingR=new THREE.Mesh(new THREE.RingGeometry(.04,.065,20),prMat);
+  pingR.position.set(px,py,pz);pingR.lookAt(0,0,0);pingR.rotateX(Math.PI/2);scene.add(pingR);
+  const dot=new THREE.Mesh(new THREE.SphereGeometry(.022,10,10),new THREE.MeshBasicMaterial({color:0xe53935}));
+  dot.position.set(px,py,pz);scene.add(dot);
+  const halo=new THREE.Mesh(new THREE.SphereGeometry(.055,10,10),new THREE.MeshBasicMaterial({color:0xe53935,transparent:true,opacity:.13}));
+  halo.position.set(px,py,pz);scene.add(halo);
+
+  // Ping simulation
+  let pingVal=12;
+  setInterval(()=>{
+    pingVal=Math.max(4,Math.min(48,pingVal+rndInt(-4,6)));
+    const el=document.getElementById('globe-ping');const bar=document.getElementById('globe-ping-bar');
+    if(el)el.textContent=pingVal+'ms';
+    if(bar){bar.style.width=Math.round((pingVal/48)*100)+'%';bar.style.background=pingVal<20?'#2eb87a':pingVal<35?'#e6c84a':'#e53935';}
+  },1800);
+
+  let t=0;
+  function tick(){
+    requestAnimationFrame(tick);t+=.012;
+    globe.rotation.y+=.005;
+    const pulse=.75+.45*Math.abs(Math.sin(t*2.2));
+    pingR.scale.setScalar(pulse);prMat.opacity=.9*(1-Math.abs(Math.sin(t*2.2))*.5);
+    halo.scale.setScalar(.8+.6*Math.abs(Math.sin(t*1.8)));
+    renderer.render(scene,camera);
+  }
+  tick();
+}
+
+// ── Live Threat Feed (IOC ticker) ─────────────────────────────────────────
+const IOC_TYPES=['IP','HASH','DOMAIN','URL','CVE'];
+const IOC_SOURCES=['AlienVault','VirusTotal','Shodan','CISA-KEV','IBM X-Force','Mandiant','Recorded Future'];
+const threatLog=[];
+
+function genIOC(ev){
+  const type=rnd(IOC_TYPES);
+  const vals={
+    IP:()=>rnd(['185.','91.','104.','198.','45.'])+rndInt(1,254)+'.'+rndInt(1,254)+'.'+rndInt(1,254),
+    HASH:()=>Array.from({length:8},()=>rndInt(0,255).toString(16).padStart(2,'0')).join(''),
+    DOMAIN:()=>rnd(['cdn-','api-','srv-','proxy-','static-'])+rndInt(10,99)+'.'+rnd(['io','cc','ru','cn','biz']),
+    URL:()=>'http://'+rnd(['185.','91.'])+rndInt(1,254)+'.'+rndInt(1,254)+'.1/'+rnd(['wp-admin','gate','panel','bot']),
+    CVE:()=>'CVE-'+rndInt(2020,2025)+'-'+rndInt(1000,99999),
+  };
+  return{ts:Date.now(),type,val:(vals[type]||vals.IP)(),src:rnd(IOC_SOURCES),sev:ev?ev.severity:'HIGH'};
+}
+
+function renderThreatFeed(){
+  const el=document.getElementById('threat-feed');if(!el)return;
+  if(!threatLog.length){el.innerHTML='<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#4a6078;text-align:center;padding-top:14px">Awaiting IOC stream…</div>';return;}
+  const SEV_C2={CRITICAL:'#e53935',HIGH:'#ef8c00',MEDIUM:'#e6c84a',LOW:'#3aaa6e',INFO:'#5a8fbf'};
+  el.innerHTML=threatLog.slice(0,20).map((ioc,i)=>{
+    const c=SEV_C2[ioc.sev]||'#5a8fbf';
+    const d=new Date(ioc.ts);
+    const ts=d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0');
+    return`<div style="background:#0a0f1a;border:1px solid #1e2d42;border-left:2px solid ${c};border-radius:3px;padding:4px 7px;opacity:${i===0?1:.82}">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;margin-bottom:2px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:${c};letter-spacing:.05em">${ioc.type}</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078;flex-shrink:0">${ts}</span>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#c8d8e8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px">${ioc.val}</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078">${ioc.src}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Top Attacked Hosts ────────────────────────────────────────────────────
+function renderTopHosts(){
+  const el=document.getElementById('top-hosts');if(!el)return;
+  const SEV_RANK={CRITICAL:4,HIGH:3,MEDIUM:2,LOW:1,INFO:0};
+  const SEV_NEXT={4:'CRITICAL',3:'HIGH',2:'MEDIUM',1:'LOW',0:'INFO'};
+  const map={};
+  state.events.forEach(e=>{
+    if(!map[e.hostname])map[e.hostname]={host:e.hostname,count:0,maxSev:0,tactics:new Set()};
+    map[e.hostname].count++;
+    if(SEV_RANK[e.severity]>map[e.hostname].maxSev)map[e.hostname].maxSev=SEV_RANK[e.severity];
+    map[e.hostname].tactics.add(e.tactic.split(' ')[0]);
+  });
+  const sorted=Object.values(map).sort((a,b)=>b.count-a.count).slice(0,5);
+  const maxCount=sorted[0]?.count||1;
+  if(!sorted.length){el.innerHTML='<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#4a6078;text-align:center;padding-top:20px">No events yet</div>';return;}
+  el.innerHTML=sorted.map((h,i)=>{
+    const sev=SEV_NEXT[h.maxSev];
+    const sc=SEV_C[sev]||'#4a6078';
+    const pct=(h.count/maxCount*100).toFixed(0);
+    const rank=['①','②','③','④','⑤'][i]||'•';
+    return`<div style="background:#0c1623;border:1px solid #1e2d42;border-radius:4px;padding:6px 9px;border-left:2px solid ${sc}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:5px;min-width:0">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a6078;flex-shrink:0">${rank}</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#c8d8e8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.host}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;margin-left:6px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:${sc}">${h.count}</span>
+          <span class="sev sev-${sev}" style="font-size:8px;padding:1px 5px">${sev}</span>
+        </div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${sc};opacity:.75"></div></div>
+      <div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:7px;color:#4a6078;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+        ${[...h.tactics].slice(0,3).join(' · ')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Legal Modal ───────────────────────────────────────────────────────────
+const LEGAL_CONTENT={
+  privacy:{
+    badge:'INFORMATIVA SULLA PRIVACY',
+    title:'Privacy Policy — GDPR Art. 13',
+    body:`<h2>1. Titolare del Trattamento</h2><p>Il Titolare del trattamento è <strong>Francesco Attanasi</strong>, operante sotto il marchio <strong>Orvex Intelligence</strong>.<br>Email: <a href="mailto:contact@orvexintelligence.com">contact@orvexintelligence.com</a> · Tel: +39 379-3160147</p><h2>2. Dati Raccolti</h2><p>Attraverso i form raccogliamo: nome, email aziendale, organizzazione, ruolo, telefono (facoltativo) e informazioni sull'ambiente IT fornite volontariamente dal cliente per finalità di consulenza. Non raccogliamo dati sensibili o particolari.</p><h2>3. Finalità del Trattamento</h2><p>I dati sono trattati per:</p><ul><li>Rispondere alle richieste di contatto, demo e preventivo.</li><li>Erogare i servizi di consulenza professionale richiesti.</li><li>Adempiere agli obblighi contrattuali e pre-contrattuali.</li><li>Adempiere a obblighi di legge.</li></ul><p>Non utilizziamo i dati per finalità di marketing senza un esplicito e separato consenso.</p><h2>4. Base Giuridica</h2><p>Il trattamento si basa su: <strong>esecuzione di un contratto</strong> o misure pre-contrattuali (Art. 6.1.b GDPR) e <strong>legittimo interesse</strong> del Titolare al miglioramento dei servizi (Art. 6.1.f GDPR). Il consenso (Art. 6.1.a GDPR) è richiesto solo per attività facoltative.</p><h2>5. Conservazione</h2><p>I dati sono conservati per il tempo strettamente necessario all'erogazione del servizio e, in ogni caso, non oltre <strong>5 anni</strong> dalla cessazione del rapporto, salvo diversi obblighi di legge.</p><h2>6. Destinatari</h2><p>I dati non sono ceduti a terzi per finalità commerciali. Possono essere trattati da collaboratori vincolati da accordi di riservatezza e fornitori tecnici di servizi IT, in qualità di Responsabili del Trattamento.</p><h2>7. Trasferimento Extra-UE</h2><p>In caso di utilizzo di servizi cloud con server situati al di fuori dello Spazio Economico Europeo (SEE), il trasferimento avviene nel pieno rispetto degli Artt. 44-46 GDPR, adottando le <strong>Clausole Contrattuali Standard</strong> approvate dalla Commissione Europea o basandosi su decisioni di adeguatezza.</p><h2>8. Diritti dell'Interessato</h2><p>Ai sensi degli Artt. 15-22 GDPR, hai il diritto di accedere, rettificare, cancellare i tuoi dati, opporti al trattamento, richiederne la portabilità e revocare il consenso in qualsiasi momento. Puoi esercitare i tuoi diritti scrivendo a: <a href="mailto:contact@orvexintelligence.com">contact@orvexintelligence.com</a>. Hai inoltre il diritto di proporre reclamo al <strong>Garante per la Protezione dei Dati Personali</strong> (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">garanteprivacy.it</a>).</p>`,
+  },
+  cookie:{
+    badge:'COOKIE POLICY',
+    title:'Cookie Policy',
+    body:`<h2>1. Cosa sono i Cookie</h2><p>I cookie sono piccoli file di testo memorizzati sul dispositivo durante la navigazione, utili a migliorare l'esperienza utente.</p><h2>2. Cookie Utilizzati</h2><p>Questo sito utilizza esclusivamente <strong>cookie tecnici essenziali</strong>:</p><ul><li><strong>Cookie di sessione:</strong> gestione navigazione e preferenze temporanee (lingua IT/EN). Eliminati alla chiusura del browser.</li><li><strong>Cookie di preferenza:</strong> memorizzazione della lingua scelta.</li></ul><p>Questo sito <strong>non utilizza</strong> cookie di profilazione, tracciamento pubblicitario o marketing.</p><h2>3. Cookie di Terze Parti</h2><p>Il sito include <strong>Google Fonts</strong> e <strong>Three.js CDN</strong> (Cloudflare). Questi servizi possono impostare cookie propri. Consulta: google.com/policies/privacy e cloudflare.com/privacypolicy.</p><h2>4. Gestione dei Cookie</h2><p>Puoi gestire i cookie dalle impostazioni del browser: Chrome (Impostazioni → Privacy), Firefox (Opzioni → Privacy), Safari (Preferenze → Privacy), Edge (Impostazioni → Cookie). La disabilitazione potrebbe compromettere alcune funzionalità.</p>`,
+  },
+  terms:{
+    badge:'TERMINI E CONDIZIONI',
+    title:'Termini e Condizioni di Servizio',
+    body:`<h2>1. Oggetto</h2><p>I presenti Termini regolano l'utilizzo del sito <strong>orvexintelligence.com</strong> e la fornitura dei servizi di consulenza in ambito cybersecurity offerti dal professionista operante sotto il marchio <strong>Orvex Intelligence</strong>.</p><h2>2. Servizi Offerti</h2><p>I servizi elencati sul sito (tra cui consulenza per Incident Response, Digital Forensics, Security Audit, Analisi del Rischio, Architetture Zero-Trust, Threat Intelligence, Sviluppo Software e Assistenza remota) sono indicativi delle aree di competenza. L'erogazione effettiva di ogni servizio è subordinata a una valutazione tecnica preliminare e alla successiva stipula di un <strong>contratto di incarico scritto</strong> tra le parti.</p><h2>3. Proprietà Intellettuale</h2><p>Tutti i contenuti del sito (testi, grafica, loghi, codice, design) sono di proprietà esclusiva di Orvex Intelligence e protetti dalle leggi sul diritto d'autore. È vietata qualsiasi riproduzione non autorizzata.</p><h2>4. Limitazione di Responsabilità</h2><p>Le informazioni pubblicate sul sito hanno scopo puramente illustrativo. Orvex Intelligence non risponde di interruzioni del sito o danni derivanti dall'utilizzo delle informazioni in esso contenute. Il consulente non garantisce l'assenza di vulnerabilità nei sistemi oggetto di analisi, né risponde di danni indiretti, perdite di dati o interruzioni di attività derivanti da attacchi informatici, trattandosi di attività di consulenza soggetta a variabili esterne.</p><h2>5. Contratti di Servizio</h2><p>Ogni impegno professionale è regolato da un contratto specifico sottoscritto tra le parti, che definisce condizioni economiche, modalità operative e livelli di servizio. Ogni attività di consulenza è protetta da un <strong>accordo di riservatezza (NDA)</strong>.</p><h2>6. Legge Applicabile</h2><p>I presenti Termini sono regolati dalla <strong>legge italiana</strong>. Per ogni controversia è competente in via esclusiva il <strong>Foro di Brindisi</strong>.</p><h2>7. Contatti</h2><p><a href="mailto:contact@orvexintelligence.com">contact@orvexintelligence.com</a> · +39 379-3160147</p>`,
+  },
+};
+
+function openLegal(type){
+  const c=LEGAL_CONTENT[type];if(!c)return;
+  document.getElementById('legal-badge').textContent=c.badge;
+  document.getElementById('legal-title').textContent=c.title;
+  document.getElementById('legal-body').innerHTML=c.body;
+  document.getElementById('legal-overlay').style.display='flex';
+}
+function closeLegal(){document.getElementById('legal-overlay').style.display='none';}
+function closeLegalIfOverlay(e){if(e.target===document.getElementById('legal-overlay'))closeLegal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLegal();closeModal();}});
+
+// ── Formspree Integration ─────────────────────────────────────────────────
+// ISTRUZIONI: 1) Vai su formspree.io  2) Crea account gratuito
+// 3) Crea un nuovo form  4) Copia l'ID (es. xpwzabcd)
+// 5) Sostituisci YOUR_FORM_ID qui sotto con il tuo ID reale
+const FORMSPREE_ID='xnjrrqga';
+const FORMSPREE_URL='https://formspree.io/f/'+FORMSPREE_ID;
+
+const _submitOrig=submitModal;
+submitModal=async function(e){
+  e.preventDefault();
+  const form=e.target;
+  const T=TRANSLATIONS[currentLang];
+  // Collect fields
+  const payload={_subject:'Orvex Intelligence — Nuova richiesta dal sito'};
+  form.querySelectorAll('input,select,textarea').forEach((el,i)=>{
+    if(!el.value||el.value===el.options?.[0]?.value)return;
+    const lbl=form.querySelectorAll('.field-label')[i];
+    const key=lbl?lbl.textContent.replace(/\s*\*/,'').trim():'campo_'+i;
+    payload[key]=el.value;
+    if(key.toLowerCase().includes('email')||key.toLowerCase().includes('mail'))payload['_replyto']=el.value;
+  });
+  const btn=form.querySelector('button[type="submit"]');
+  if(btn){btn.textContent='Invio…';btn.disabled=true;}
+  const success=()=>{
+    document.getElementById('modal-body').innerHTML=`
+      <div style="text-align:center;padding:28px 0">
+        <div style="width:56px;height:56px;border-radius:50%;border:2px solid #2eb87a;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:#2eb87a">✓</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8;margin-bottom:6px">${T.modal_success_title}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa;line-height:1.6">${T.modal_success_body}</div>
+        <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#2a7fff">contact@orvexintelligence.com</div>
+        <button class="btn-ghost" style="margin-top:16px" onclick="closeModal()">${T.modal_close}</button>
+      </div>`;
+  };
+  if(FORMSPREE_ID==='YOUR_FORM_ID'){success();return;}
+  try{
+    const r=await fetch(FORMSPREE_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)});
+    if(r.ok)success();
+    else throw new Error();
+  }catch(_e){success();}
+};
+
+window.addEventListener('DOMContentLoaded',()=>{
+  // Apply translations immediately to sync HTML with current language (EN default)
+  applyTranslations();
+  updateMetrics();
+  renderEventList();
+  renderIncidentDetail(state.selectedId);
+  renderTopology('corp');
+  renderSevDist();
+  renderMitreHeatmap();
+  // Seed threat feed with initial IOCs from existing events
+  state.events.slice(0,12).forEach(e=>{threatLog.push(genIOC(e));});
+  renderTopHosts();
+  renderThreatFeed();
+  renderPlatformContent(0);
+  setPlatTab(0);
+  startPlatTerminal(0);
+  initHeroCanvas();
+  initGlobe();
+  scheduleNextEvent();
+  setInterval(updateTele,500);
+  setInterval(()=>{
+    state.metrics.ingestRate=Math.max(600,state.metrics.ingestRate+rndInt(-20,25));
+    updateMetrics();
+  },3000);
+});
+</script>
+<!-- ═══════════════════════════ FIXED BOTTOM EMERGENCY BAR ═══════════════════ -->
+<div id="emergency-bar" style="position:fixed;bottom:0;left:0;right:0;z-index:6000;background:#1a0608;border-top:1px solid #e53935;padding:4px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+  <div class="crit-dot" style="width:6px;height:6px;flex-shrink:0"></div>
+  <span data-i18n="banner_title" style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#e53935;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap">ORVEX CRITICAL RESPONSE</span>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a6078">//</span>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c8d8e8;white-space:nowrap">+39 379-3160147</span>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a6078">·</span>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#7a92aa;white-space:nowrap">contact@orvexintelligence.com</span>
+  <a href="https://wa.me/393793160147?text=Richiesta%20supporto%20urgente%20Incident%20Response%20Orvex" target="_blank" rel="noopener"
+     style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#2eb87a;background:rgba(46,184,122,.1);border:1px solid rgba(46,184,122,.35);border-radius:3px;padding:2px 8px;text-decoration:none;white-space:nowrap;transition:background .15s"
+     onmouseover="this.style.background='rgba(46,184,122,.22)'" onmouseout="this.style.background='rgba(46,184,122,.1)'">
+    ◉ Canale di Emergenza Criptato
+  </a>
+  <div style="flex:1"></div>
+  <button class="btn-danger" data-i18n="btn_activate_ir" onclick="openModal('contact')" style="font-size:9px;padding:3px 10px;flex-shrink:0">Activate Emergency Protocol</button>
+</div>
+<!-- Push content above emergency bar -->
+<div style="height:32px;flex-shrink:0"></div>
+
+<!-- ═══════════════════ LEGAL FOOTER BAR ════════════════════════ -->
+<div id="legal-bar">
+  <span data-i18n="legal_copyright" style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#2a3a52">© 2026 Orvex Intelligence — Operativo in Italia e USA</span>
+  <span style="color:#1e2d42">|</span>
+  <a class="legal-link" data-i18n="legal_privacy" onclick="openLegal('privacy')">Privacy Policy</a>
+  <span style="color:#1e2d42">|</span>
+  <a class="legal-link" data-i18n="legal_cookie" onclick="openLegal('cookie')">Cookie Policy</a>
+  <span style="color:#1e2d42">|</span>
+  <a class="legal-link" data-i18n="legal_terms" onclick="openLegal('terms')">Termini e Condizioni</a>
+  <span style="color:#1e2d42">|</span>
+  <span data-i18n="legal_contact" style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#2a3a52">contact@orvexintelligence.com</span>
+</div>
+
+<!-- ═══════════════════ LEGAL MODAL ════════════════════════════ -->
+<div id="legal-overlay" class="legal-overlay" style="display:none" onclick="closeLegalIfOverlay(event)">
+  <div class="legal-box">
+    <div class="legal-hd">
+      <div>
+        <div id="legal-badge" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2a7fff;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px"></div>
+        <div id="legal-title" class="legal-title"></div>
+      </div>
+      <button onclick="closeLegal()" style="color:#4a6078;font-size:18px;background:none;border:none;cursor:pointer">✕</button>
+    </div>
+    <div id="legal-body" class="legal-body"></div>
+    <div class="legal-ft">
+      <span class="legal-ft-txt">Orvex Intelligence — Ultimo aggiornamento: Giugno 2026</span>
+      <button class="btn-ghost" onclick="closeLegal()" style="font-size:10px;padding:4px 12px">Chiudi</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
