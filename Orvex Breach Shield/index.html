@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ── SEO & Identity ─────────────────────────────────────── -->
+    <title>Orvex Breach & Identity Shield — Verifica la tua esposizione</title>
+    <meta name="description"
+      content="Orvex Breach & Identity Shield: scopri se la tua email o identità digitale è stata compromessa in un data breach. Protezione professionale per privati e aziende." />
+    <meta name="keywords"
+      content="data breach, identity protection, email leak, cyber security, orvex, breach scanner" />
+    <meta name="author" content="Orvex Intelligence" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- ── Open Graph ─────────────────────────────────────────── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="Orvex Breach & Identity Shield" />
+    <meta property="og:description" content="Scansiona la tua email e scopri se sei stato esposto in un data breach." />
+    <meta property="og:image"       content="/assets/og-cover.png" />
+    <meta property="og:url"         content="https://app.orvex.io" />
+
+    <!-- ── Favicon ────────────────────────────────────────────── -->
+    <link rel="icon"             type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="alternate icon"   type="image/png"     href="/assets/favicon.png" />
+    <link rel="apple-touch-icon"                      href="/assets/apple-touch-icon.png" />
+
+    <!-- ── Preconnect Google Fonts ────────────────────────────── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- ── JetBrains Mono — preload critico ───────────────────── -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+      />
+    </noscript>
+
+    <!-- ── Theme color browser chrome ────────────────────────── -->
+    <meta name="theme-color" content="#05080f" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- ── Prevent FOUC: forza bg prima che React monti ─────── -->
+    <style>
+      html, body, #root {
+        background-color: #05080f;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: 'JetBrains Mono', monospace;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Splash screen minimo mentre JS carica */
+      #app-loader {
+        position: fixed;
+        inset: 0;
+        background: #05080f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.4s ease;
+      }
+
+      #app-loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .loader-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .loader-wordmark {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: #f0f4ff;
+      }
+
+      .loader-wordmark span {
+        color: #0066ff;
+      }
+
+      .loader-sub {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: #445566;
+      }
+
+      .loader-bar-track {
+        width: 160px;
+        height: 2px;
+        background: rgba(0, 102, 255, 0.1);
+        border-radius: 1px;
+        overflow: hidden;
+      }
+
+      .loader-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #0066ff, #00d4ff);
+        box-shadow: 0 0 8px #0066ff;
+        border-radius: 1px;
+        animation: loader-progress 1.2s ease-out forwards;
+      }
+
+      @keyframes loader-progress {
+        from { width: 0%; }
+        to   { width: 100%; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ── Splash loader (nascosto da React al mount) ─────────── -->
+    <div id="app-loader">
+      <div class="loader-logo">
+        <div class="loader-wordmark">
+          <span>ORVEX</span> // SHIELD
+        </div>
+        <div class="loader-bar-track">
+          <div class="loader-bar-fill"></div>
+        </div>
+        <div class="loader-sub">Inizializzazione sistema...</div>
+      </div>
+    </div>
+
+    <!-- ── React root ─────────────────────────────────────────── -->
+    <div id="root"></div>
+
+    <!-- ── Entry point (Vite) ─────────────────────────────────── -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

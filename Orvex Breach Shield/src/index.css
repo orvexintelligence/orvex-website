@@ -1,0 +1,513 @@
+/* ═══════════════════════════════════════════════════════════════
+   ORVEX BREACH & IDENTITY SHIELD — Global Stylesheet
+   Mood: Cyberpunk / Cyber-Intelligence
+   Font: JetBrains Mono
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. GOOGLE FONTS IMPORT ────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+/* ── 2. TAILWIND DIRECTIVES ─────────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── 3. CSS CUSTOM PROPERTIES (DESIGN TOKENS) ───────────────────── */
+:root {
+  /* Backgrounds */
+  --color-void:    #05080f;
+  --color-deep:    #080c14;
+  --color-surface: #0d1220;
+  --color-border:  #111827;
+
+  /* Brand */
+  --color-cyan:    #0066ff;
+  --color-glow:    #00aaff;
+  --color-neon:    #00d4ff;
+
+  /* Alerts */
+  --color-red:     #ff3333;
+  --color-red-alt: #ff2244;
+  --color-green:   #00ff88;
+  --color-amber:   #ffaa00;
+
+  /* Text */
+  --color-text-primary:   #f0f4ff;
+  --color-text-secondary: #8899bb;
+  --color-text-muted:     #445566;
+
+  /* Shadows / Glow radii */
+  --glow-cyan:  0 0 12px rgba(0, 102, 255, 0.6), 0 0 30px rgba(0, 102, 255, 0.2);
+  --glow-red:   0 0 12px rgba(255, 34, 68, 0.7),  0 0 30px rgba(255, 34, 68, 0.3);
+  --glow-green: 0 0 12px rgba(0, 255, 136, 0.6),  0 0 30px rgba(0, 255, 136, 0.2);
+
+  /* Fonts */
+  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+
+  /* Timing */
+  --transition-fast:   150ms ease;
+  --transition-medium: 300ms ease;
+  --transition-slow:   600ms ease;
+}
+
+/* ── 4. BASE RESET & GLOBAL STYLES ──────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-mono);
+  background-color: var(--color-void);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Griglia sottile tech in background */
+  background-image:
+    linear-gradient(rgba(0, 102, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 102, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  position: relative;
+}
+
+/* Vignette globale ai bordi dello schermo */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(5, 8, 15, 0.75) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 5. SCANLINE EFFECT ──────────────────────────────────────────── */
+/* Overlay CRT scanlines — applicare con classe .scanlines */
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Riga luminosa che scorre — usare con .scan-beam */
+.scan-beam::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 102, 255, 0.0) 10%,
+    rgba(0, 212, 255, 0.6) 50%,
+    rgba(0, 102, 255, 0.0) 90%,
+    transparent 100%
+  );
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+  animation: scan 4s linear infinite;
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* ── 6. TYPOGRAPHY UTILITIES ─────────────────────────────────────── */
+.font-orvex {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.text-brand {
+  color: var(--color-cyan);
+}
+
+/* Glow sul testo */
+.text-glow-cyan {
+  color: var(--color-neon);
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.8), 0 0 20px rgba(0, 102, 255, 0.4);
+}
+
+.text-glow-red {
+  color: var(--color-red);
+  text-shadow: 0 0 8px rgba(255, 34, 68, 0.9), 0 0 20px rgba(255, 34, 68, 0.5);
+}
+
+.text-glow-green {
+  color: var(--color-green);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.8), 0 0 20px rgba(0, 255, 136, 0.4);
+}
+
+/* Tag / Label in stile terminal */
+.tag-mono {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* Titolo principale con effetto glitch pronto */
+.headline-orvex {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  text-shadow: 0 0 30px rgba(0, 102, 255, 0.3);
+}
+
+/* ── 7. COMPONENT CLASSES ────────────────────────────────────────── */
+
+/* Pannello / Card base */
+.panel {
+  background-color: var(--color-surface);
+  border: 1px solid rgba(0, 102, 255, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(0, 102, 255, 0.12);
+  position: relative;
+}
+
+/* Pannello con bordo sinistro colorato */
+.panel-accent {
+  border-left: 2px solid var(--color-cyan);
+}
+
+.panel-red {
+  background-color: rgba(26, 5, 5, 0.8);
+  border: 1px solid var(--color-red-alt, #ff2244);
+  box-shadow: 0 0 20px rgba(255, 34, 68, 0.15), 0 4px 24px rgba(0, 0, 0, 0.7);
+}
+
+.panel-green {
+  background-color: rgba(0, 26, 14, 0.8);
+  border: 1px solid var(--color-green);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.12), 0 4px 24px rgba(0, 0, 0, 0.7);
+}
+
+/* Input stile terminal */
+.input-orvex {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  background-color: rgba(8, 12, 20, 0.9);
+  border: 1px solid rgba(0, 102, 255, 0.3);
+  border-radius: 2px;
+  color: var(--color-text-primary);
+  padding: 0.75rem 1rem;
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition-medium), box-shadow var(--transition-medium);
+  caret-color: var(--color-neon);
+}
+
+.input-orvex::placeholder {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+.input-orvex:focus {
+  border-color: var(--color-cyan);
+  box-shadow: var(--glow-cyan);
+  animation: border-pulse 2s ease-in-out infinite;
+}
+
+/* Pulsante primario */
+.btn-orvex {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.9) 0%, rgba(0, 60, 180, 0.9) 100%);
+  border: 1px solid rgba(0, 170, 255, 0.5);
+  border-radius: 2px;
+  padding: 0.8rem 2rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-medium);
+  white-space: nowrap;
+}
+
+.btn-orvex::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  transition: left var(--transition-slow);
+}
+
+.btn-orvex:hover {
+  background: linear-gradient(135deg, rgba(0, 130, 255, 1) 0%, rgba(0, 80, 200, 1) 100%);
+  box-shadow: var(--glow-cyan);
+  border-color: var(--color-neon);
+}
+
+.btn-orvex:hover::before {
+  left: 100%;
+}
+
+.btn-orvex:active {
+  transform: scale(0.98);
+}
+
+/* Pulsante premium — rosso/arancio urgenza */
+.btn-premium {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(255, 50, 50, 0.9) 0%, rgba(200, 0, 40, 0.9) 100%);
+  border: 1px solid rgba(255, 80, 80, 0.6);
+  border-radius: 2px;
+  padding: 1rem 2.5rem;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  box-shadow: 0 0 16px rgba(255, 34, 68, 0.4);
+  animation: border-pulse-red 2.5s ease-in-out infinite;
+}
+
+.btn-premium:hover {
+  box-shadow: var(--glow-red);
+  border-color: var(--color-red);
+  transform: translateY(-1px);
+}
+
+/* ── 8. BREACH / STATUS BADGES ───────────────────────────────────── */
+.badge-breach {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-red);
+  background: rgba(255, 34, 68, 0.1);
+  border: 1px solid rgba(255, 34, 68, 0.3);
+  border-radius: 2px;
+  padding: 0.2rem 0.6rem;
+}
+
+.badge-safe {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-green);
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.25);
+  border-radius: 2px;
+  padding: 0.2rem 0.6rem;
+}
+
+/* ── 9. PROGRESS BAR SCAN ────────────────────────────────────────── */
+.progress-track {
+  width: 100%;
+  height: 3px;
+  background-color: rgba(0, 102, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-cyan), var(--color-neon));
+  box-shadow: 0 0 8px var(--color-cyan);
+  border-radius: 2px;
+  animation: scan-progress 3s ease-in-out forwards;
+}
+
+/* ── 10. SCROLLBAR PERSONALIZZATA ────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 102, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 102, 255, 0.6);
+}
+
+/* ── 11. SELECTION ───────────────────────────────────────────────── */
+::selection {
+  background-color: rgba(0, 102, 255, 0.35);
+  color: var(--color-neon);
+}
+
+/* ── 12. KEYFRAMES (override / extra) ───────────────────────────── */
+@keyframes border-pulse {
+  0%, 100% {
+    border-color: rgba(0, 102, 255, 0.5);
+    box-shadow: 0 0 8px rgba(0, 102, 255, 0.3);
+  }
+  50% {
+    border-color: rgba(0, 212, 255, 0.9);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+  }
+}
+
+@keyframes border-pulse-red {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(255, 34, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 34, 68, 0.8), 0 0 40px rgba(255, 34, 68, 0.3);
+  }
+}
+
+@keyframes scan {
+  0%   { top: -2px; }
+  100% { top: 100%; }
+}
+
+@keyframes scan-progress {
+  0%   { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes glitch {
+  0%   { transform: translate(0); }
+  20%  { transform: translate(-3px, 1px); filter: hue-rotate(90deg); }
+  40%  { transform: translate(3px, -1px); filter: hue-rotate(-90deg); }
+  60%  { transform: translate(-1px, 2px); }
+  80%  { transform: translate(1px, -2px); filter: hue-rotate(45deg); }
+  100% { transform: translate(0); }
+}
+
+@keyframes fade-up {
+  0%   { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes breach-ping {
+  0%          { transform: scale(1); opacity: 1; }
+  75%, 100%   { transform: scale(2); opacity: 0; }
+}
+
+/* ── 13. UTILITY CLASSES CUSTOM ──────────────────────────────────── */
+
+/* Cursore terminale lampeggiante */
+.cursor-blink::after {
+  content: '█';
+  display: inline-block;
+  color: var(--color-neon);
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  font-size: 0.8em;
+}
+
+/* Separatore linea hi-tech */
+.divider-orvex {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(0, 102, 255, 0.15) 20%,
+    rgba(0, 102, 255, 0.4) 50%,
+    rgba(0, 102, 255, 0.15) 80%,
+    transparent 100%
+  );
+  border: none;
+  margin: 0;
+}
+
+/* Decoratore angolo — usato sui pannelli premium */
+.corner-decoration {
+  position: relative;
+}
+
+.corner-decoration::before,
+.corner-decoration::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--color-cyan);
+  border-style: solid;
+  opacity: 0.6;
+}
+
+.corner-decoration::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+
+.corner-decoration::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+/* Testo monospazio con prefisso prompt stile terminal */
+.terminal-line::before {
+  content: '> ';
+  color: var(--color-cyan);
+  opacity: 0.7;
+}
+
+/* Animazione fade-up con delay variabile */
+.animate-fade-up        { animation: fade-up 0.5s ease-out forwards; }
+.animate-fade-up-d1     { animation: fade-up 0.5s ease-out 0.1s both; }
+.animate-fade-up-d2     { animation: fade-up 0.5s ease-out 0.2s both; }
+.animate-fade-up-d3     { animation: fade-up 0.5s ease-out 0.3s both; }
+.animate-fade-up-d4     { animation: fade-up 0.5s ease-out 0.5s both; }
+.animate-fade-up-d5     { animation: fade-up 0.5s ease-out 0.7s both; }
+
+/* Classe glitch attivabile via JS — aggiungere/togliere .is-glitching */
+.is-glitching {
+  animation: glitch 0.4s steps(2) 3 !important;
+}
