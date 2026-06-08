@@ -31,6 +31,8 @@ export default function DomainDashboard({ email = '', isPremium = true, onUpgrad
   const [activeDomain, setActiveDomain] = useState(null)
   const [analyzing,    setAnalyzing]    = useState(false)
   const [billing,      setBilling]      = useState('monthly')
+  const [vtData,       setVtData]       = useState(null)
+  const [vtError,      setVtError]      = useState(null)
 
   // ── Step 1: inserimento dominio ────────────────────────────────
   const handleAnalyze = (e) => {

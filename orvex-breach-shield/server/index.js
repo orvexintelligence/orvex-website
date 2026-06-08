@@ -23,7 +23,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') })
 
 import breachRouter from './routes/breach.js'
-
+import domainRouter from './routes/domain.js'
 const app  = express()
 const PORT = process.env.SERVER_PORT || 3001
 
@@ -39,6 +39,7 @@ app.use(cors({
 
 // ── Routes ────────────────────────────────────────────────────────
 app.use('/api/breach', breachRouter)
+app.use('/api/domain', domainRouter)
 
 // Health check (utile per monitoraggio uptime)
 app.get('/api/health', (_req, res) => {
