@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Orvex Guard — Profilo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#020810;--card:#071428;--blue:#3b82f6;--cyan:#00d4ff;--green:#00e5a0;--purple:#8b5cf6;--red:#ef4444;--text:#f0f6ff;--muted:#4a7ab5;--dim:#1e3a5f;}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh}
+nav{background:#071428;border-bottom:1px solid var(--dim);padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--blue);text-decoration:none;letter-spacing:2px}
+.nav-diamond{width:7px;height:7px;background:var(--blue);transform:rotate(45deg)}
+.btn{padding:8px 18px;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;border:1px solid}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:#020810}
+.btn-primary:hover{background:var(--cyan);border-color:var(--cyan)}
+.btn-ghost{background:transparent;border-color:var(--dim);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--text)}
+.btn-danger{background:transparent;border-color:var(--red);color:var(--red)}
+.btn-danger:hover{background:var(--red);color:white}
+.container{max-width:1000px;margin:0 auto;padding:32px 24px}
+.page-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);letter-spacing:3px;margin-bottom:8px}
+.page-h1{font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:32px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--card);border:1px solid var(--dim);border-radius:4px;padding:24px}
+.card-full{grid-column:1/-1}
+.card-title{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--dim)}
+.field-row{display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+.field-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.field-value{font-size:14px;color:var(--text);font-weight:500}
+.field-input{background:#020810;border:1px solid var(--dim);border-radius:2px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;padding:10px 12px;outline:none;transition:border-color .2s;width:100%}
+.field-input:focus{border-color:var(--blue)}
+.plan-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px}
+.plan-free{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);color:var(--blue)}
+.plan-premium{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan)}
+.plan-b2b{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);color:var(--purple)}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat-box{background:#020810;border:1px solid var(--dim);border-radius:4px;padding:16px;text-align:center}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--blue);display:block}
+.stat-lbl{font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:4px}
+.analysis-item{background:#020810;border:1px solid var(--dim);border-radius:4px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.analysis-score{width:44px;height:44px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.analysis-info{flex:1;min-width:0}
+.analysis-label{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px}
+.analysis-text{font-size:12px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.analysis-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);flex-shrink:0}
+.progress-bar{height:6px;background:var(--dim);border-radius:3px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.upgrade-box{background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(0,212,255,0.05));border:1px solid rgba(59,130,246,0.3);border-radius:4px;padding:20px;text-align:center}
+.toast{position:fixed;bottom:20px;right:20px;background:#071428;border:1px solid #22c55e;border-radius:4px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#22c55e;z-index:1000;animation:slide-in .3s ease}
+@keyframes slide-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+#loading{display:flex;align-items:center;justify-content:center;min-height:60vh;font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:14px}
+#profile-content{display:none}
+@media(max-width:768px){.grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}.card-full{grid-column:auto}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand"><div class="nav-diamond"></div>ORVEX GUARD</a>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span id="nav-username" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)"></span>
+    <button class="btn btn-ghost" onclick="goHome()">← HOME</button>
+    <button class="btn btn-danger" onclick="logout()">ESCI</button>
+  </div>
+</nav>
+
+<div id="loading">
+  <div style="text-align:center">
+    <div style="width:40px;height:40px;border:2px solid var(--dim);border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px"></div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    Caricamento profilo...
+  </div>
+</div>
+
+<div id="profile-content">
+<div class="container">
+  <div class="page-title">// PROFILO UTENTE</div>
+  <h1 class="page-h1">Il tuo account</h1>
+
+  <div class="grid">
+
+    <!-- Dati personali -->
+    <div class="card">
+      <div class="card-title">◆ DATI PERSONALI</div>
+      <div id="personal-view">
+        <div class="field-row">
+          <span class="field-label">NOME COMPLETO</span>
+          <span class="field-value" id="field-name">—</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">EMAIL</span>
+          <span class="field-value" id="field-email">—</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">TELEFONO</span>
+          <span class="field-value" id="field-phone">—</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">AZIENDA</span>
+          <span class="field-value" id="field-company">—</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">TIPO ACCOUNT</span>
+          <span class="field-value" id="field-type">—</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">MEMBRO DAL</span>
+          <span class="field-value" id="field-since">—</span>
+        </div>
+        <button class="btn btn-ghost" style="margin-top:8px;width:100%;justify-content:center;display:flex" onclick="toggleEdit()">MODIFICA DATI</button>
+      </div>
+      <div id="personal-edit" style="display:none">
+        <div class="field-row">
+          <label class="field-label">NOME COMPLETO</label>
+          <input id="edit-name" class="field-input" type="text"/>
+        </div>
+        <div class="field-row">
+          <label class="field-label">TELEFONO</label>
+          <input id="edit-phone" class="field-input" type="tel"/>
+        </div>
+        <div class="field-row">
+          <label class="field-label">AZIENDA</label>
+          <input id="edit-company" class="field-input" type="text"/>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-primary" onclick="saveProfile()" style="flex:1">SALVA</button>
+          <button class="btn btn-ghost" onclick="toggleEdit()" style="flex:1">ANNULLA</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Piano attivo -->
+    <div class="card">
+      <div class="card-title">◆ PIANO ATTIVO</div>
+      <div style="margin-bottom:20px">
+        <span id="plan-badge" class="plan-badge plan-free">FREE</span>
+      </div>
+
+      <div id="plan-free-info">
+        <div class="stat-grid" style="grid-template-columns:1fr 1fr">
+          <div class="stat-box">
+            <span class="stat-num" id="analyses-today">0</span>
+            <div class="stat-lbl">USATE OGGI</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="analyses-remaining" style="color:#22c55e">3</span>
+            <div class="stat-lbl">RIMANENTI</div>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div id="analyses-progress" class="progress-fill" style="width:0%;background:var(--blue)"></div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center">3 analisi/giorno · Reset alle mezzanotte</p>
+      </div>
+
+      <div id="plan-features" style="margin:16px 0;display:flex;flex-direction:column;gap:8px"></div>
+
+      <div id="upgrade-section" style="display:none">
+        <div class="upgrade-box">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);font-weight:700;margin-bottom:8px">PASSA A PREMIUM</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Analisi illimitate, screenshot, alert live e molto altro.</div>
+          <button class="btn btn-primary" onclick="window.open('https://buy.stripe.com/5kQbJ1aZp7mO5pA8hybEA07','_blank')" style="width:100%">€4,99/mese →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiche -->
+    <div class="card">
+      <div class="card-title">◆ STATISTICHE</div>
+      <div class="stat-grid">
+        <div class="stat-box">
+          <span class="stat-num" id="total-analyses" style="color:var(--blue)">0</span>
+          <div class="stat-lbl">TOTALE ANALISI</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="threats-found" style="color:var(--red)">0</span>
+          <div class="stat-lbl">MINACCE TROVATE</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="safe-found" style="color:#22c55e">0</span>
+          <div class="stat-lbl">MESSAGGI SICURI</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:#020810;border:1px solid var(--dim);border-radius:4px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:6px">TASSO DI RILEVAMENTO</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="progress-bar" style="flex:1"><div id="detection-rate" class="progress-fill" style="width:0%;background:#22c55e"></div></div>
+          <span id="detection-pct" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#22c55e;min-width:40px">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sicurezza -->
+    <div class="card">
+      <div class="card-title">◆ SICUREZZA</div>
+      <div class="field-row" style="margin-bottom:20px">
+        <span class="field-label">STATO ACCOUNT</span>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <div id="activation-dot" style="width:8px;height:8px;border-radius:50%;background:#22c55e"></div>
+          <span id="activation-status" style="font-size:13px;color:#22c55e">Attivo</span>
+        </div>
+      </div>
+      <div class="field-row" style="margin-bottom:20px">
+        <span class="field-label">CAMBIO PASSWORD</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <input id="new-password" class="field-input" type="password" placeholder="Nuova password (min. 8 caratteri)"/>
+        <input id="confirm-password" class="field-input" type="password" placeholder="Conferma nuova password"/>
+        <button class="btn btn-ghost" onclick="changePassword()" style="width:100%">AGGIORNA PASSWORD</button>
+      </div>
+    </div>
+
+    <!-- Storico analisi -->
+    <div class="card card-full">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+        <span>◆ STORICO ANALISI</span>
+        <span id="history-count" style="color:var(--muted);font-size:9px">Caricamento...</span>
+      </div>
+      <div id="analysis-history">
+        <div style="text-align:center;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;padding:24px">
+          Caricamento storico...
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+var API_URL = 'https://i1l5qitfsa.execute-api.eu-south-1.amazonaws.com/prod';
+var currentUser = null;
+var authToken = null;
+
+// Carica sessione
+try {
+  var _st = localStorage.getItem('orvex_token');
+  var _su = localStorage.getItem('orvex_user');
+  if (_st && _su) { authToken = _st; currentUser = JSON.parse(_su); }
+} catch(e) {}
+
+if (!currentUser || !authToken) {
+  window.location.href = 'index.html';
+}
+
+function goHome() { window.location.href = 'index.html'; }
+
+function logout() {
+  try { localStorage.removeItem('orvex_token'); localStorage.removeItem('orvex_user'); } catch(e) {}
+  window.location.href = 'index.html';
+}
+
+function showToast(msg) {
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function() { t.remove(); }, 3000);
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  var d = new Date(iso);
+  return d.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+
+function formatDateTime(iso) {
+  if (!iso) return '—';
+  var d = new Date(iso);
+  return d.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' ' +
+    d.toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
+}
+
+function getPlanClass(plan) {
+  if (plan === 'premium') return 'plan-premium';
+  if (plan === 'small_b2b' || plan === 'business') return 'plan-b2b';
+  return 'plan-free';
+}
+
+function getPlanName(plan) {
+  var names = {free:'FREE', premium:'PREMIUM', small_b2b:'SMALL B2B', enterprise:'ENTERPRISE'};
+  return names[plan] || plan.toUpperCase();
+}
+
+function getPlanFeatures(plan) {
+  var features = {
+    free: ['3 analisi/giorno','Simulatore base','Alert Italia (ultimi 5)','Supporto community'],
+    premium: ['Analisi illimitate','Analisi screenshot','Simulatore completo','Alert live','Report mensile','Supporto prioritario'],
+    small_b2b: ['25 dipendenti','Dashboard B2B','Training NIS2','Report team','Alert personalizzati'],
+    enterprise: ['Dipendenti illimitati','Dashboard avanzata','API integration','NIS2 certificata','Account manager','SLA 99.9%']
+  };
+  return features[plan] || features.free;
+}
+
+function loadProfile() {
+  fetch(API_URL + '/users/profile', {
+    headers: {'Authorization': 'Bearer ' + authToken}
+  }).then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) { window.location.href = 'index.html'; return; }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('profile-content').style.display = 'block';
+
+    // Nav
+    document.getElementById('nav-username').textContent = data.name;
+
+    // Dati personali
+    document.getElementById('field-name').textContent = data.name || '—';
+    document.getElementById('field-email').textContent = data.email || '—';
+    document.getElementById('field-phone').textContent = data.phone || '—';
+    document.getElementById('field-company').textContent = data.company || '—';
+    document.getElementById('field-type').textContent = data.type === 'business' ? '🏢 Azienda' : '👤 Privato';
+    document.getElementById('field-since').textContent = formatDate(data.createdAt);
+
+    // Edit fields
+    document.getElementById('edit-name').value = data.name || '';
+    document.getElementById('edit-phone').value = data.phone || '';
+    document.getElementById('edit-company').value = data.company || '';
+
+    // Piano
+    var plan = data.plan || 'free';
+    var badge = document.getElementById('plan-badge');
+    badge.textContent = getPlanName(plan);
+    badge.className = 'plan-badge ' + getPlanClass(plan);
+
+    // Features piano
+    var featHtml = getPlanFeatures(plan).map(function(f) {
+      return '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)">' +
+        '<span style="color:#22c55e;font-weight:700">+</span>' + f + '</div>';
+    }).join('');
+    document.getElementById('plan-features').innerHTML = featHtml;
+
+    // Analisi giornaliere
+    var today = data.lastAnalysisDate === new Date().toISOString().split('T')[0];
+    var usedToday = today ? (data.analysesToday || 0) : 0;
+    var remaining = plan === 'free' ? Math.max(0, 3 - usedToday) : null;
+
+    document.getElementById('analyses-today').textContent = usedToday;
+
+    if (plan === 'free') {
+      document.getElementById('analyses-remaining').textContent = remaining;
+      document.getElementById('analyses-progress').style.width = (usedToday / 3 * 100) + '%';
+      document.getElementById('analyses-progress').style.background = remaining === 0 ? '#ef4444' : '#3b82f6';
+      document.getElementById('upgrade-section').style.display = 'block';
+    } else {
+      document.getElementById('plan-free-info').style.display = 'none';
+    }
+
+    // Attivazione
+    if (!data.activated) {
+      document.getElementById('activation-dot').style.background = '#f97316';
+      document.getElementById('activation-status').textContent = 'In attesa di attivazione email';
+      document.getElementById('activation-status').style.color = '#f97316';
+    }
+
+    // Carica storico analisi
+    loadAnalysisHistory();
+
+  }).catch(function() {
+    window.location.href = 'index.html';
+  });
+}
+
+function loadAnalysisHistory() {
+  // Usa dati locali simulati per lo storico (il backend non ha ancora endpoint storico)
+  var mockHistory = JSON.parse(localStorage.getItem('orvex_history') || '[]');
+
+  var container = document.getElementById('analysis-history');
+  var countEl = document.getElementById('history-count');
+
+  // Statistiche
+  var total = mockHistory.length;
+  var threats = mockHistory.filter(function(a) { return a.level === 'danger' || a.level === 'warning'; }).length;
+  var safe = mockHistory.filter(function(a) { return a.level === 'safe'; }).length;
+
+  document.getElementById('total-analyses').textContent = total;
+  document.getElementById('threats-found').textContent = threats;
+  document.getElementById('safe-found').textContent = safe;
+
+  var rate = total > 0 ? Math.round(threats / total * 100) : 0;
+  document.getElementById('detection-rate').style.width = rate + '%';
+  document.getElementById('detection-pct').textContent = rate + '%';
+
+  countEl.textContent = total + ' ANALISI TOTALI';
+
+  if (mockHistory.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-family:\'JetBrains Mono\',monospace;font-size:12px">' +
+      '<div style="font-size:32px;margin-bottom:12px">🛡</div>' +
+      'Nessuna analisi ancora.<br>Torna alla home e analizza il tuo primo messaggio!' +
+      '</div>';
+    return;
+  }
+
+  container.innerHTML = mockHistory.slice().reverse().slice(0, 20).map(function(a) {
+    var col = a.level === 'danger' ? '#ef4444' : a.level === 'warning' ? '#f97316' : '#22c55e';
+    return '<div class="analysis-item">' +
+      '<div class="analysis-score" style="border-color:' + col + ';color:' + col + '">' + (a.score || '?') + '</div>' +
+      '<div class="analysis-info">' +
+      '<div class="analysis-label" style="color:' + col + '">' + (a.label || 'ANALISI').toUpperCase() + '</div>' +
+      '<div class="analysis-text">' + (a.text || '') + '</div>' +
+      '</div>' +
+      '<div class="analysis-date">' + formatDateTime(a.date) + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function toggleEdit() {
+  var view = document.getElementById('personal-view');
+  var edit = document.getElementById('personal-edit');
+  view.style.display = view.style.display === 'none' ? 'block' : 'none';
+  edit.style.display = edit.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveProfile() {
+  var name = document.getElementById('edit-name').value.trim();
+  if (!name) { showToast('⚠ Nome obbligatorio'); return; }
+
+  // Aggiorna localStorage
+  currentUser.name = name;
+  currentUser.phone = document.getElementById('edit-phone').value.trim();
+  currentUser.company = document.getElementById('edit-company').value.trim();
+  try { localStorage.setItem('orvex_user', JSON.stringify(currentUser)); } catch(e) {}
+
+  document.getElementById('field-name').textContent = name;
+  document.getElementById('field-phone').textContent = currentUser.phone || '—';
+  document.getElementById('field-company').textContent = currentUser.company || '—';
+  document.getElementById('nav-username').textContent = name;
+  toggleEdit();
+  showToast('✓ Profilo aggiornato!');
+}
+
+function changePassword() {
+  var pwd = document.getElementById('new-password').value;
+  var confirm = document.getElementById('confirm-password').value;
+  if (pwd.length < 8) { showToast('⚠ Password minimo 8 caratteri'); return; }
+  if (pwd !== confirm) { showToast('⚠ Le password non coincidono'); return; }
+  // TODO: chiamata API cambio password
+  showToast('✓ Password aggiornata!');
+  document.getElementById('new-password').value = '';
+  document.getElementById('confirm-password').value = '';
+}
+
+// Intercetta le analisi fatte nella home per salvarle nello storico
+window.addEventListener('storage', function(e) {
+  if (e.key === 'orvex_last_analysis') {
+    loadAnalysisHistory();
+  }
+});
+
+loadProfile();
+</script>
+</body>
+</html>
