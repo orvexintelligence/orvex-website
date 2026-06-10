@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Shield, Activity, Lock, ChevronRight, UserPlus, LogOut, User } from 'lucide-react'
+import { Shield, Activity, Lock, LogOut, User } from 'lucide-react'
 import clsx from 'clsx'
 import { useLanguage } from '@/lib/i18n'
 
@@ -111,7 +111,7 @@ export default function Header({ onPremiumClick, onNavigate, scanActive = false,
 
           {/* RIGHT: Nav + CTA */}
           <div className="flex items-center gap-2">
-            {/* ── Selettore Lingua — ITA | ENG ─────────────── */}
+            {/* Selettore Lingua */}
             <div className="hidden lg:flex items-center gap-1 mr-1">
               {['IT', 'EN'].map((l, i) => (
                 <span key={l} className="flex items-center">
@@ -141,7 +141,7 @@ export default function Header({ onPremiumClick, onNavigate, scanActive = false,
               <NavLink href="#about"     onNavigate={onNavigate}>{lang === 'EN' ? 'About' : 'Chi siamo'}</NavLink>
             </nav>
 
-            {user ? (
+            {user && (
               <div className="flex items-center gap-2">
                 <div
                   className="flex items-center gap-2 px-2.5 py-1.5 rounded-xs cursor-default"
@@ -168,21 +168,6 @@ export default function Header({ onPremiumClick, onNavigate, scanActive = false,
                   <span className="hidden sm:inline">Esci</span>
                 </button>
               </div>
-            ) : (
-              <button
-                onClick={onPremiumClick}
-                className="flex items-center gap-1.5 font-mono text-xs font-bold tracking-widest uppercase text-white px-3 py-1.5 rounded-xs transition-all duration-200 border border-orvex-cyan-500/50"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(0,102,255,0.7) 0%, rgba(0,60,180,0.7) 100%)',
-                  boxShadow: '0 0 10px rgba(0,102,255,0.3)',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 18px rgba(0,102,255,0.7)' }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 10px rgba(0,102,255,0.3)' }}
-              >
-                <UserPlus size={12} />
-                <span className="hidden sm:inline">{lang === 'EN' ? 'Sign up' : 'Registrati'}</span>
-                <ChevronRight size={10} className="opacity-70" />
-              </button>
             )}
 
             <button
@@ -207,7 +192,6 @@ export default function Header({ onPremiumClick, onNavigate, scanActive = false,
         >
           <MobileNavLink href="#scan"      onNavigate={onNavigate} onClick={function() { setMobileMenuOpen(false) }}>Scanner</MobileNavLink>
           <MobileNavLink href="#solutions" onNavigate={onNavigate} onClick={function() { setMobileMenuOpen(false) }}>Soluzioni</MobileNavLink>
-          
           <MobileNavLink href="#about"     onNavigate={onNavigate} onClick={function() { setMobileMenuOpen(false) }}>Chi siamo</MobileNavLink>
         </div>
       )}

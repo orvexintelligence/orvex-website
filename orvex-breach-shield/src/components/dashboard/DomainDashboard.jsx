@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import {
   Activity, Zap, Shield, Star, Lock,
-  Globe, Search, ArrowRight, Loader2, FileText, UserPlus,
-  ExternalLink, CheckCircle2, RefreshCcw,
+  Globe, Search, ArrowRight, Loader2, FileText,
+  ExternalLink, CheckCircle2,
 } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -90,21 +90,6 @@ export default function DomainDashboard({ email = '', isPremium = true, onUpgrad
         <p className="font-mono text-[0.6rem] mt-4 text-center" style={{ color: '#2a3550' }}>
           Supporta domini corporate · VirusTotal scan · nessun dato memorizzato
         </p>
-        <div className="mt-6 flex items-center gap-3 px-4 py-3 rounded-xs w-full max-w-md"
-          style={{ background: 'rgba(124,58,237,0.04)', border: '1px solid rgba(124,58,237,0.15)' }}>
-          <UserPlus size={14} style={{ color: '#7c3aed', flexShrink: 0 }} />
-          <div className="flex-1">
-            <p className="font-mono text-[0.62rem] font-bold" style={{ color: '#f0f4ff' }}>Salva i tuoi risultati · Accedi da qualsiasi dispositivo</p>
-            <p className="font-mono text-[0.58rem]" style={{ color: '#445566' }}>Crea un account gratuito per non perdere la cronologia delle scansioni</p>
-          </div>
-          <button
-            className="flex-shrink-0 font-mono text-[0.6rem] font-bold tracking-wide uppercase px-3 py-1.5 rounded-xs transition-all duration-150"
-            style={{ color: '#7c3aed', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.25)' }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(124,58,237,0.16)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(124,58,237,0.08)' }}
-            onClick={() => alert('Autenticazione Supabase — coming soon!')}
-          >Registrati</button>
-        </div>
         {analyzing && (
           <div className="mt-8 w-full max-w-md space-y-2">
             {['Connessione a VirusTotal...', 'Analisi reputazione dominio...', 'Calcolo Domain Health Score...'].map((msg, i) => (
