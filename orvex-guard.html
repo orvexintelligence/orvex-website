@@ -883,8 +883,12 @@ function renderPricing(){
 renderPricing();
 
 function handlePlanClick(planName){
-  if(planName==='FREE'){openAuth('register');return;}
-  if(!currentUser){window._pendingPlan=planName;openAuth('register');return;}
+  if(planName==='FREE'){
+    var links=STRIPE_LINKS['PREMIUM'];
+    var url=isAnnual?links.annual:links.monthly;
+    window.open(url,'_blank');
+    return;
+  }
   var links=STRIPE_LINKS[planName];
   if(links){var url=isAnnual?links.annual:links.monthly;window.open(url,'_blank');}
 }
