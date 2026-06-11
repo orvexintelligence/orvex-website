@@ -751,8 +751,8 @@ function updateUserUI() {
     ctaBtn.style.color = '#22c55e';
   } else {
     banner.style.display = 'none';
-    ctaBtn.textContent = l.navCta;
-    ctaBtn.onclick = function(){ openAuth('register'); };
+    ctaBtn.textContent = 'PREMIUM \u2192';
+    ctaBtn.onclick = function(){ handlePlanClick('PREMIUM'); };
     ctaBtn.style.borderColor = '';
     ctaBtn.style.color = '';
   }
