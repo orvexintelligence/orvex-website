@@ -159,7 +159,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--dim);padding:40px;
   </ul>
   <div style="display:flex;align-items:center;gap:8px">
     <button id="lang-toggle" onclick="toggleLang()" style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;color:#7a92aa;background:transparent;border:1px solid #1e3a5f;border-radius:4px;padding:4px 10px;cursor:pointer;transition:all .2s">IT / EN</button>
-    <button class="nav-cta" id="nav-cta-btn" onclick="openAuth('register')">INIZIA GRATIS</button>
+    <button class="nav-cta" id="nav-cta-btn" onclick="handlePlanClick('PREMIUM')">PREMIUM →</button>
   </div>
 </nav>
 
@@ -910,12 +910,11 @@ function runLiveAnalysis(){
   // ── LIMITE OSPITI NON LOGGATI ──
   if(!currentUser){
     var guestCount=parseInt(localStorage.getItem('orvex_guest_count')||'0');
-    if(guestCount>=1){
+    if(guestCount>=2){
       resEl.innerHTML='<div style="background:rgba(59,130,246,0.1);border:1px solid #3b82f6;border-radius:2px;padding:20px;text-align:center">' +
         '<div style="color:#3b82f6;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">🛡 '+l.guestLimitTitle+'</div>' +
         '<div style="color:#4a7ab5;font-size:13px;margin-bottom:16px">'+l.guestLimitSub+'</div>' +
-        '<button onclick="openAuth(\'register\')" style="background:#3b82f6;border:none;color:white;font-family:monospace;font-size:13px;font-weight:700;padding:10px 24px;cursor:pointer;border-radius:2px;margin-right:8px">'+l.guestRegBtn+' →</button>' +
-        '<button onclick="openAuth(\'login\')" style="background:transparent;border:1px solid #1e3a5f;color:#4a7ab5;font-family:monospace;font-size:12px;padding:10px 16px;cursor:pointer;border-radius:2px">'+l.guestLoginBtn+'</button>' +
+        '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:13px;font-weight:700;padding:10px 24px;cursor:pointer;border-radius:2px">PASSA A PREMIUM — €4,99/mese →</button>' +
         '</div>';
       return;
     }
