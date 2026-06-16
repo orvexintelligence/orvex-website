@@ -155,7 +155,7 @@ select.field option{background:#101828}
   .two-col{grid-template-columns:1fr!important}
   .nav-launch{font-size:9px;padding:0 8px;height:24px}
   .nav-sep{display:none!important}
-  #lang-btn{font-size:9px;padding:3px 6px;margin-right:4px;letter-spacing:.02em}
+  #lang-btn{display:none!important}
   #topnav > div:first-child{overflow:hidden}
 }
 @media(max-width:900px){
@@ -2323,8 +2323,20 @@ window.addEventListener('DOMContentLoaded',()=>{
   <div style="flex:1"></div>
   <button class="btn-danger" data-i18n="btn_activate_ir" onclick="openModal('contact')" style="font-size:9px;padding:3px 10px;flex-shrink:0">Activate Emergency Protocol</button>
 </div>
-<!-- Push content above emergency bar -->
-<div style="height:32px;flex-shrink:0"></div>
+<!-- Mobile language toggle — floating bottom right, only on mobile -->
+<button onclick="toggleLang()" id="lang-btn-mobile"
+  style="display:none;position:fixed;bottom:52px;right:12px;z-index:7000;
+         font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+         color:#7a92aa;background:#101828;border:1px solid #1e2d42;
+         border-radius:4px;padding:5px 10px;cursor:pointer;
+         box-shadow:0 2px 8px rgba(0,0,0,.4)">
+  IT / EN
+</button>
+<style>
+@media(max-width:640px){
+  #lang-btn-mobile{display:block!important}
+}
+</style>
 
 <!-- ═══════════════════ LEGAL FOOTER BAR ════════════════════════ -->
 <div id="legal-bar">
