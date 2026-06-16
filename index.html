@@ -153,10 +153,11 @@ select.field option{background:#101828}
 @media(max-width:640px){
   .hide-sm{display:none!important}
   .two-col{grid-template-columns:1fr!important}
-  .nav-launch{font-size:9px;padding:0 8px;height:24px}
+  .nav-launch{display:none!important}
   .nav-sep{display:none!important}
-  #lang-btn{font-size:9px;padding:3px 6px;margin-right:4px;letter-spacing:.02em}
-  #topnav > div:first-child{overflow:hidden}
+  #lang-btn{display:none!important}
+  #lang-btn-mob{display:inline-flex!important}
+  #legal-bar{padding-bottom:38px!important}
 }
 @media(max-width:900px){
   .hide-md{display:none!important}
@@ -190,7 +191,15 @@ select.field option{background:#101828}
     <span class="nav-sep hide-sm" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
     <a href="https://orvexintelligence.com/orvex-guard.html" target="_blank" rel="noopener" class="nav-launch hide-sm">🛡 Orvex Guard</a>
 
+    <!-- IT/EN mobile only — inline in navbar -->
+    <button id="lang-btn-mob" onclick="toggleLang()"
+      style="display:none;align-items:center;font-family:'JetBrains Mono',monospace;
+             font-size:9px;font-weight:700;color:#7a92aa;background:transparent;
+             border:1px solid #1e2d42;border-radius:4px;padding:3px 8px;
+             cursor:pointer;margin-left:8px;flex-shrink:0;white-space:nowrap">IT/EN</button>
     <div style="flex:1"></div>
+
+
 
     <!-- Live indicator -->
     <div style="display:flex;align-items:center;gap:6px;margin-right:14px" class="hide-sm">
@@ -2325,6 +2334,8 @@ window.addEventListener('DOMContentLoaded',()=>{
 </div>
 <!-- Push content above emergency bar -->
 <div style="height:32px;flex-shrink:0"></div>
+<style>@media(max-width:640px){#push-emerg{height:32px!important}}</style>
+<div id="push-emerg" style="height:32px;flex-shrink:0"></div>
 
 <!-- ═══════════════════ LEGAL FOOTER BAR ════════════════════════ -->
 <div id="legal-bar">
