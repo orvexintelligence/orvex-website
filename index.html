@@ -153,19 +153,10 @@ select.field option{background:#101828}
 @media(max-width:640px){
   .hide-sm{display:none!important}
   .two-col{grid-template-columns:1fr!important}
-  .nav-launch{display:none!important}
+  .nav-launch{font-size:9px;padding:0 8px;height:24px}
   .nav-sep{display:none!important}
-  #lang-btn{display:none!important}
-  #lang-btn-mob{display:inline-flex!important}
-  #eps-counter{display:none!important}
-  #crit-badge{display:none!important}
-  #view-landing section:first-child{min-height:auto!important}
-  #view-landing section:first-child > div[style*="z-index:10"]{padding-top:30px!important;padding-bottom:30px!important}
-  #emergency-bar{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px;padding:4px 10px}
-  #emergency-bar button{width:auto;font-size:8px;padding:2px 8px}
-  #emergency-bar a{color:#2eb87a!important}
-  #legal-bar{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:8px 10px}
-  #legal-bar span[style*="color:#1e2d42"]{display:none}
+  #lang-btn{font-size:9px;padding:3px 6px;margin-right:4px;letter-spacing:.02em}
+  #topnav > div:first-child{overflow:hidden}
 }
 @media(max-width:900px){
   .hide-md{display:none!important}
@@ -195,21 +186,21 @@ select.field option{background:#101828}
     <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
     <button id="sectors-btn" class="nav-tab" data-i18n-nav="nav_sectors" onclick="nav('sector/enterprise')">Sectors ▾</button>
     <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
-    <a href="https://app.orvexintelligence.com" target="_blank" rel="noopener" class="nav-launch">Launch Intelligence</a>
-    <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
-    <a href="https://orvexintelligence.com/orvex-guard.html" target="_blank" rel="noopener" class="nav-launch">🛡 Orvex Guard</a>
+    <a href="https://app.orvexintelligence.com" target="_blank" rel="noopener" class="nav-launch hide-sm">Launch Intelligence</a>
+    <span class="nav-sep hide-sm" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
+    <a href="https://orvexintelligence.com/orvex-guard.html" target="_blank" rel="noopener" class="nav-launch hide-sm">🛡 Orvex Guard</a>
 
     <div style="flex:1"></div>
 
     <!-- Live indicator -->
-    <div style="display:flex;align-items:center;gap:6px;margin-right:14px">
+    <div style="display:flex;align-items:center;gap:6px;margin-right:14px" class="hide-sm">
       <div class="live-dot"></div>
       <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#2eb87a">LIVE</span>
       <span id="eps-counter" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-left:4px">847 eps</span>
     </div>
 
     <!-- Critical badge -->
-    <div id="crit-badge" style="display:none;align-items:center;gap:5px;background:#7f1a1a;border:1px solid #e53935;border-radius:4px;padding:3px 8px;margin-right:10px">
+    <div id="crit-badge" style="display:none;align-items:center;gap:5px;background:#7f1a1a;border:1px solid #e53935;border-radius:4px;padding:3px 8px;margin-right:10px" class="hide-sm">
       <div class="crit-dot"></div>
       <span id="crit-count" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#e53935;font-weight:700">0 CRIT</span>
     </div>
@@ -220,7 +211,8 @@ select.field option{background:#101828}
   </div>
 
   <!-- Sector sub-nav strip -->
-  <div id="sector-subnav" style="height:30px;align-items:center;padding:0 16px;gap:4px;border-top:1px solid #1e2d42;background:#0c1220">
+  <div id="sector-subnav" style="height:30px;align-items:center;padding:0 16px;gap:4px;border-top:1px solid #1e2d42;background:#0c1220;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;white-space:nowrap">
+    <style>#sector-subnav::-webkit-scrollbar{display:none}</style>
     <span id="sector-label-txt" data-i18n-nav="nav_sector_label" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a6078;letter-spacing:.1em;text-transform:uppercase;margin-right:8px">SECTOR:</span>
     <button class="sector-tab-btn sec-ent active" data-sector="enterprise" data-i18n-nav="nav_enterprise" onclick="navSector('enterprise')">🏢 Enterprise</button>
     <button class="sector-tab-btn sec-gov" data-sector="government" data-i18n-nav="nav_government" onclick="navSector('government')">🔬 Research</button>
