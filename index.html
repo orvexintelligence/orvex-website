@@ -155,20 +155,10 @@ select.field option{background:#101828}
   .two-col{grid-template-columns:1fr!important}
   .nav-launch{font-size:9px;padding:0 8px;height:24px}
   .nav-sep{display:none!important}
-  #topnav > div:first-child{flex-wrap:wrap;height:auto!important;padding:8px 12px;gap:6px}
-  .nav-tab{font-size:9px;padding:0 8px;height:36px}
-  #view-landing section:first-child{min-height:70vh}
-#emergency-bar{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px;padding:4px 10px}
-#emergency-bar button{width:auto;font-size:8px;padding:2px 8px}
-#emergency-bar span[style*="color:#c8d8e8"]{color:#c8d8e8!important}
-#emergency-bar a{color:#c8d8e8!important}
-  #legal-bar{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:8px 10px}
-#legal-bar span[style*="color:#1e2d42"]{display:none}
 }
 @media(max-width:900px){
   .hide-md{display:none!important}
 }
-
 </style>
 </head>
 <body style="height:100vh;overflow:hidden;display:flex;flex-direction:column">
@@ -190,15 +180,13 @@ select.field option{background:#101828}
     <!-- Main nav tabs -->
     <button class="nav-tab active" data-view="landing" data-i18n-nav="nav_overview" onclick="nav('landing')">Overview</button>
     <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
-    <button class="nav-tab" data-view="soc" data-i18n-nav="nav_soc" onclick="nav('soc')">SOC Operations</button>
-    <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
     <button class="nav-tab" data-view="services" data-i18n-nav="nav_services" onclick="nav('services')">Services</button>
     <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
     <button id="sectors-btn" class="nav-tab" data-i18n-nav="nav_sectors" onclick="nav('sector/enterprise')">Sectors ▾</button>
     <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
     <a href="https://app.orvexintelligence.com" target="_blank" rel="noopener" class="nav-launch">Launch Intelligence</a>
     <span class="nav-sep" style="color:#1e2d42;font-size:12px;align-self:center">|</span>
-    <a href="/orvex-guard.html" class="nav-launch" style="color:#00d4ff;border-color:#00d4ff">🛡 Orvex Guard</a>
+    <a href="https://orvexintelligence.com/orvex-guard.html" target="_blank" rel="noopener" class="nav-launch">🛡 Orvex Guard</a>
 
     <div style="flex:1"></div>
 
@@ -231,7 +219,7 @@ select.field option{background:#101828}
 </nav>
 
 <!-- Metrics strip (SOC only) -->
-<div id="metrics-strip" style="display:none;background:#101828;border-bottom:1px solid #1e2d42;flex-shrink:0">
+<div id="metrics-strip" style="display:none!important;background:#101828;border-bottom:1px solid #1e2d42;flex-shrink:0">
   <div style="display:flex;flex-wrap:wrap">
     <div style="flex:1;padding:7px 14px;border-right:1px solid #1e2d42;min-width:0">
       <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a7898;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">TOTAL EVENTS</div>
@@ -283,7 +271,7 @@ select.field option{background:#101828}
       <p class="anim-up-2" data-i18n="hero_body" style="font-size:clamp(12px,1.3vw,15px);color:#7a92aa;max-width:540px;line-height:1.8;margin-bottom:32px">Advanced cybersecurity platform and expert consulting for enterprise, government, healthcare, and private sector clients. AI-powered detection, real-time monitoring, and seasoned incident response — unified.</p>
       <div class="anim-up-3" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px">
         <button class="btn-pri" data-i18n="btn_demo" onclick="openModal('demo')">Request Consultation →</button>
-        <button class="btn-ghost" data-i18n="btn_soc" onclick="nav('soc')">Enter SOC Platform</button>
+        <button class="btn-ghost" data-i18n="btn_soc" onclick="nav('soc')" style="display:none">Enter SOC Platform</button>
       </div>
       <!-- Sector pills -->
       <div style="display:flex;flex-wrap:wrap;gap:8px">
@@ -335,6 +323,63 @@ select.field option{background:#101828}
     </div>
   </section>
 
+
+  <!-- ◈ OUR PRODUCTS section -->
+  <section style="padding:56px clamp(24px,5vw,80px);background:#080c14">
+    <div style="max-width:1100px;margin:0 auto">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a7fff;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">◈ I NOSTRI PRODOTTI</div>
+      <h2 style="font-family:'JetBrains Mono',monospace;font-size:clamp(18px,2.8vw,28px);font-weight:700;color:#c8d8e8;margin-bottom:24px">Applicazioni Web Proprietarie</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+
+        <!-- Orvex Guard -->
+        <a href="https://orvexintelligence.com/orvex-guard.html" target="_blank" rel="noopener"
+           style="text-decoration:none;display:block">
+          <div class="glass" style="padding:22px 24px;border-color:rgba(42,127,255,.35);transition:all .2s;cursor:pointer"
+               onmouseover="this.style.borderColor='#2a7fff';this.style.background='rgba(42,127,255,.08)'"
+               onmouseout="this.style.borderColor='rgba(42,127,255,.35)';this.style.background='rgba(16,24,40,.7)'">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+              <span style="font-size:24px">🛡️</span>
+              <div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#2a7fff;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px">OG-WEB · AI-POWERED · NIS2</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#c8d8e8">Orvex Guard</div>
+              </div>
+            </div>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:14px">Piattaforma anti-truffa AI-powered per privati e aziende. Breach detection su 47B+ record, Threat Analyzer, Identity Shield e conformità NIS2.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+              <span class="tag">Breach Detection</span>
+              <span class="tag">Threat Analyzer AI</span>
+              <span class="tag">NIS2 Compliant</span>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#2a7fff;font-weight:600">→ orvexintelligence.com/orvex-guard.html</div>
+          </div>
+        </a>
+
+        <!-- Launch Intelligence -->
+        <a href="https://app.orvexintelligence.com" target="_blank" rel="noopener"
+           style="text-decoration:none;display:block">
+          <div class="glass" style="padding:22px 24px;border-color:rgba(0,184,217,.35);transition:all .2s;cursor:pointer"
+               onmouseover="this.style.borderColor='#00b8d9';this.style.background='rgba(0,184,217,.06)'"
+               onmouseout="this.style.borderColor='rgba(0,184,217,.35)';this.style.background='rgba(16,24,40,.7)'">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+              <span style="font-size:24px">🚀</span>
+              <div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#00b8d9;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px">LI-WEB · SAAS · CYBER INTELLIGENCE</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#c8d8e8">Launch Intelligence</div>
+              </div>
+            </div>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:14px">Piattaforma SaaS di Cyber Intelligence. SOC Dashboard live, Threat Intelligence, MITRE ATT&CK, Digital Forensics e reportistica esecutiva.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+              <span class="tag" style="color:#00b8d9;border-color:rgba(0,184,217,.3);background:rgba(0,184,217,.1)">SOC Dashboard</span>
+              <span class="tag" style="color:#00b8d9;border-color:rgba(0,184,217,.3);background:rgba(0,184,217,.1)">Threat Intelligence</span>
+              <span class="tag" style="color:#00b8d9;border-color:rgba(0,184,217,.3);background:rgba(0,184,217,.1)">MITRE ATT&CK</span>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00b8d9;font-weight:600">→ app.orvexintelligence.com</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
   <!-- Contact strip -->
   <section style="padding:40px clamp(24px,5vw,80px);background:#080c14">
     <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px" class="two-col">
@@ -343,7 +388,7 @@ select.field option{background:#101828}
         <p data-i18n="cta_sub" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7a92aa;line-height:1.7;margin-bottom:18px">Our team delivers precision security for every context — government, healthcare, enterprise, or private.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-pri" data-i18n="btn_demo" onclick="openModal('demo')">Request Consultation</button>
-          <button class="btn-ghost" data-i18n="btn_soc" onclick="nav('soc')">Enter SOC Platform</button>
+          <button class="btn-ghost" data-i18n="btn_soc" onclick="nav('soc')" style="display:none">Enter SOC Platform</button>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
@@ -608,13 +653,13 @@ select.field option{background:#101828}
     </div>
     <!-- Service cards -->
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:10px">
-      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">IR-001</div><div data-i18n="svc_ir_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Strategic Incident Response</div></div></div><p data-i18n="svc_ir_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Specialist intervention for cyber crisis management. Analysis of the compromised perimeter, proactive threat isolation and technical coordination for restoring operational continuity.</p><div data-i18n-tags="svc_ir_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Crisis Management</span><span class="tag">Threat Containment</span><span class="tag">Operational Recovery</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
-      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">DF-002</div><div data-i18n="svc_df_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Forensic Intelligence &amp; Investigative Analysis</div></div></div><p data-i18n="svc_df_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Acquisition and technical analysis of compromised systems to international evidentiary standards. Forensic reconstruction of event timelines, reverse engineering of malicious artefacts and production of legally admissible reports to support executive decisions.</p><div data-i18n-tags="svc_df_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Timeline Forensics</span><span class="tag">Malware Analysis</span><span class="tag">Legal-Grade Evidence</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
-      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">SA-003</div><div data-i18n="svc_sa_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Security Posture Assessment</div></div></div><p data-i18n="svc_sa_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Structured evaluation of enterprise cyber resilience. Risk perimeter analysis through international frameworks (NIST CSF, CIS Controls v8) with critical exposure mapping and a strategic deliverable defining intervention priorities.</p><div data-i18n-tags="svc_sa_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Risk Exposure</span><span class="tag">NIST CSF</span><span class="tag">Executive Reporting</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">IR-001</div><div data-i18n="svc_ir_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Incident Response & Crisis Advisory</div></div></div><p data-i18n="svc_ir_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Coordinamento strategico e advisory per la gestione di crisi cyber. Analisi del perimetro compromesso, guida all'isolamento delle minacce e pianificazione del ripristino. Ruolo advisory — supporto ai team interni e coordinamento delle attività di risposta.</p><div data-i18n-tags="svc_ir_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Crisis Management</span><span class="tag">Threat Containment</span><span class="tag">Operational Recovery</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">DF-002</div><div data-i18n="svc_df_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Digital Forensics &amp; Analisi Investigativa</div></div></div><p data-i18n="svc_df_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Analisi tecnica di sistemi compromessi: analisi log, ricostruzione timeline, recupero dati e identificazione malware. Report tecnico dettagliato per decisioni interne. Per procedimenti legali si consiglia il coordinamento con un legale.</p><div data-i18n-tags="svc_df_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Analisi Log</span><span class="tag">Recupero Dati</span><span class="tag">Identificazione Malware</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      
       <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">RA-004</div><div data-i18n="svc_ra_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Cyber Risk Governance &amp; Strategic Advisory</div></div></div><p data-i18n="svc_ra_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Quantitative modelling of cyber risk to translate technical exposure into measurable economic impact. We define a security investment roadmap based on real risk priorities, aligned with business objectives and sustainable over the long term.</p><div data-i18n-tags="svc_ra_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Risk Quantification</span><span class="tag">Investment Roadmap</span><span class="tag">Board Advisory</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
-      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">AR-005</div><div data-i18n="svc_ar_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Security Architecture &amp; Infrastructure Design</div></div></div><p data-i18n="svc_ar_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Enterprise-grade security architecture design. Zero Trust model implementation, cloud posture management (CSPM) and infrastructure segmentation to contain the attack surface. Technology supply chain and third-party vendor risk assessment.</p><div data-i18n-tags="svc_ar_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Zero Trust</span><span class="tag">CSPM</span><span class="tag">Supply Chain Security</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">AR-005</div><div data-i18n="svc_ar_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Security Architecture &amp; Cyber Product Development</div></div></div><p data-i18n="svc_ar_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Progettazione di architetture di sicurezza enterprise-grade e sviluppo di applicazioni web proprietarie in ambito cybersecurity. Realizziamo prodotti digitali su misura: piattaforme di breach detection, threat analysis AI-powered e dashboard di conformità NIS2. Dalla architettura zero-trust allo sviluppo full-stack sicuro.</p><div data-i18n-tags="svc_ar_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Secure Development</span><span class="tag">AI-Powered Security</span><span class="tag">NIS2 Compliance</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
       <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">TI-006</div><div data-i18n="svc_ti_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Threat Intelligence &amp; Digital Risk Monitoring</div></div></div><p data-i18n="svc_ti_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Continuous digital risk monitoring across open sources, deep web and dark web. Sector-specific IOC feed management, threat actor tracking and proactive alerting on credential exposures, corporate assets or brand reputation. Operational and strategic intelligence tailored to your environment.</p><div data-i18n-tags="svc_ti_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Dark Web Intelligence</span><span class="tag">IOC Management</span><span class="tag">Adversary Tracking</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
-      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">CS-007</div><div data-i18n="svc_cs_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Cybersecurity Engineering &amp; Proprietary Development</div></div></div><p data-i18n="svc_cs_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Development of custom defensive solutions, advanced cryptographic implementations and security process automation. We design proprietary tools for high-complexity enterprise environments.</p><div data-i18n-tags="svc_cs_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Custom Engineering</span><span class="tag">Cryptographic Design</span><span class="tag">Secure Automation</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
+      <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">CS-007</div><div data-i18n="svc_cs_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Cybersecurity Engineering &amp; Proprietary Development</div></div></div><p data-i18n="svc_cs_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Sviluppo di applicazioni web difensive e tool di cybersecurity su misura. Software sicuro by design, automazione dei processi di sicurezza e piattaforme AI-powered per breach detection e conformità NIS2.</p><div data-i18n-tags="svc_cs_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Web App Security</span><span class="tag">AI-Powered Tools</span><span class="tag">Secure Automation</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
       <div class="glass" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a6078;margin-bottom:2px">RS-008</div><div data-i18n="svc_rs_title" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#c8d8e8">Remote Security Operations &amp; Infrastructure Support</div></div></div><p data-i18n="svc_rs_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7;margin-bottom:10px">Remote operational support for critical infrastructure environments. Deployment of encrypted channels for high-priority technical interventions, proactive hardening of exposed systems and operational continuity monitoring. Dedicated remote coverage for organisations requiring immediate responsiveness.</p><div data-i18n-tags="svc_rs_tags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"><span class="tag">Encrypted Operations</span><span class="tag">Infrastructure Hardening</span><span class="tag">Continuity Monitoring</span></div><button data-i18n="btn_request_eng" class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px;font-size:10px" onclick="openModal('contact')">Request Engagement</button></div>
     </div>
   </div>
@@ -638,7 +683,7 @@ select.field option{background:#101828}
         <p id="sec-body" style="font-size:clamp(12px,1.3vw,15px);max-width:540px;line-height:1.8;margin-bottom:32px;color:var(--ssub,#7a92aa)"></p>
         <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px">
           <button id="sec-cta1" class="btn-pri" onclick="openModal('contact')">Request Consultation →</button>
-          <button class="btn-ghost" onclick="nav('soc')">Enter SOC Platform</button>
+          <button class="btn-ghost" onclick="nav('soc')" style="display:none">Enter SOC Platform</button>
         </div>
         <div id="sec-stats" style="display:flex;gap:0;flex-wrap:wrap"></div>
       </div>
@@ -790,7 +835,7 @@ state.selectedId=state.events[0].id;
 // ── Navigation ──────────────────────────────────────────────────────────────
 function nav(view){
   // Default routing — prevents blank screens
-  if(view==='sector')view='sector/enterprise';
+  if(view==='soc'){view='landing';}
 
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('metrics-strip').style.display='none';
@@ -842,42 +887,42 @@ const SECTORS={
   enterprise:{
     cls:'sec-ent',accent:'#2a7fff',
     en:{
-      title:'ORVEX <span style="color:#2a7fff">ENTERPRISE</span>',
+      title:'ORVEX <span style="color:#2a7fff">ENTERPRISE ADVISORY</span>',
       badgeTxt:'🏢 Enterprise — Corporate SOC Operations',
-      body:'Full-stack SOC monitoring, threat detection, and compliance management for multinational enterprises. From endpoint to cloud — unified visibility across your entire attack surface.',
-      stats:[{l:'ENDPOINTS PROTECTED',v:'14,829'},{l:'EVENTS / DAY',v:'4.8B+'},{l:'SOC UPTIME',v:'99.99%'}],
+      body:'Strategic cybersecurity advisory for enterprise organisations. Security posture assessment, compliance guidance and architectural consulting — delivered as a consultative partnership alongside your internal team.',
+      stats:[{l:'ENGAGEMENT MODEL',v:'ADVISORY'},{l:'FRAMEWORKS',v:'NIST · ISO 27001'},{l:'DELIVERABLE',v:'STRATEGIC REPORT'}],
       features:[
         {i:'🛡️',t:'Enterprise SOC',d:'24/7 Detection-Focused SOC with automated playbooks, SIEM integration, and dedicated analyst coverage for complex environments.'},
-        {i:'🔍',t:'Vulnerability Management',d:'Continuous CVE scanning across all corporate assets. EPSS-weighted remediation prioritization mapped to business risk.'},
-        {i:'⚖️',t:'Compliance Automation',d:'SOC 2, ISO 27001, PCI DSS, and NIST CSF framework monitoring with real-time posture reporting and evidence collection.'},
-        {i:'🔬',t:'Forensic Investigations',d:'Chain-of-custody IR investigations. Memory forensics and legal-ready evidence bundles for internal and external proceedings.'},
-        {i:'📊',t:'Executive Reporting',d:'Board-level risk dashboards. Financial impact modelling and CISO briefing packages on a weekly cadence.'},
-        {i:'🏗️',t:'Security Architecture',d:'Zero-trust network design, CSPM implementation, and third-party vendor risk assessment programs.'},
+        {i:'🔍',t:'Vulnerability Assessment',d:'Technical assessment of the corporate attack surface. CVE analysis, EPSS-weighted prioritization and remediation roadmap delivered as a strategic report.'},
+        {i:'⚖️',t:'Compliance Advisory',d:'Independent evaluation of compliance posture against SOC 2, ISO 27001, PCI DSS and NIST CSF. Gap analysis and remediation roadmap — advisory role only.'},
+        {i:'🔬',t:'Incident Analysis',d:'Technical analysis of security incidents: log review, timeline reconstruction and root cause identification. Detailed report for internal decisions and remediation planning.'},
+        {i:'📊',t:'Executive Reporting',d:'Strategic risk reports for board-level decisions. Security posture summaries, financial impact analysis and prioritised remediation roadmaps.'},
+        {i:'🏗️',t:'Security Architecture Advisory',d:'Zero-trust architecture design, cloud security posture guidance and third-party vendor risk assessment — purely advisory and architectural.'},
       ],
-      kpis:[{k:'Patch Compliance',v:'94.2%'},{k:'Policy Violations',v:'7'},{k:'Vendor Risk Score',v:'B+'}],
-      clients:['Fortune 500','Big 4 Audit','Global Bank','FTSE 100','Tech Unicorn'],
-      ctaTitle:'Ready to secure your enterprise environment?',
-      ctaSub:'Contact our SOC Analyst team for a sector-specific assessment.',
+      kpis:[{k:'Engagement Model',v:'Advisory'},{k:'Frameworks',v:'NIST · ISO 27001'},{k:'Deliverable',v:'Strategic Report'}],
+      clients:['PMI & Aziende','Gruppi Industriali','Settore Finanziario','Tecnologia','Retail & E-commerce'],
+      ctaTitle:'Vuoi una valutazione della postura di sicurezza della tua azienda?',
+      ctaSub:'Proponiamo un primo assessment esplorativo gratuito — senza impegno.',
       topoLabel:'Corporate Infrastructure — LIVE TOPOLOGY',
       featLabel:'◈ ENTERPRISE SECURITY POSTURE',featTitle:'Enterprise Security Suite',
     },
     it:{
-      title:'ORVEX <span style="color:#2a7fff">ENTERPRISE</span>',
+      title:'ORVEX <span style="color:#2a7fff">ENTERPRISE ADVISORY</span>',
       badgeTxt:'🏢 Enterprise — Operazioni SOC Aziendali',
-      body:'Monitoraggio SOC full-stack, rilevamento delle minacce e gestione della compliance per imprese multinazionali. Dall\'endpoint al cloud — visibilità unificata su tutta la superficie d\'attacco.',
-      stats:[{l:'ENDPOINT PROTETTI',v:'14.829'},{l:'EVENTI / GIORNO',v:'4,8B+'},{l:'UPTIME SOC',v:'99,99%'}],
+      body:'Advisory strategico in cybersecurity per organizzazioni enterprise. Valutazione della postura di sicurezza, guida alla compliance e consulenza architetturale — erogato come partnership consulenziale a fianco del team interno.',
+      stats:[{l:'MODELLO DI INGAGGIO',v:'ADVISORY'},{l:'FRAMEWORK',v:'NIST · ISO 27001'},{l:'DELIVERABLE',v:'REPORT STRATEGICO'}],
       features:[
         {i:'🛡️',t:'SOC Enterprise',d:'SOC orientato al rilevamento 24/7 con playbook automatizzati, integrazione SIEM e copertura analitica dedicata per ambienti complessi.'},
-        {i:'🔍',t:'Gestione Vulnerabilità',d:'Scansione CVE continua su tutti gli asset aziendali. Prioritizzazione della remediation con pesatura EPSS mappata al rischio di business.'},
-        {i:'⚖️',t:'Automazione Compliance',d:'Monitoraggio in tempo reale della postura SOC 2, ISO 27001, PCI DSS e NIST CSF con raccolta automatizzata delle evidenze.'},
-        {i:'🔬',t:'Indagini Forensi',d:'Investigazioni IR con catena di custodia certificata. Acquisizione di memoria e pacchetti probatori pronti per procedimenti legali.'},
-        {i:'📊',t:'Reportistica Esecutiva',d:'Dashboard del rischio a livello board. Modellazione dell\'impatto finanziario e pacchetti briefing CISO su cadenza settimanale.'},
-        {i:'🏗️',t:'Architettura di Sicurezza',d:'Progettazione zero-trust, implementazione CSPM e programmi di valutazione del rischio fornitori di terze parti.'},
+        {i:'🔍',t:'Vulnerability Assessment',d:'Valutazione tecnica della superficie di attacco aziendale. Analisi CVE, prioritizzazione EPSS e roadmap di remediation consegnata come report strategico.'},
+        {i:'⚖️',t:'Advisory Compliance',d:'Valutazione indipendente della postura di conformità rispetto a SOC 2, ISO 27001, PCI DSS e NIST CSF. Gap analysis e roadmap di remediation — ruolo esclusivamente advisory.'},
+        {i:'🔬',t:'Analisi Incidenti',d:'Analisi tecnica degli incidenti di sicurezza: revisione log, ricostruzione timeline e identificazione della causa radice. Report dettagliato per decisioni interne e pianificazione della remediation.'},
+        {i:'📊',t:'Reportistica Esecutiva',d:'Report strategici sul rischio per decisioni a livello board. Sommari della postura di sicurezza, analisi dell\'impatto finanziario e roadmap di remediation prioritizzate.'},
+        {i:'🏗️',t:'Advisory Architettura di Sicurezza',d:'Progettazione architetture zero-trust, guida alla postura cloud e valutazione del rischio fornitori terzi — esclusivamente advisory e architetturale.'},
       ],
-      kpis:[{k:'Conformità Patch',v:'94,2%'},{k:'Violazioni Policy',v:'7'},{k:'Rischio Fornitore',v:'B+'}],
-      clients:['Fortune 500','Big 4 Audit','Global Bank','FTSE 100','Tech Unicorn'],
-      ctaTitle:'Pronto a proteggere il tuo ambiente enterprise?',
-      ctaSub:'Contatta il nostro team di Analisti SOC per una valutazione settoriale.',
+      kpis:[{k:'Modello Ingaggio',v:'Advisory'},{k:'Framework',v:'NIST · ISO 27001'},{k:'Deliverable',v:'Report Strategico'}],
+      clients:['PMI & Aziende','Gruppi Industriali','Settore Finanziario','Tecnologia','Retail & E-commerce'],
+      ctaTitle:'Vuoi una valutazione della postura di sicurezza della tua azienda?',
+      ctaSub:'Proponiamo un primo assessment esplorativo gratuito — senza impegno.',
       topoLabel:'Infrastruttura Aziendale — TOPOLOGIA LIVE',
       featLabel:'◈ POSTURA DI SICUREZZA ENTERPRISE',featTitle:'Suite di Sicurezza Enterprise',
     },
@@ -892,17 +937,17 @@ const SECTORS={
       stats:[{l:'VALIDATED IOCs',v:'ONGOING'},{l:'INTELLIGENCE REPORTS',v:'QUARTERLY'},{l:'TREND ANALYSES',v:'PROPRIETARY'}],
       features:[
         {i:'🔬',t:'Independent Threat Research',d:'Autonomous analysis of emerging attack vectors, threat actor TTPs and zero-day exposure — independent from vendor bias and unfiltered by commercial interests.'},
-        {i:'🗺️',t:'Proactive Intelligence',d:'Forward-looking threat modelling and adversary simulation to anticipate attack campaigns before they reach operational environments.'},
+        {i:'🗺️',t:'Proactive Intelligence',d:'Forward-looking threat modelling and open-source intelligence analysis to anticipate attack campaigns before they reach operational environments.'},
         {i:'🔒',t:'Zero-Trust Architecture',d:'Design and advisory for zero-trust network architectures, identity segmentation and micro-perimeter enforcement tailored to high-criticality environments.'},
         {i:'📊',t:'Strategic Threat Reports',d:'Proprietary intelligence reports delivered to internal security teams — trend analysis, IOC validation and executive-level risk briefings.'},
         {i:'🧩',t:'Threat Intelligence Integration',d:'Advisory on integrating external threat feeds, ISAC outputs and sector-specific intelligence into existing detection and response workflows.'},
         {i:'⚙️',t:'Security Architecture Review',d:'Independent review of existing security architectures to identify structural gaps, misconfigurations and exposure paths not visible through standard assessments.'},
       ],
       kpis:[{k:'Validated IOCs',v:'Ongoing'},{k:'Intelligence Reports',v:'Quarterly'},{k:'Proprietary Analyses',v:'Tailored'}],
-      clients:['Research Institutions','Critical Infrastructure','Defence Contractors','Technology Groups','Regulated Entities'],
+      clients:['Istituti di Ricerca','Infrastrutture Critiche','Gruppi Tecnologici','Enti Regolamentati','Consulenti & CISO'],
       ctaTitle:'Require advanced threat research for your organisation?',
       ctaSub:'Request a strategic consultation to discuss intelligence requirements and architecture posture.',
-      topoLabel:'Research Infrastructure — THREAT TOPOLOGY',
+      topoLabel:'Research Infrastructure — THREAT ANALYSIS',
       featLabel:'◈ ADVANCED RESEARCH POSTURE',featTitle:'Threat Research & Strategic Intelligence',
     },
     it:{
@@ -912,7 +957,7 @@ const SECTORS={
       stats:[{l:'IOC VALIDATI',v:'IN CORSO'},{l:'REPORT INTELLIGENCE',v:'TRIMESTRALI'},{l:'ANALISI DI TREND',v:'PROPRIETARIE'}],
       features:[
         {i:'🔬',t:'Ricerca Indipendente sulle Minacce',d:'Analisi autonoma di vettori d\'attacco emergenti, TTP degli attori minaccia ed esposizioni zero-day — indipendente da bias di vendor e non filtrata da interessi commerciali.'},
-        {i:'🗺️',t:'Intelligence Proattiva',d:'Modellazione predittiva delle minacce e simulazione avversariale per anticipare campagne d\'attacco prima che raggiungano gli ambienti operativi.'},
+        {i:'🗺️',t:'Intelligence Proattiva',d:'Modellazione predittiva delle minacce e analisi OSINT per anticipare campagne d\'attacco prima che raggiungano gli ambienti operativi.'},
         {i:'🔒',t:'Architettura Zero-Trust',d:'Design e advisory per architetture zero-trust, segmentazione delle identità e micro-perimetri su misura per ambienti ad elevata criticità.'},
         {i:'📊',t:'Report Strategici sulle Minacce',d:'Report di intelligence proprietari consegnati ai team di sicurezza interni — analisi di trend, validazione IOC e briefing esecutivi sul rischio.'},
         {i:'🧩',t:'Integrazione Threat Intelligence',d:'Advisory sull\'integrazione di feed di minacce esterni, output ISAC e intelligence settoriale nei workflow di detection e response esistenti.'},
@@ -922,7 +967,7 @@ const SECTORS={
       clients:['Istituti di Ricerca','Infrastrutture Critiche','Contractor della Difesa','Gruppi Tecnologici','Enti Regolamentati'],
       ctaTitle:'Hai bisogno di ricerca avanzata sulle minacce per la tua organizzazione?',
       ctaSub:'Richiedi una consulenza strategica per discutere i requisiti di intelligence e la postura architetturale.',
-      topoLabel:'Infrastruttura di Ricerca — TOPOLOGIA DELLE MINACCE',
+      topoLabel:'Infrastruttura di Ricerca — ANALISI DELLE MINACCE',
       featLabel:'◈ POSTURA DI RICERCA AVANZATA',featTitle:'Ricerca sulle Minacce & Intelligence Strategica',
     },
     topoType:'gov',
@@ -1077,7 +1122,7 @@ const TOPO_DATA={
     edges:[['inet','fw-edge'],['fw-edge','dmz-web'],['fw-edge','dmz-mail'],['fw-edge','vpn'],['fw-edge','fw-core'],['vpn','fw-core'],['fw-core','srv-dc'],['fw-core','srv-db'],['fw-core','srv-app'],['fw-core','k8s'],['srv-dc','ws1'],['srv-dc','ws2'],['srv-app','ws3'],['srv-app','ws4'],['srv-db','bk']],
   },
   gov:{
-    nodes:[{id:'inet',x:50,y:7,l:'INTERNET',t:'cloud'},{id:'ngfw',x:50,y:20,l:'NGFW-CLASSIFIED',t:'fw'},{id:'dmz',x:28,y:33,l:'dmz-secure',t:'srv'},{id:'vpn',x:72,y:33,l:'vpn-classified',t:'gw'},{id:'core',x:50,y:47,l:'core-classified',t:'fw'},{id:'dc1',x:22,y:62,l:'dc-primary',t:'srv'},{id:'dc2',x:50,y:62,l:'dc-secondary',t:'srv'},{id:'scif',x:78,y:62,l:'SCIF-network',t:'cloud'},{id:'ep1',x:18,y:80,l:'classified-ws',t:'ep'},{id:'ep2',x:38,y:80,l:'analyst-ws',t:'ep'},{id:'ep3',x:58,y:80,l:'ops-terminal',t:'ep'},{id:'ep4',x:78,y:80,l:'mobile-sec',t:'ep'}],
+    nodes:[{id:'inet',x:50,y:7,l:'INTERNET',t:'cloud'},{id:'ngfw',x:50,y:20,l:'ngfw-research',t:'fw'},{id:'dmz',x:28,y:33,l:'dmz-secure',t:'srv'},{id:'vpn',x:72,y:33,l:'vpn-research',t:'gw'},{id:'core',x:50,y:47,l:'core-research',t:'fw'},{id:'dc1',x:22,y:62,l:'dc-primary',t:'srv'},{id:'dc2',x:50,y:62,l:'dc-secondary',t:'srv'},{id:'scif',x:78,y:62,l:'threat-intel',t:'cloud'},{id:'ep1',x:18,y:80,l:'analyst-ws-01',t:'ep'},{id:'ep2',x:38,y:80,l:'analyst-ws',t:'ep'},{id:'ep3',x:58,y:80,l:'research-node',t:'ep'},{id:'ep4',x:78,y:80,l:'mobile-sec',t:'ep'}],
     edges:[['inet','ngfw'],['ngfw','dmz'],['ngfw','vpn'],['ngfw','core'],['vpn','core'],['core','dc1'],['core','dc2'],['core','scif'],['dc1','ep1'],['dc1','ep2'],['dc2','ep3'],['dc2','ep4']],
   },
   health:{
@@ -1807,30 +1852,30 @@ const TRANSLATIONS={
     svc_label:'◈ PROFESSIONAL SERVICES DIVISION', svc_title:'Consulting Services',
     banner_title:'ORVEX CRITICAL RESPONSE',
     // ── Service cards ──
-    svc_ir_title:'Strategic Incident Response',
-    svc_ir_desc:'Specialist intervention for cyber crisis management. Analysis of the compromised perimeter, proactive threat isolation and technical coordination for restoring operational continuity.',
-    svc_df_title:'Forensic Intelligence & Investigative Analysis',
-    svc_df_desc:'Acquisition and technical analysis of compromised systems to international evidentiary standards. Forensic reconstruction of event timelines, reverse engineering of malicious artefacts and production of legally admissible reports to support executive decisions.',
+    svc_ir_title:'Incident Response & Crisis Advisory',
+    svc_ir_desc:'Strategic coordination and advisory for cyber crisis management. Rapid assessment of the compromised perimeter, threat isolation guidance and operational continuity planning. Advisory role — supporting and coordinating internal response teams.',
+    svc_df_title:'Digital Forensics & Investigative Analysis',
+    svc_df_desc:'Technical analysis of compromised systems: log analysis, timeline reconstruction, data recovery and malware identification. Detailed technical report for internal decisions. For legal proceedings, coordination with legal counsel is recommended.',
     svc_sa_title:'Security Posture Assessment',
     svc_sa_desc:'Structured evaluation of enterprise cyber resilience. Risk perimeter analysis through international frameworks (NIST CSF, CIS Controls v8) with critical exposure mapping and a strategic deliverable defining intervention priorities.',
     svc_ra_title:'Cyber Risk Governance & Strategic Advisory',
     svc_ra_desc:'Quantitative modelling of cyber risk to translate technical exposure into measurable economic impact. We define a security investment roadmap based on real risk priorities, aligned with business objectives and sustainable over the long term.',
-    svc_ar_title:'Security Architecture & Infrastructure Design',
-    svc_ar_desc:'Enterprise-grade security architecture design. Zero Trust model implementation, cloud posture management (CSPM) and infrastructure segmentation to contain the attack surface. Technology supply chain and third-party vendor risk assessment.',
+    svc_ar_title:'Security Architecture & Cyber Product Development',
+    svc_ar_desc:'Enterprise-grade security architecture design and development of proprietary web applications in cybersecurity. We build custom digital products: breach detection platforms, AI-powered threat analysis and NIS2 compliance dashboards. From zero-trust architecture to secure full-stack development.',
     svc_ti_title:'Threat Intelligence & Digital Risk Monitoring',
     svc_ti_desc:'Continuous digital risk monitoring across open sources, deep web and dark web. Sector-specific IOC feed management, threat actor tracking and proactive alerting on credential exposures, corporate assets or brand reputation. Operational and strategic intelligence tailored to your environment.',
     svc_cs_title:'Cybersecurity Engineering & Proprietary Development',
-    svc_cs_desc:'Development of custom defensive solutions, advanced cryptographic implementations and security process automation. We design proprietary tools for high-complexity enterprise environments.',
+    svc_cs_desc:'Development of custom defensive web applications and cybersecurity tools. Secure software design, security process automation and AI-powered threat detection platforms for breach detection and NIS2 compliance.',
     svc_rs_title:'Remote Security Operations & Infrastructure Support',
     svc_rs_desc:'Remote operational support for critical infrastructure environments. Deployment of encrypted channels for high-priority technical interventions, proactive hardening of exposed systems and operational continuity monitoring. Dedicated remote coverage for organisations requiring immediate responsiveness.',
     // ── Service card tags ──
     svc_ir_tags:['Crisis Management','Threat Containment','Operational Recovery'],
-    svc_df_tags:['Timeline Forensics','Malware Analysis','Legal-Grade Evidence'],
+    svc_df_tags:['Log Analysis','Data Recovery','Malware Identification'],
     svc_sa_tags:['Risk Exposure','NIST CSF','Executive Reporting'],
     svc_ra_tags:['Risk Quantification','Investment Roadmap','Board Advisory'],
-    svc_ar_tags:['Zero Trust','CSPM','Supply Chain Security'],
+    svc_ar_tags:['Secure Development','AI-Powered Security','NIS2 Compliance'],
     svc_ti_tags:['Dark Web Intelligence','IOC Management','Adversary Tracking'],
-    svc_cs_tags:['Custom Engineering','Cryptographic Design','Secure Automation'],
+    svc_cs_tags:['Web App Security','AI-Powered Tools','Secure Automation'],
     svc_rs_tags:['Encrypted Operations','Infrastructure Hardening','Operational Continuity'],
     // ── Modals ──
     modal_demo_badge:'RICHIEDI CONSULENZA', modal_demo_title:'Richiedi una Consulenza', modal_demo_submit:'Invia Richiesta di Consulenza',
@@ -1888,20 +1933,20 @@ const TRANSLATIONS={
     svc_label:'◈ DIVISIONE SERVIZI PROFESSIONALI', svc_title:'Servizi di Consulenza',
     banner_title:'ORVEX CRITICAL RESPONSE',
     // ── Schede servizi ──
-    svc_ir_title:'Incident Response Strategico',
-    svc_ir_desc:'Intervento specialistico per la gestione di crisi cyber. Analisi del perimetro compromesso, isolamento proattivo delle minacce e coordinamento tecnico per il ripristino della continuità operativa.',
-    svc_df_title:'Intelligence Forense & Analisi Investigativa',
-    svc_df_desc:'Acquisizione e analisi tecnica di sistemi compromessi secondo standard probatori internazionali. Ricostruzione forense della timeline degli eventi, reverse engineering di artefatti malevoli e produzione di report con valore giuridico a supporto delle decisioni executive.',
+    svc_ir_title:'Incident Response & Crisis Advisory',
+    svc_ir_desc:'Coordinamento strategico e advisory per la gestione di crisi cyber. Analisi del perimetro compromesso, guida all\'isolamento delle minacce e pianificazione del ripristino operativo. Ruolo advisory — supporto e coordinamento dei team interni di risposta.',
+    svc_df_title:'Digital Forensics & Analisi Investigativa',
+    svc_df_desc:'Analisi tecnica di sistemi compromessi: analisi log, ricostruzione timeline degli eventi, recupero dati e identificazione malware. Report tecnico dettagliato per decisioni interne. Per procedimenti legali si consiglia il coordinamento con un legale.',
     svc_sa_title:'Security Posture Assessment',
     svc_sa_desc:'Valutazione strutturata della resilienza cyber aziendale. Analisi del perimetro di rischio attraverso framework internazionali (NIST CSF, CIS Controls v8) con mappatura delle esposizioni critiche e deliverable strategico per le priorità di intervento.',
     svc_ra_title:'Cyber Risk Governance & Strategic Advisory',
     svc_ra_desc:'Modellazione quantitativa del rischio informatico per tradurre l\'esposizione tecnica in impatto economico misurabile. Definiamo una roadmap di investimento in sicurezza basata su priorità di rischio reale, allineata agli obiettivi di business e sostenibile nel lungo periodo.',
-    svc_ar_title:'Security Architecture & Infrastructure Design',
-    svc_ar_desc:'Progettazione di architetture di sicurezza enterprise-grade. Implementazione di modelli Zero Trust, gestione della postura cloud (CSPM) e segmentazione infrastrutturale per contenere la superficie d\'attacco. Valutazione del rischio della supply chain tecnologica e dei fornitori terzi.',
+    svc_ar_title:'Security Architecture & Cyber Product Development',
+    svc_ar_desc:'Progettazione di architetture di sicurezza enterprise-grade e sviluppo di applicazioni web proprietarie in ambito cybersecurity. Realizziamo prodotti digitali su misura: piattaforme di breach detection, threat analysis AI-powered e dashboard di conformità NIS2. Dalla architettura zero-trust allo sviluppo full-stack sicuro.',
     svc_ti_title:'Threat Intelligence & Digital Risk Monitoring',
     svc_ti_desc:'Monitoraggio continuo del rischio digitale su fonti aperte, deep web e dark web. Gestione di feed IOC settoriali, tracciamento di attori malevoli e alerting proattivo su esposizioni di credenziali, asset aziendali o reputazione del brand. Intelligence operativa e strategica su misura.',
     svc_cs_title:'Cybersecurity Engineering & Proprietary Development',
-    svc_cs_desc:'Sviluppo di soluzioni difensive custom, implementazioni crittografiche avanzate e automazione di processi di sicurezza. Progettiamo tool proprietari per ambienti enterprise ad alta complessità.',
+    svc_cs_desc:'Sviluppo di applicazioni web difensive e tool di cybersecurity su misura. Software sicuro by design, automazione dei processi di sicurezza e piattaforme AI-powered per breach detection e conformità NIS2.',
     svc_rs_title:'Remote Security Operations & Infrastructure Support',
     svc_rs_desc:'Supporto operativo remoto per ambienti infrastrutturali critici. Deployment di canali cifrati per interventi tecnici ad alta priorità, hardening proattivo dei sistemi esposti e monitoraggio della continuità operativa. Presidio remoto dedicato per organizzazioni che richiedono reattività immediata.',
     // ── Tag schede servizi ──
@@ -1909,9 +1954,9 @@ const TRANSLATIONS={
     svc_df_tags:['Analisi Timeline','Analisi Malware','Prove Legali'],
     svc_sa_tags:['Esposizione al Rischio','NIST CSF','Reportistica Esecutiva'],
     svc_ra_tags:['Quantificazione del Rischio','Roadmap Investimenti','Advisory al Board'],
-    svc_ar_tags:['Zero Trust','CSPM','Sicurezza Supply Chain'],
+    svc_ar_tags:['Sviluppo Sicuro','Sicurezza AI-Powered','Conformità NIS2'],
     svc_ti_tags:['Intelligence Dark Web','Gestione IOC','Tracciamento Avversari'],
-    svc_cs_tags:['Ingegneria Custom','Design Crittografico','Automazione Sicurezza'],
+    svc_cs_tags:['Sviluppo Web Sicuro','Tool AI-Powered','Automazione Sicurezza'],
     svc_rs_tags:['Operazioni Cifrate','Hardening Infrastrutturale','Monitoraggio Continuità'],
     // ── Modal ──
     modal_demo_badge:'RICHIEDI DEMO', modal_demo_title:'Pianifica una Demo Live della Piattaforma', modal_demo_submit:'Richiedi Sessione Demo',
