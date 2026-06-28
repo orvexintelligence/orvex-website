@@ -2199,7 +2199,7 @@ body.analysis-active .orbital-stage {
 
 @media (max-width: 720px) {
   .stage-live {
-    top: 16px;
+    top: 22px;
     right: 18px;
   }
   .account-grid {
@@ -2264,16 +2264,16 @@ body.analysis-active .orbital-stage {
   }
 
   .orbital-stage {
-    min-height: 660px;
+    min-height: 690px;
   }
 
   .stage-copy {
-    padding: 38px 18px 0 34px;
+    padding: 84px 18px 0 34px;
   }
 
   .stage-copy::before {
     left: 20px;
-    top: 39px;
+    top: 85px;
   }
 
   .stage-copy h2 {
@@ -2318,7 +2318,7 @@ body.analysis-active .orbital-stage {
   }
 
   .orbital-stage canvas {
-    height: calc(100% - 92px);
+    height: calc(100% - 104px);
   }
 
   .event {
