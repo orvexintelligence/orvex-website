@@ -1,8 +1,29 @@
 const IS_LOCAL_FRONTEND = ["127.0.0.1", "localhost"].includes(window.location.hostname);
+const DEFAULT_PUBLIC_API_BASE_URL = "https://orvex-osint-fusion-api.onrender.com";
+
+function safeSavedApiBaseUrl() {
+  let saved = "";
+  try {
+    saved = localStorage.getItem("ORVEX_API_BASE_URL") || "";
+  } catch {
+    saved = "";
+  }
+  if (!saved) return "";
+  if (IS_LOCAL_FRONTEND) return saved;
+
+  try {
+    const savedUrl = new URL(saved);
+    const allowedHosts = new Set(["orvex-osint-fusion-api.onrender.com"]);
+    return allowedHosts.has(savedUrl.hostname) ? savedUrl.origin : "";
+  } catch {
+    return "";
+  }
+}
+
 const API_BASE_URL =
   window.ORVEX_API_BASE_URL ||
-  localStorage.getItem("ORVEX_API_BASE_URL") ||
-  (IS_LOCAL_FRONTEND ? "http://127.0.0.1:8000" : window.location.origin);
+  safeSavedApiBaseUrl() ||
+  (IS_LOCAL_FRONTEND ? "http://127.0.0.1:8000" : DEFAULT_PUBLIC_API_BASE_URL);
 const ANALYZE_ENDPOINT = API_BASE_URL.endsWith("/api/v1/analyze")
   ? API_BASE_URL
   : `${API_BASE_URL.replace(/\/$/, "")}/api/v1/analyze`;
