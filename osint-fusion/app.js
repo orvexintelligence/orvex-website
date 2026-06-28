@@ -2795,12 +2795,12 @@ function buildReportHtml(report) {
       html {
         margin: 0;
         padding: 0;
-        background: #080c14;
+        background: #ffffff;
       }
       body {
         margin: 0;
         padding: 0;
-        background: #080c14;
+        background: #ffffff;
         color: #c8d8e8;
         font-family: Inter, Arial, sans-serif;
         line-height: 1.38;
@@ -2827,11 +2827,7 @@ function buildReportHtml(report) {
         break-inside: avoid;
       }
       .masthead::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: repeating-linear-gradient(0deg, rgba(200,216,232,0.035), rgba(200,216,232,0.035) 1px, transparent 1px, transparent 6px);
-        pointer-events: none;
+        content: none;
       }
       .masthead > * { position: relative; z-index: 1; }
       .brand {
@@ -3129,6 +3125,10 @@ function buildReportHtml(report) {
           min-height: 0;
           print-color-adjust: exact;
           -webkit-print-color-adjust: exact;
+        }
+        .masthead::after {
+          content: none !important;
+          display: none !important;
         }
         .report > *:last-child {
           margin-bottom: 0 !important;
