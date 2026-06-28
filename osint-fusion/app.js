@@ -1730,6 +1730,7 @@ setupStripeButtons();
 setupAuthControls();
 restoreLastAnalysisReport();
 byId("debugPanel")?.toggleAttribute("hidden", !DEBUG_ENABLED);
+byId("apiStatus")?.toggleAttribute("hidden", !DEBUG_ENABLED);
 byId("stopAnalysis")?.addEventListener("click", stopActiveAnalysis);
 byId("entityInput").addEventListener("keydown", (event) => {
   if (event.key === "Enter") simpleAnalyze();
