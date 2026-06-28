@@ -614,9 +614,9 @@ if (canvas) {
     renderer.setSize(clientWidth, clientHeight, false);
     camera.fov = isMobile ? 50 : 45;
     camera.aspect = clientWidth / Math.max(clientHeight, 1);
-    camera.position.set(0, isMobile ? 1.16 : 1.4, isMobile ? 11.35 : 9.2);
-    root.position.set(isMobile ? 0.08 : 2.45, isMobile ? -1.08 : 0.05, isMobile ? -1.42 : -0.8);
-    root.scale.setScalar(isMobile ? 0.58 : 0.92);
+    camera.position.set(0, isMobile ? 1.12 : 1.4, isMobile ? 11.15 : 9.2);
+    root.position.set(isMobile ? 0 : 2.45, isMobile ? -1.12 : 0.05, isMobile ? -1.42 : -0.8);
+    root.scale.setScalar(isMobile ? 0.64 : 0.92);
     camera.updateProjectionMatrix();
   }
 
