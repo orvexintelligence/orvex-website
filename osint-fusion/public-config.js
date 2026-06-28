@@ -14,6 +14,10 @@
     savedApi = "";
   }
 
+  if (!isLocal && /^(https?:\/\/)?(127\.0\.0\.1|localhost)(:\d+)?/i.test(savedApi)) {
+    savedApi = "";
+  }
+
   window.ORVEX_API_BASE_URL = window.ORVEX_API_BASE_URL || savedApi || fallbackApi;
   window.ORVEX_SUPABASE_URL = window.ORVEX_SUPABASE_URL || "";
   window.ORVEX_SUPABASE_ANON_KEY = window.ORVEX_SUPABASE_ANON_KEY || "";

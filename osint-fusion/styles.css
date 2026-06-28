@@ -2264,7 +2264,7 @@ body.analysis-active .orbital-stage {
   }
 
   .orbital-stage {
-    min-height: 570px;
+    min-height: 660px;
   }
 
   .stage-copy {
@@ -2288,17 +2288,37 @@ body.analysis-active .orbital-stage {
   .stage-telemetry {
     left: 18px;
     right: 18px;
-    bottom: 16px;
-    grid-template-columns: 1fr;
+    bottom: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: rgba(7, 15, 30, 0.82);
+    box-shadow: 0 0 28px rgba(0, 184, 217, 0.1);
   }
 
   .stage-telemetry div {
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+    min-width: 0;
+    padding: 10px 9px;
+    border-right: 1px solid var(--line);
+    border-bottom: 0;
   }
 
   .stage-telemetry div:last-child {
-    border-bottom: 0;
+    border-right: 0;
+  }
+
+  .stage-telemetry span {
+    margin-bottom: 5px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+
+  .stage-telemetry strong {
+    font-size: 11px;
+    white-space: normal;
+    line-height: 1.25;
+  }
+
+  .orbital-stage canvas {
+    height: calc(100% - 92px);
   }
 
   .event {
