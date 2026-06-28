@@ -67,6 +67,8 @@ const BASE_TO_IT = {
     "Trasforma dati pubblici frammentati in intelligence del rischio spiegabile per domini, identita, aziende e asset digitali.",
   "Correlate public signals across domains, identities, companies, and digital assets with explainable risk scoring and audit-ready reports.":
     "Correli segnali pubblici su domini, identita, aziende e asset digitali con punteggi di rischio spiegabili e report pronti per audit.",
+  "Transform open-source signals into executive-grade risk intelligence for domains, identities, companies, and wallets with defensible scoring and evidence-ready reports.":
+    "Trasforma segnali open-source in intelligence del rischio di livello executive per domini, identita, aziende e wallet, con scoring difendibile e report pronti come evidenza.",
   "SOURCES": "FONTI",
   "Live OSINT": "OSINT live",
   "OUTPUT": "RISULTATO",

@@ -2265,7 +2265,7 @@ body.analysis-active .orbital-stage {
   }
 
   .orbital-stage {
-    min-height: 690px;
+    min-height: 760px;
   }
 
   .stage-copy {
@@ -2284,6 +2284,12 @@ body.analysis-active .orbital-stage {
 
   .stage-copy h2 .line2 {
     font-size: 0.66em;
+  }
+
+  .stage-copy p:last-child {
+    max-width: 94%;
+    position: relative;
+    z-index: 3;
   }
 
   .stage-telemetry {
@@ -2319,7 +2325,7 @@ body.analysis-active .orbital-stage {
   }
 
   .orbital-stage canvas {
-    height: calc(100% - 104px);
+    height: calc(100% - 94px);
   }
 
   .event {
