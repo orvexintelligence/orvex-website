@@ -1924,7 +1924,7 @@ async function simpleAnalyze() {
       error.name === "AbortError"
         ? "Analysis stopped or timed out before the backend response completed."
         : error.message === "Failed to fetch" || error.message.includes("NetworkError")
-          ? "Browser could not reach FastAPI. Verify backend is running on http://127.0.0.1:8000 and hard-refresh the page with Ctrl+F5."
+          ? "Orvex API is not reachable from this device. On mobile, use the deployed API URL instead of 127.0.0.1, then refresh the page."
         : error.message;
     setDebug({
       endpoint,

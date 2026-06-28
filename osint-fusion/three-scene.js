@@ -610,8 +610,13 @@ if (canvas) {
 
   function resize() {
     const { clientWidth, clientHeight } = canvas;
+    const isMobile = clientWidth <= 720;
     renderer.setSize(clientWidth, clientHeight, false);
+    camera.fov = isMobile ? 50 : 45;
     camera.aspect = clientWidth / Math.max(clientHeight, 1);
+    camera.position.set(0, isMobile ? 1.08 : 1.4, isMobile ? 10.8 : 9.2);
+    root.position.set(isMobile ? 1.18 : 2.45, isMobile ? -0.32 : 0.05, isMobile ? -1.05 : -0.8);
+    root.scale.setScalar(isMobile ? 0.62 : 0.92);
     camera.updateProjectionMatrix();
   }
 
