@@ -1084,7 +1084,7 @@ async function openStripeCheckout(plan) {
     return;
   }
   showToast(t("stripeOpening"));
-  window.location.assign(url);
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 
 async function openBillingManagement() {
@@ -1103,7 +1103,7 @@ async function openBillingManagement() {
     if (!response.ok || !data.url) {
       throw new Error(data?.detail || "Billing management is unavailable.");
     }
-    window.location.assign(data.url);
+    window.open(data.url, "_blank", "noopener,noreferrer");
   } catch (error) {
     showToast(`Billing error: ${error.message}`, "error");
   }
