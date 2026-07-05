@@ -16,7 +16,11 @@ import DomainShield from './DomainShield'
 import ReportButton from './ReportButton'
 import { DASHBOARD_STATS } from '@data/breachDatabase'
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_URL ||
+  'https://orvex-server.onrender.com'
+).replace(/\/$/, '')
 
 // ─────────────────────────────────────────────────────────────────
 //  DomainDashboard — Dashboard aziendale Domain Watch
