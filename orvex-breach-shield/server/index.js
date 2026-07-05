@@ -24,17 +24,28 @@ dotenv.config({ path: path.join(__dirname, '..', '.env.local') })
 
 import breachRouter from './routes/breach.js'
 import domainRouter from './routes/domain.js'
+import { getFreeScanLimit, isFreeScanLimitEnabled } from './utils/freeScanLimit.js'
+
 const app  = express()
-const PORT = process.env.SERVER_PORT || 3001
+const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
+const DIST_DIR = path.join(__dirname, '..', 'dist')
 
 // ── Middleware ────────────────────────────────────────────────────
 app.use(express.json())
 
 // CORS: in dev accetta solo dal frontend Vite; in produzione
 // sostituisci con il dominio reale (es. https://app.orvex.io)
+const allowedOrigins = (process.env.CORS_ALLOW_ORIGINS || process.env.VITE_APP_URL || 'http://localhost:3000')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean)
+
 app.use(cors({
-  origin: process.env.VITE_APP_URL || 'http://localhost:3000',
-  methods: ['GET', 'POST'],
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
+    return callback(new Error(`CORS origin not allowed: ${origin}`))
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
 }))
 
 // ── Routes ────────────────────────────────────────────────────────
@@ -48,7 +59,17 @@ app.get('/api/health', (_req, res) => {
     service:   'Orvex Backend',
     timestamp: new Date().toISOString(),
     hibp:      !!process.env.HIBP_API_KEY ? 'configured' : 'missing',
+    domain_watch: 'enabled',
+    anonymous_limit: isFreeScanLimitEnabled() ? 'enabled' : 'disabled',
+    free_scan_limit: getFreeScanLimit(),
   })
+})
+
+// In produzione Render può servire frontend + API dallo stesso servizio.
+app.use(express.static(DIST_DIR))
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/')) return next()
+  res.sendFile(path.join(DIST_DIR, 'index.html'))
 })
 
 // ── 404 catch-all ─────────────────────────────────────────────────

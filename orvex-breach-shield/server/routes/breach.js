@@ -10,8 +10,10 @@
 // ─────────────────────────────────────────────────────────────────
 
 import { Router } from 'express'
+import { checkFreeScan } from '../utils/freeScanLimit.js'
 
 const router = Router()
+const PAYMENT_URL = process.env.IDENTITY_PAYMENT_URL || process.env.VITE_STRIPE_MONTHLY_EUR || ''
 
 // ── Mappa DataClasses HIBP → dataTypes Orvex ─────────────────────
 const DATA_CLASS_MAP = {
@@ -74,13 +76,21 @@ router.get('/check', async (req, res) => {
     return res.status(400).json({ error: 'Email non valida' })
   }
 
+  const usagePreview = checkFreeScan(req, 'identity', email)
+  if (!usagePreview.allowed) {
+    return res.status(402).json({
+      error: 'Scansione gratuita già utilizzata. Attiva Identity Shield per continuare.',
+      code: 'FREE_LIMIT_REACHED',
+      paymentRequired: true,
+      paymentUrl: PAYMENT_URL,
+      usage: usagePreview,
+    })
+  }
+
   const apiKey = process.env.HIBP_API_KEY
   if (!apiKey) {
-    console.warn('[HIBP] HIBP_API_KEY mancante — restituisco dati mock')
-    return res.status(503).json({
-      error:   'HIBP_API_KEY non configurata',
-      useMock: true,
-    })
+    console.warn('[HIBP] HIBP_API_KEY mancante — scansione reale non disponibile')
+    return res.status(503).json({ error: 'Motore breach non configurato. HIBP_API_KEY mancante.' })
   }
 
   try {
@@ -95,7 +105,8 @@ router.get('/check', async (req, res) => {
 
     // 404 = email non trovata in nessun breach (notizia positiva!)
     if (response.status === 404) {
-      return res.json({ breached: false, breaches: [], email })
+      const usage = checkFreeScan(req, 'identity', email, true)
+      return res.json({ breached: false, breaches: [], email, usage })
     }
 
     // 429 = rate limit HIBP (max 1 req/1500ms per chiave)
@@ -117,20 +128,19 @@ router.get('/check', async (req, res) => {
 
     const hibpBreaches = await response.json()
     const breaches = hibpBreaches.map(mapBreach)
+    const usage = checkFreeScan(req, 'identity', email, true)
 
     return res.json({
       breached: breaches.length > 0,
       breaches,
       email,
       count: breaches.length,
+      usage,
     })
 
   } catch (err) {
     console.error('[HIBP] Fetch error:', err.message)
-    return res.status(500).json({
-      error:   'Errore durante la chiamata a HaveIBeenPwned',
-      useMock: true,
-    })
+    return res.status(500).json({ error: 'Errore durante la chiamata a HaveIBeenPwned' })
   }
 })
 
