@@ -192,60 +192,60 @@ export function checkEmail(email) {
   return { breached: true, breaches: selected }
 }
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const ALLOW_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_ALLOW_MOCK_FALLBACK === 'true'
+
 // ── 4. FUNZIONE REALE: checkEmailReal() ───────────────────────
 /**
  * Chiama il backend Orvex (/api/breach/check) che a sua volta
  * interroga HaveIBeenPwned API v3.
  *
  * @param   {string}  email  - Email da verificare
- * @returns {Promise<{ breached: boolean, breaches: Array, source: 'api'|'mock' }>}
+ * @returns {Promise<{ breached: boolean, breaches: Array, source: 'api' }>}
  *
- * Fallback automatico su checkEmail() (dati mock) se:
- *  - Il backend non è raggiungibile (HIBP_API_KEY mancante)
- *  - C'è un errore di rete
- *  - Il server risponde con useMock: true
+ * In produzione NON fa fallback mock: il controllo gratuito e il pagamento
+ * devono essere applicati dal backend, non dal browser.
  */
 export async function checkEmailReal(email) {
   try {
+    const endpoint = `${API_BASE_URL}/api/breach/check?email=${encodeURIComponent(email)}`
     const res = await fetch(
-      `/api/breach/check?email=${encodeURIComponent(email)}`,
+      endpoint,
       { signal: AbortSignal.timeout(8000) }   // timeout 8s
     )
 
-    // Backend raggiungibile ma HIBP key mancante → fallback mock
-    if (res.status === 503) {
-      console.info('[Orvex] Backend attivo ma HIBP_API_KEY mancante → dati mock')
-      return { ...checkEmail(email), source: 'mock' }
-    }
-
-    // Rate limit Stripe — riprova dopo un attimo
+    // Rate limit HIBP/backend — riprova dopo un attimo
     if (res.status === 429) {
-      console.warn('[Orvex] HIBP rate limit — attendi 1,5s e riprova')
+      console.warn('[Orvex] Rate limit — attendi 1,5s e riprova')
       await new Promise(r => setTimeout(r, 1500))
       return checkEmailReal(email)
     }
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`)
+    let data = null
+    try {
+      data = await res.json()
+    } catch {
+      data = null
     }
 
-    const data = await res.json()
-
-    // Il backend ci dice esplicitamente di usare i mock (errore HIBP)
-    if (data.useMock) {
-      return { ...checkEmail(email), source: 'mock' }
+    if (!res.ok) {
+      const error = new Error(data?.error || `HTTP ${res.status}`)
+      error.status = res.status
+      error.code = data?.code
+      error.paymentRequired = res.status === 402 || data?.code === 'FREE_LIMIT_REACHED'
+      error.paymentUrl = data?.paymentUrl
+      throw error
     }
 
     return { ...data, source: 'api' }
 
   } catch (err) {
-    // Backend non avviato o network error → fallback silenzioso ai mock
-    if (err.name === 'AbortError') {
-      console.warn('[Orvex] Timeout chiamata backend → dati mock')
-    } else {
-      console.warn('[Orvex] Backend non raggiungibile →', err.message, '→ dati mock')
+    if (ALLOW_MOCK_FALLBACK) {
+      console.warn('[Orvex] Dev fallback mock:', err.message)
+      return { ...checkEmail(email), source: 'mock' }
     }
-    return { ...checkEmail(email), source: 'mock' }
+    if (err.name === 'AbortError') err.message = 'Timeout backend. Riprova tra qualche secondo.'
+    throw err
   }
 }
 

@@ -64,11 +64,8 @@ export default function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
     })
-   const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
-      if (session?.user && _event === 'SIGNED_IN') {
-        setTimeout(() => setShowDashboard(true), 400)
-      }
     })
     return () => subscription.unsubscribe()
   }, [])
@@ -87,11 +84,12 @@ export default function App() {
     const params  = new URLSearchParams(window.location.search)
     const paidVal = params.get(STRIPE_SUCCESS_PARAM)
     if (paidVal && PLAN_TYPES.includes(paidVal)) {
-      setActivePlan(paidVal)
-      setActivePlanState(paidVal)
+      // Non attivare mai un piano dal browser: il pagamento deve essere
+      // confermato da Stripe webhook lato server.
       window.history.replaceState({}, '', window.location.pathname)
       window.scrollTo({ top: 0, behavior: 'smooth' })
-      setTimeout(() => setShowDashboard(true), 400)
+      setPendingPlan(paidVal)
+      setTimeout(() => setShowPricing(true), 400)
     }
   }, []) // eslint-disable-line
 
@@ -111,7 +109,13 @@ export default function App() {
       }
     } catch (err) {
       console.error("Errore durante la scansione:", err)
-      setScanResult({ breached: false, breaches: [] })
+      setScanResult({
+        error: true,
+        billingRequired: !!err.paymentRequired,
+        message: err.paymentRequired
+          ? 'Hai già usato la scansione gratuita. Attiva Identity Shield per continuare.'
+          : (err.message || 'Servizio temporaneamente non disponibile. Riprova tra qualche minuto.'),
+      })
     }
     transitionTo(PHASES.RESULT)
   }, [email])
@@ -260,7 +264,14 @@ export default function App() {
 
           {phase === PHASES.RESULT && scanResult && (
             <CenteredSection>
-              {scanResult.breached ? (
+              {scanResult.error ? (
+                <ScanErrorPanel
+                  message={scanResult.message}
+                  billingRequired={scanResult.billingRequired}
+                  onReset={handleReset}
+                  onPremium={() => handleOpenPremium('identity')}
+                />
+              ) : scanResult.breached ? (
                 <ResultBreached
                   email={email}
                   breaches={scanResult.breaches || []}
@@ -730,6 +741,55 @@ function CenteredSection({ children }) {
     <section className="flex-1 flex flex-col items-center justify-center px-4 py-10 sm:py-14">
       <div className="w-full max-w-2xl">{children}</div>
     </section>
+  )
+}
+
+function ScanErrorPanel({ message, billingRequired, onReset, onPremium }) {
+  return (
+    <div
+      className="relative rounded-xs overflow-hidden p-6 sm:p-8 text-center"
+      style={{
+        background: 'linear-gradient(135deg, rgba(20,8,12,0.97) 0%, rgba(5,8,15,0.99) 100%)',
+        border: '1px solid rgba(255,68,68,0.35)',
+        boxShadow: '0 0 28px rgba(255,68,68,0.12), 0 4px 32px rgba(0,0,0,0.6)',
+      }}
+    >
+      <div className="font-mono text-[0.62rem] tracking-[0.22em] uppercase mb-3" style={{ color: '#ff4466' }}>
+        {billingRequired ? 'Accesso Premium Richiesto' : 'Scansione non disponibile'}
+      </div>
+      <h2 className="font-mono font-bold text-xl sm:text-2xl mb-4" style={{ color: '#f0f4ff' }}>
+        {billingRequired ? 'Scansione gratuita terminata' : 'Motore temporaneamente offline'}
+      </h2>
+      <p className="font-mono text-sm leading-relaxed mb-6" style={{ color: '#8899bb' }}>
+        {message}
+      </p>
+      <div className="flex flex-col sm:flex-row justify-center gap-3">
+        {billingRequired && (
+          <button
+            onClick={onPremium}
+            className="font-mono text-xs font-bold tracking-[0.12em] uppercase text-white px-5 py-3 rounded-xs"
+            style={{
+              background: 'linear-gradient(135deg, rgba(0,102,255,0.95), rgba(0,170,255,0.75))',
+              border: '1px solid rgba(0,170,255,0.45)',
+              boxShadow: '0 0 18px rgba(0,102,255,0.32)',
+            }}
+          >
+            Attiva Identity Shield
+          </button>
+        )}
+        <button
+          onClick={onReset}
+          className="font-mono text-xs font-bold tracking-[0.12em] uppercase px-5 py-3 rounded-xs"
+          style={{
+            color: '#8899bb',
+            border: '1px solid rgba(0,102,255,0.25)',
+            background: 'rgba(8,12,20,0.85)',
+          }}
+        >
+          Torna alla ricerca
+        </button>
+      </div>
+    </div>
   )
 }
 
