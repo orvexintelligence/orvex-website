@@ -192,7 +192,11 @@ export function checkEmail(email) {
   return { breached: true, breaches: selected }
 }
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_URL ||
+  'https://orvex-server.onrender.com'
+).replace(/\/$/, '')
 const ALLOW_MOCK_FALLBACK = import.meta.env.DEV && import.meta.env.VITE_ALLOW_MOCK_FALLBACK === 'true'
 
 // ── 4. FUNZIONE REALE: checkEmailReal() ───────────────────────
