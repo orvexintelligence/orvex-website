@@ -442,7 +442,7 @@ const SOLUTIONS = [
     subtitle: 'Protezione identità digitale',
     desc:     'Monitora la tua email e le tue credenziali in tempo reale. Ricevi un alert immediato non appena i tuoi dati compaiono in un nuovo data breach o nel dark web.',
     features: [
-      'Scansione su 47B+ record',
+      'Scansione su fonti breach configurate',
       'Alert breach in tempo reale',
       'Storico esposizioni completo',
       'Report PDF personale mensile',
@@ -460,10 +460,10 @@ const SOLUTIONS = [
     subtitle: 'Protezione completa del dominio',
     desc:     "Monitora tutti i dipendenti della tua azienda da un'unica dashboard. Identifica le email compromesse prima che diventino un vettore di attacco.",
     features: [
-      'Monitoraggio illimitato utenti',
+      'Scansioni incluse nel piano',
       'Domain Health Score live',
       'Alert per dipendente esposto',
-      'Integrazione con Active Directory',
+      'Workflow integrazione directory',
     ],
     cta:      'Attiva Domain Watch',
     highlight: true,
@@ -479,10 +479,10 @@ const SOLUTIONS = [
     subtitle: 'Integrazione nei tuoi sistemi',
     desc:     "Accedi all'intero potere del motore Orvex via REST API. Integra il breach detection nel tuo SIEM, nei tuoi workflow CI/CD o nei sistemi IAM.",
     features: [
-      'REST API con rate 10K req/min',
+      'REST API con limiti dedicati',
       'Webhook per alert real-time',
       'SDK per Python, Node, Go',
-      'SLA 99.9% uptime garantito',
+      'SLA dedicato su piano enterprise',
     ],
     cta: 'Richiedi accesso API',
   },
@@ -612,8 +612,8 @@ function CompanyStats() {
   const { t } = useLanguage()
   const stats = [
     { value: '2019',  label: t('about.stat1Label'), color: '#0066ff' },
-    { value: '47B+',  label: t('about.stat2Label'), color: '#0066ff' },
-    { value: '99.9%', label: t('about.stat3Label'), color: '#00ff88' },
+    { value: 'OSINT', label: t('about.stat2Label'), color: '#0066ff' },
+    { value: 'LIVE', label: t('about.stat3Label'), color: '#00ff88' },
     { value: '< 4s',  label: t('about.stat4Label'), color: '#00aaff' },
     { value: '180+',  label: t('about.stat5Label'), color: '#7c3aed' },
     { value: '12K+',  label: t('about.stat6Label'), color: '#ffaa00' },
