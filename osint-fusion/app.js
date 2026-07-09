@@ -77,7 +77,7 @@ const BASE_TO_IT = {
   "Audit ready": "Pronto audit",
   "LIVE SIGNAL MAP": "MAPPA SEGNALI LIVE",
   "Session location": "Localita sessione",
-  "Location unavailable": "Localita non disponibile",
+  "Session locality verified": "Localita sessione verificata",
   "Unavailable": "Non disponibile",
   "Local network": "Rete locale",
   "Approximate city and country from the connection IP. No GPS tracking.":
@@ -90,10 +90,10 @@ const BASE_TO_IT = {
   "Run analysis": "Analizza",
   "Run Analysis": "Analizza",
   "Stop": "Stop",
-  "Backend target:": "Backend:",
+  "System status:": "Stato sistema:",
   "Confidence": "Affidabilita",
-  "Backend debug": "Debug backend",
-  "Analyze response": "Risposta analisi",
+  "Diagnostic trace": "Traccia diagnostica",
+  "Analysis response": "Risposta analisi",
   "Endpoint": "Endpoint",
   "Status HTTP": "Stato HTTP",
   "JS Error": "Errore JS",
@@ -782,8 +782,10 @@ async function runBackendAnalysis() {
   const domain = normalizeDomain(byId("entityInput").value);
   if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(domain)) {
     showToast("Enter a valid domain before running analysis", "error");
-    byId("apiStatus").classList.add("error");
-    byId("apiTarget").textContent = "invalid domain";
+    if (DEBUG_ENABLED) {
+      byId("apiStatus").classList.add("error");
+      byId("apiTarget").textContent = "invalid domain";
+    }
     return;
   }
 
@@ -796,8 +798,10 @@ async function runBackendAnalysis() {
     }
   }, 90000);
   showToast("Orvex analysis pipeline started");
-  byId("apiStatus").classList.remove("error");
-  byId("apiTarget").textContent = ANALYZE_ENDPOINT.replace(/^https?:\/\//, "");
+  if (DEBUG_ENABLED) {
+    byId("apiStatus").classList.remove("error");
+    byId("apiTarget").textContent = "operational";
+  }
 
   try {
     const response = await fetch(ANALYZE_ENDPOINT, {
@@ -813,7 +817,7 @@ async function runBackendAnalysis() {
     });
 
     const data = await parseBackendJson(response);
-    console.log("Analyze response", data);
+    if (DEBUG_ENABLED) console.log("Analyze response", data);
 
     if (!response.ok) {
       throw new Error(readBackendError(data, response.status));
@@ -825,8 +829,10 @@ async function runBackendAnalysis() {
   } catch (error) {
     console.error("Orvex analysis failed:", error);
     showToast(`Analysis failed: ${error.message}`, "error");
-    byId("apiStatus").classList.add("error");
-    byId("apiTarget").textContent = error.name === "SyntaxError" ? "invalid JSON response" : "backend offline or request rejected";
+    if (DEBUG_ENABLED) {
+      byId("apiStatus").classList.add("error");
+      byId("apiTarget").textContent = error.name === "SyntaxError" ? "invalid JSON response" : "request rejected";
+    }
   } finally {
     window.clearTimeout(loadingWatchdog);
     forceResetLoading();
@@ -843,8 +849,10 @@ async function parseBackendJson(response) {
     return JSON.parse(rawText);
   } catch (error) {
     showToast("Analysis failed: backend returned invalid JSON", "error");
-    byId("apiStatus").classList.add("error");
-    byId("apiTarget").textContent = "invalid JSON response";
+    if (DEBUG_ENABLED) {
+      byId("apiStatus").classList.add("error");
+      byId("apiTarget").textContent = "invalid JSON response";
+    }
     throw new SyntaxError(`Invalid backend JSON: ${rawText.slice(0, 180)}`);
   }
 }
@@ -1892,7 +1900,7 @@ async function simpleAnalyze() {
   startProgress();
 
   try {
-    console.log("Analyze request started", { endpoint, entity_type: entityType, entity_value: entityValue });
+    if (DEBUG_ENABLED) console.log("Analyze request started", { endpoint, entity_type: entityType, entity_value: entityValue });
     const response = await fetch(endpoint, {
       method: "POST",
       mode: "cors",
@@ -1923,7 +1931,7 @@ async function simpleAnalyze() {
       throw new Error(`JSON parse failed: ${parseError.message}`);
     }
 
-    console.log("Analyze response", data);
+    if (DEBUG_ENABLED) console.log("Analyze response", data);
     setDebug({
       endpoint,
       status: `${response.status} ${response.statusText}`,

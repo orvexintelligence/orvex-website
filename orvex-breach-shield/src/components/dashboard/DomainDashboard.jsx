@@ -705,8 +705,8 @@ function DomainFreeResults({ domain, billing, setBilling, onReset, t }) {
               'Report PDF Intelligence scaricabile',
               'Alert real-time per ogni breach',
               'Domain Health Score aggiornato ogni ora',
-              'Integrazione Active Directory',
-              'Monitoraggio utenti illimitato',
+              'Workflow integrazione directory',
+              'Scansioni incluse nel piano',
             ].map((feat, i) => (
               <div key={i} className="flex items-start gap-1.5">
                 <CheckCircle2 size={10} style={{ color: '#0066ff', flexShrink: 0, marginTop: '2px' }} />

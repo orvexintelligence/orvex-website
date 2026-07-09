@@ -48,7 +48,7 @@
             <button class="selected" data-lang="en" type="button">ENG</button>
             <button data-lang="it" type="button">ITA</button>
           </div>
-          <span class="session-location" id="sessionLocation" hidden>Location unavailable</span>
+          <span class="session-location" id="sessionLocation" hidden>Session locality verified</span>
           <button class="ghost-button pdf-button" id="exportReport" type="button" hidden disabled>Export PDF</button>
           <button class="ghost-button access-button" id="requestAccessTop" type="button" hidden>Request access</button>
         </div>
@@ -98,7 +98,7 @@
           <p class="legal-mini">
             Required before analysis: lawful OSINT use only. By checking Legal OK you accept Privacy Policy, Terms, and Acceptable Use Policy.
           </p>
-          <div class="api-status" id="apiStatus" role="status" hidden>Backend target: <span id="apiTarget">local FastAPI</span></div>
+          <div class="api-status" id="apiStatus" role="status" hidden>System status: <span id="apiTarget">operational</span></div>
           <div class="analysis-progress" id="analysisProgress" aria-hidden="true">
             <div class="progress-meta">
               <span id="progressLabel">Standby</span>
@@ -117,8 +117,8 @@
       <section class="panel debug-panel" id="debugPanel" hidden>
         <div class="panel-header">
           <div>
-            <p class="eyebrow">Backend debug</p>
-            <h2>Analyze response</h2>
+            <p class="eyebrow">Diagnostic trace</p>
+            <h2>Analysis response</h2>
           </div>
           <button class="ghost-button pdf-button compact" id="exportReportInline" type="button">Export PDF</button>
         </div>

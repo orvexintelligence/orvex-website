@@ -100,8 +100,8 @@ checkEmail('${email || 'user@example.com'}').then(result => {
 
 const RATE_TIERS = [
   { label: 'Free',       value: '100 req/day',    color: '#445566', active: false },
-  { label: 'Premium',    value: '10K req/day',     color: '#0066ff', active: false },
-  { label: 'Enterprise', value: '10K req/min',     color: '#7c3aed', active: true  },
+  { label: 'Premium',    value: 'Plan-based',      color: '#0066ff', active: false },
+  { label: 'Enterprise', value: 'Custom limits',   color: '#7c3aed', active: true  },
 ]
 
 const ENDPOINT_LIST = [
@@ -186,7 +186,7 @@ export default function ApiPortal({ email = '' }) {
         <div className="flex items-center gap-1.5">
           <Activity size={9} style={{ color: '#7c3aed' }} />
           <span className="font-mono text-[0.58rem]" style={{ color: '#445566' }}>Rate limit:</span>
-          <span className="font-mono text-[0.58rem] font-bold" style={{ color: '#7c3aed' }}>10K req/min</span>
+          <span className="font-mono text-[0.58rem] font-bold" style={{ color: '#7c3aed' }}>Custom</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="font-mono text-[0.58rem]" style={{ color: '#445566' }}>Latenza media:</span>
@@ -194,7 +194,7 @@ export default function ApiPortal({ email = '' }) {
         </div>
         <div className="ml-auto">
           <span className="font-mono text-[0.57rem] tracking-widest" style={{ color: '#445566' }}>
-            Uptime 99.9% · v2.1
+            SLA available · v2.1
           </span>
         </div>
       </div>
@@ -535,7 +535,7 @@ function EnterpriseForm({ formData, onChange, onSubmit, sent, sending, error }) 
         >
           <AlertCircle size={12} style={{ color: '#7c3aed', flexShrink: 0, marginTop: '1px' }} />
           <p className="font-mono text-[0.62rem] leading-relaxed" style={{ color: '#8899bb' }}>
-            Hai bisogno di rate limit superiori a 10K req/min, di un SLA dedicato o
+            Hai bisogno di rate limit dedicati, di un SLA personalizzato o
             di un'integrazione custom? Compila il form — un ingegnere Orvex ti contatterà entro 24h.
           </p>
         </div>
