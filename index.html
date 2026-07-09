@@ -323,7 +323,7 @@ select.field option{background:#101828}
         <div class="glass" style="padding:16px 18px">
           <div style="font-size:20px;margin-bottom:9px">📊</div>
           <div data-i18n="cap_soc_title" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#c8d8e8;margin-bottom:7px">SOC Dashboard</div>
-          <p data-i18n="cap_soc_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7">Mission-control visibility across endpoints, networks, and cloud. 500+ automation playbooks. SIEM-native.</p>
+          <p data-i18n="cap_soc_desc" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#7a92aa;line-height:1.7">Mission-control visibility across endpoints, networks, and cloud telemetry with configurable automation workflows and SIEM-oriented operations.</p>
         </div>
         <div class="glass" style="padding:16px 18px">
           <div style="font-size:20px;margin-bottom:9px">⚡</div>
@@ -1386,21 +1386,21 @@ const PLAT=[
     {k:'False Positive Rate', v:'Minimized',        c:'#2eb87a'},
   ],desc:'Real-time AI-driven behavioral analysis engine processing endpoint, network, and cloud telemetry. Full MITRE ATT&CK framework coverage with continuous model refinement against emerging threat actors.'},
   {label:'Vulnerability Scanner',metrics:[
-    {k:'Asset Coverage',      v:'Unlimited',        c:'#2a7fff'},
+    {k:'Asset Coverage',      v:'Scoped',           c:'#2a7fff'},
     {k:'CVE Intelligence',    v:'Continuously Updated', c:'#00b8d9'},
     {k:'Scan Cadence',        v:'Continuous',       c:'#2eb87a'},
     {k:'Patch SLA Tracking',  v:'Automated',        c:'#2eb87a'},
   ],desc:'Continuous attack surface enumeration across all connected assets. CVE prioritization using EPSS scoring, exploitability context, and business impact weighting — tuned to your environment.'},
   {label:'Digital Forensics',metrics:[
-    {k:'Evidence Integrity',  v:'Court-Admissible', c:'#2eb87a'},
+    {k:'Evidence Integrity',  v:'Analyst-Ready',    c:'#2eb87a'},
     {k:'Malware Analysis',    v:'Deep Inspection',  c:'#00b8d9'},
-    {k:'Chain of Custody',    v:'Fully Enforced',   c:'#2eb87a'},
+    {k:'Evidence Handling',   v:'Documented',       c:'#2eb87a'},
     {k:'Memory Forensics',    v:'Supported',        c:'#2a7fff'},
-  ],desc:'Court-admissible digital evidence collection with full chain of custody enforcement. Automated process tree capture, memory forensics, and malware reverse engineering — legally defensible in any jurisdiction.'},
+  ],desc:'Technical evidence collection support with documented handling, process-tree capture, memory forensics, and malware triage. Outputs are analyst-ready and should be reviewed with qualified legal or compliance counsel when used in formal proceedings.'},
   {label:'Live Monitoring',metrics:[
-    {k:'Endpoint Coverage',   v:'Unlimited',        c:'#2a7fff'},
-    {k:'Log Ingestion',       v:'Petabyte-Scale',   c:'#00b8d9'},
-    {k:'Automation Playbooks',v:'500+',             c:'#2eb87a'},
+    {k:'Endpoint Coverage',   v:'Scoped',           c:'#2a7fff'},
+    {k:'Log Ingestion',       v:'Scalable',         c:'#00b8d9'},
+    {k:'Automation Playbooks',v:'Configurable',     c:'#2eb87a'},
     {k:'SIEM Integrations',   v:'Major Platforms',  c:'#2a7fff'},
   ],desc:'Enterprise-scale SOC monitoring with native SIEM integrations. Automated playbook execution dramatically reduces analyst workload on Tier-1 events, freeing your team for high-value investigations.'},
 ];
@@ -1878,7 +1878,7 @@ const TRANSLATIONS={
     cap_df_title:'Digital Forensics',
     cap_df_desc:'Technical investigation support with log review, evidence handling guidance, malware triage, and analyst-ready reporting.',
     cap_soc_title:'SOC Dashboard',
-    cap_soc_desc:'Mission-control visibility across endpoints, networks, and cloud. 500+ automation playbooks. SIEM-native.',
+    cap_soc_desc:'Mission-control visibility across endpoints, networks, and cloud telemetry with configurable automation workflows and SIEM-oriented operations.',
     cap_ir_title:'Incident Response',
     cap_ir_desc:'Incident response advisory for containment planning, recovery coordination, evidence review, and executive communication.',
     cap_arch_title:'Security Architecture',

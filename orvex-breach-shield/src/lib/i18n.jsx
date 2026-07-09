@@ -373,7 +373,7 @@ const TRANSLATIONS = {
       f3: 'Real-time alerts',
       f4: 'Domain Health Score updated hourly',
       f5: 'Directory integration workflow',
-      f6: 'Unlimited user monitoring',
+      f6: 'Plan-based monitoring allowance',
     },
     auth: {
       title:            'Orvex Account',
