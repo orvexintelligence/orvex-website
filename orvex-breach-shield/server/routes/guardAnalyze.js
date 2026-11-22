@@ -14,13 +14,24 @@ import { consumeGuardUsage } from '../guardUsage.js'
 
 const router = Router()
 
-// Sicurezza: AI disattivata finché non saranno
-// completati i controlli sui costi.
+// AI sempre disattivata in questa versione.
 const AI_REQUESTS_ENABLED = false
 
-// Sicurezza: contatore disattivato fino al test
-// con credenziali server e proxy correttamente configurato.
-const USAGE_LIMITS_ENABLED = false
+// I limiti possono essere testati soltanto in locale.
+// In produzione il test rimane disabilitato.
+const USAGE_LIMITS_ENABLED =
+  process.env.GUARD_USAGE_TEST_MODE === 'enabled' &&
+  process.env.NODE_ENV !== 'production'
+
+function isLocalConnection(req) {
+  const address = req.socket?.remoteAddress || ''
+
+  return (
+    address === '127.0.0.1' ||
+    address === '::1' ||
+    address === '::ffff:127.0.0.1'
+  )
+}
 
 router.post('/text', async (req, res, next) => {
   try {
@@ -35,6 +46,13 @@ router.post('/text', async (req, res, next) => {
     if (text.length > 10000) {
       return res.status(413).json({
         error: 'Testo troppo lungo'
+      })
+    }
+
+    // Impedisce l'uso remoto della modalità di test.
+    if (USAGE_LIMITS_ENABLED && !isLocalConnection(req)) {
+      return res.status(403).json({
+        error: 'Modalità di test disponibile solo in locale'
       })
     }
 
@@ -62,8 +80,8 @@ router.post('/text', async (req, res, next) => {
     const cleanText = text.trim()
     const url = extractUrl(cleanText)
 
-    // L'analisi dei messaggi richiede l'AI.
-    // Finché è disattivata, non consumiamo il contatore.
+    // I testi senza URL richiedono l'AI.
+    // Non consumiamo il contatore se l'AI è disattivata.
     if (!url && !AI_REQUESTS_ENABLED) {
       return res.status(503).json({
         error: 'Analisi AI temporaneamente disattivata'
@@ -76,8 +94,9 @@ router.post('/text', async (req, res, next) => {
       })
     }
 
-    // Quando attiveremo i limiti, nessuna analisi
-    // potrà procedere senza un conteggio valido.
+    let remaining = null
+
+    // Conteggio effettivo soltanto nei test locali.
     if (USAGE_LIMITS_ENABLED) {
       const principalKey = user
         ? `user:${user.id}`
@@ -91,18 +110,19 @@ router.post('/text', async (req, res, next) => {
       )
 
       if (!usage.allowed) {
-        const unavailable =
-          usage.error !== 'Limite giornaliero raggiunto'
+        const limitReached =
+          usage.error === 'Limite giornaliero raggiunto'
 
-        return res.status(unavailable ? 503 : 429).json({
+        return res.status(limitReached ? 429 : 503).json({
           error: usage.error,
-          upgradeRequired: !unavailable
+          upgradeRequired: limitReached
         })
       }
+
+      remaining = usage.remaining
     }
 
-    // Analisi preliminare URL.
-    // Non utilizza OpenAI.
+    // Analisi preliminare URL, senza OpenAI.
     if (url) {
       const analysis = analyzeUrlFeatures(url)
 
@@ -111,12 +131,12 @@ router.post('/text', async (req, res, next) => {
         analyzedUrl: url,
         plan: user ? 'authenticated-test' : 'guest-test',
         preliminary: true,
-        usageLimitsActive: USAGE_LIMITS_ENABLED
+        usageLimitsActive: USAGE_LIMITS_ENABLED,
+        remaining
       })
     }
 
-    // Analisi AI: non raggiungibile durante i test
-    // perché AI_REQUESTS_ENABLED è false.
+    // Non raggiungibile finché AI_REQUESTS_ENABLED è false.
     const aiResult = await analyzeGuardTextWithAI(cleanText)
 
     if (!aiResult.available) {
@@ -128,7 +148,8 @@ router.post('/text', async (req, res, next) => {
     return res.json({
       ...aiResult.result,
       plan: user ? 'authenticated-test' : 'guest-test',
-      preliminary: false
+      preliminary: false,
+      remaining
     })
   } catch (error) {
     next(error)
