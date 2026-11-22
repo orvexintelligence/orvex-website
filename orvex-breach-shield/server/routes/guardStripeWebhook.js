@@ -61,9 +61,8 @@ function linePriceId(line) {
     ?? null
 }
 
-async function getEventPrices(event) {
+async function getEventPrices(event, api) {
   const object = event.data.object
-  const api = getStripe()
 
   if (event.type === 'checkout.session.completed') {
     const prices = []
@@ -114,8 +113,13 @@ async function updateEventStatus(admin, eventId, status) {
   if (error) throw error
 }
 
-export async function guardStripeWebhook(req, res) {
-  const secret = process.env.STRIPE_GUARD_WEBHOOK_SECRET?.trim()
+export function createGuardStripeWebhook(deps = {}) {
+  const getStripeClient = () => deps.stripe ?? getStripe()
+  const getAdminClient = () => deps.admin ?? getAdmin()
+
+  return async function handleGuardStripeWebhook(req, res) {
+    const secret = deps.secret ??
+      process.env.STRIPE_GUARD_WEBHOOK_SECRET?.trim()
 
   if (!secret) {
     return res.status(503).json({
@@ -134,7 +138,7 @@ export async function guardStripeWebhook(req, res) {
   let event
 
   try {
-    event = getStripe().webhooks.constructEvent(
+    event = getStripeClient().webhooks.constructEvent(
       req.body,
       signature,
       secret
@@ -161,11 +165,11 @@ export async function guardStripeWebhook(req, res) {
   let leaseAdmin = null
 
   try {
-    const admin = getAdmin()
+    const admin = getAdminClient()
     const object = event.data.object
 
     const prices = [
-      ...new Set(await getEventPrices(event))
+      ...new Set(await getEventPrices(event, getStripeClient()))
     ]
 
     const matches = prices
@@ -257,7 +261,7 @@ export async function guardStripeWebhook(req, res) {
     // Rinnovi, mancati pagamenti e cancellazioni.
     if (event.type !== 'checkout.session.completed') {
       const result = await processGuardLifecycleEvent(
-        getStripe(),
+        getStripeClient(),
         admin,
         event
       )
@@ -292,7 +296,7 @@ export async function guardStripeWebhook(req, res) {
 
     // Per Checkout eseguiamo la verifica completa.
     const result = await processGuardCheckout(
-      getStripe(),
+      getStripeClient(),
       admin,
       object.id
     )
@@ -338,18 +342,18 @@ export async function guardStripeWebhook(req, res) {
     // Dopo aver collegato il Checkout, recuperiamo
     // anche la prima fattura: potrebbe essere
     // arrivata prima dell'evento Checkout.
-    const subscription = await getStripe()
+    const subscription = await getStripeClient()
       .subscriptions.retrieve(result.subscriptionId)
 
     const invoiceId = id(subscription.latest_invoice)
 
     if (invoiceId) {
-      const invoice = await getStripe()
+      const invoice = await getStripeClient()
         .invoices.retrieve(invoiceId)
 
       if (invoice.status === 'paid' && invoice.paid === true) {
         const paidResult = await processGuardLifecycleEvent(
-          getStripe(),
+          getStripeClient(),
           admin,
           {
             type: 'invoice.paid',
@@ -403,3 +407,6 @@ export async function guardStripeWebhook(req, res) {
     })
   }
 }
+}
+
+export const guardStripeWebhook = createGuardStripeWebhook()
