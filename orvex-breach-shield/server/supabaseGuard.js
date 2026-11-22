@@ -1,36 +1,36 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-// Configurazione Supabase caricata dalle variabili locali.
+// Il server di staging deve potersi avviare anche
+// senza credenziali Supabase.
+// Le richieste di autenticazione restano disabilitate
+// quando Supabase non e' configurato.
+
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_PUBLISHABLE_KEY
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Configurazione Supabase Guard mancante')
-}
+export const supabaseGuard =
+  supabaseUrl && supabaseKey
+    ? createClient(supabaseUrl, supabaseKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false
+        }
+      })
+    : null
 
-// Client senza privilegi amministrativi.
-// Non utilizza service_role o secret key.
-export const supabaseGuard = createClient(
-  supabaseUrl,
-  supabaseKey,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
-  }
-)
-
-// Verifica un access token Supabase Auth.
-// Non modifica utenti o profili.
 export async function verifyGuardToken(accessToken) {
-  if (typeof accessToken !== 'string' || !accessToken) {
+  if (
+    !supabaseGuard ||
+    typeof accessToken !== 'string' ||
+    !accessToken
+  ) {
     return null
   }
 
-  const { data, error } = await supabaseGuard.auth.getUser(accessToken)
+  const { data, error } =
+    await supabaseGuard.auth.getUser(accessToken)
 
   if (error || !data?.user) {
     return null
@@ -39,6 +39,7 @@ export async function verifyGuardToken(accessToken) {
   return {
     id: data.user.id,
     email: data.user.email ?? null,
-    email_confirmed_at: data.user.email_confirmed_at ?? null,
+    email_confirmed_at:
+      data.user.email_confirmed_at ?? null
   }
 }
