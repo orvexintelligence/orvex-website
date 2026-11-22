@@ -1,17 +1,17 @@
 
- // ─────────────────────────────────────────────────────────────────
- //  ORVEX — Backend Express
- //
- //  Ruolo: proxy tra il frontend React e l'API HaveIBeenPwned.
- //  La chiave API rimane QUI (lato server) e non viene mai esposta
- //  nel bundle JavaScript del browser.
- //
- //  Avvio:
- //    node server/index.js          (produzione)
- //    npm run server                (con nodemon in dev)
- //
- //  Porta: 3001 (il frontend Vite gira su 3000, vedi vite.config.js)
- // ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────
+//  ORVEX — Backend Express
+//
+//  Ruolo: proxy tra il frontend React e l'API HaveIBeenPwned.
+//  La chiave API rimane QUI (lato server) e non viene mai esposta
+//  nel bundle JavaScript del browser.
+//
+//  Avvio:
+//    node server/index.js          (produzione)
+//    npm run server                (con nodemon in dev)
+//
+//  Porta: 3001 (il frontend Vite gira su 3000, vedi vite.config.js)
+// ─────────────────────────────────────────────────────────────────
 
 import express from 'express'
 import cors from 'cors'
@@ -26,6 +26,7 @@ import breachRouter from './routes/breach.js'
 import domainRouter from './routes/domain.js'
 import guardRouter from './routes/guard.js'
 import guardAnalyzeRouter from './routes/guardAnalyze.js'
+import guardProfileRouter from './routes/guardProfile.js'
 
 const app = express()
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
@@ -66,6 +67,7 @@ app.use('/api/breach', breachRouter)
 app.use('/api/domain', domainRouter)
 app.use('/api/guard', guardRouter)
 app.use('/api/guard/analyze', guardAnalyzeRouter)
+app.use('/api/guard/profile', guardProfileRouter)
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Route not found' })
