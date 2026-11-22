@@ -44,3 +44,66 @@ test('Ignora un prezzo appartenente a un altro servizio', () => {
 
   assert.equal(result, null)
 })
+
+import { processGuardLifecycleEvent } from './server/guardStripeLifecycle.js'
+
+test('Non elabora una fattura senza abbonamento Guard collegato', async () => {
+  const fakeAdmin = {
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          maybeSingle: async () => ({
+            data: null,
+            error: null
+          })
+        })
+      })
+    })
+  }
+
+  const result = await processGuardLifecycleEvent(
+    {},
+    fakeAdmin,
+    {
+      type: 'invoice.paid',
+      data: {
+        object: {
+          id: 'in_test_simulata',
+          subscription: 'sub_non_collegata'
+        }
+      }
+    }
+  )
+
+  assert.equal(result.handled, false)
+})
+
+test('Non elabora cancellazione di abbonamento sconosciuto', async () => {
+  const fakeAdmin = {
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          maybeSingle: async () => ({
+            data: null,
+            error: null
+          })
+        })
+      })
+    })
+  }
+
+  const result = await processGuardLifecycleEvent(
+    {},
+    fakeAdmin,
+    {
+      type: 'customer.subscription.deleted',
+      data: {
+        object: {
+          id: 'sub_non_collegata'
+        }
+      }
+    }
+  )
+
+  assert.equal(result.handled, false)
+})
