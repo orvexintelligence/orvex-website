@@ -277,6 +277,24 @@ export async function guardStripeWebhook(req, res) {
         result.reason
       )
 
+      const permanentReasons = new Set([
+        'ID sessione non valido',
+        'Riferimento acquisto mancante',
+        'Acquisto fuori validita',
+        'Payment Link differente',
+        'Acquisto gia associato a un altro Checkout',
+        'Prodotti Checkout non previsti',
+        'Prezzo Checkout non autorizzato',
+        'Abbonamento differente',
+        'Prezzo abbonamento differente'
+      ])
+
+      if (!permanentReasons.has(result.reason)) {
+        return res.status(503).json({
+          error: 'Checkout in attesa di riconciliazione'
+        })
+      }
+
       await updateEventStatus(
         admin,
         event.id,
@@ -307,7 +325,7 @@ export async function guardStripeWebhook(req, res) {
           admin,
           {
             type: 'invoice.paid',
-            data: { object: { id: invoice.id } }
+            data: { object: invoice }
           }
         )
 

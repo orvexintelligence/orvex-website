@@ -198,6 +198,23 @@ export async function processGuardLifecycleEvent(
     }
 
     if (type === 'customer.subscription.deleted') {
+      // Controlla lo stato attuale direttamente su Stripe.
+      const currentSubscription =
+        await stripe.subscriptions.retrieve(subscriptionId)
+
+      if (
+        stripeId(currentSubscription.customer) !==
+        record.stripe_customer_id
+      ) {
+        throw new Error('Cliente Stripe differente')
+      }
+
+      if (currentSubscription.status !== 'canceled') {
+        return {
+          handled: false,
+          reason: 'Cancellazione non confermata da Stripe'
+        }
+      }
       // L'abbonamento è terminato.
       // Non concediamo ulteriori periodi di accesso.
       await updateSubscription(admin, subscriptionId, {
