@@ -4,6 +4,10 @@ import { createClient } from '@supabase/supabase-js'
 import { getGuardPlanFromPrice } from '../guardStripePrices.js'
 import { processGuardCheckout } from '../guardStripeProcessCheckout.js'
 import { processGuardLifecycleEvent } from '../guardStripeLifecycle.js'
+import {
+  claimGuardStripeEvent,
+  finishGuardStripeEvent
+} from '../guardStripeEventLease.js'
 
 let stripe
 let supabaseAdmin
@@ -153,6 +157,9 @@ export async function guardStripeWebhook(req, res) {
     })
   }
 
+  let leaseAttempt = null
+  let leaseAdmin = null
+
   try {
     const admin = getAdmin()
     const object = event.data.object
@@ -228,6 +235,25 @@ export async function guardStripeWebhook(req, res) {
 
     if (saveError) throw saveError
 
+    const claim = await claimGuardStripeEvent(admin, event.id)
+
+    if (claim.status === 'processed' || claim.status === 'rejected') {
+      return res.status(200).json({
+        received: true,
+        duplicate: true,
+        status: claim.status
+      })
+    }
+
+    if (claim.status !== 'claimed') {
+      return res.status(503).json({
+        error: 'Evento gia in elaborazione o non acquisibile'
+      })
+    }
+
+    leaseAttempt = claim.attempt
+    leaseAdmin = admin
+
     // Rinnovi, mancati pagamenti e cancellazioni.
     if (event.type !== 'checkout.session.completed') {
       const result = await processGuardLifecycleEvent(
@@ -246,16 +272,17 @@ export async function guardStripeWebhook(req, res) {
           result.reason
         )
 
+        await finishGuardStripeEvent(
+          admin, event.id, leaseAttempt, 'pending'
+        )
+        leaseAttempt = null
+
         return res.status(503).json({
           error: 'Riconciliazione in sospeso'
         })
       }
 
-      await updateEventStatus(
-        admin,
-        event.id,
-        'processed'
-      )
+      await finishGuardStripeEvent(admin, event.id, leaseAttempt, 'processed')
 
       return res.status(200).json({
         received: true,
@@ -290,16 +317,17 @@ export async function guardStripeWebhook(req, res) {
       ])
 
       if (!permanentReasons.has(result.reason)) {
+        await finishGuardStripeEvent(
+          admin, event.id, leaseAttempt, 'pending'
+        )
+        leaseAttempt = null
+
         return res.status(503).json({
           error: 'Checkout in attesa di riconciliazione'
         })
       }
 
-      await updateEventStatus(
-        admin,
-        event.id,
-        'rejected'
-      )
+      await finishGuardStripeEvent(admin, event.id, leaseAttempt, 'rejected')
 
       return res.status(200).json({
         received: true,
@@ -335,11 +363,7 @@ export async function guardStripeWebhook(req, res) {
       }
     }
 
-    await updateEventStatus(
-      admin,
-      event.id,
-      'processed'
-    )
+    await finishGuardStripeEvent(admin, event.id, leaseAttempt, 'processed')
 
     console.log(
       '[Guard Stripe] Abbonamento registrato:',
@@ -354,6 +378,19 @@ export async function guardStripeWebhook(req, res) {
     })
 
   } catch (error) {
+    if (leaseAttempt !== null && leaseAdmin) {
+      try {
+        await finishGuardStripeEvent(
+          leaseAdmin, event.id, leaseAttempt, 'pending'
+        )
+      } catch (releaseError) {
+        console.error(
+          '[Guard Stripe] Rilascio evento fallito:',
+          releaseError.message
+        )
+      }
+    }
+
     console.error(
       '[Guard Stripe] Elaborazione fallita:',
       error.message
