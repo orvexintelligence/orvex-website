@@ -1,16 +1,6 @@
 
 // ─────────────────────────────────────────────────────────────────
-//  ORVEX — Backend Express
-//
-//  Ruolo: proxy tra il frontend React e l'API HaveIBeenPwned.
-//  La chiave API rimane QUI (lato server) e non viene mai esposta
-//  nel bundle JavaScript del browser.
-//
-//  Avvio:
-//    node server/index.js          (produzione)
-//    npm run server                (con nodemon in dev)
-//
-//  Porta: 3001 (il frontend Vite gira su 3000, vedi vite.config.js)
+// ORVEX — Backend Express
 // ─────────────────────────────────────────────────────────────────
 
 import express from 'express'
@@ -27,17 +17,31 @@ import domainRouter from './routes/domain.js'
 import guardRouter from './routes/guard.js'
 import guardAnalyzeRouter from './routes/guardAnalyze.js'
 import guardProfileRouter from './routes/guardProfile.js'
+import guardCheckoutRouter from './routes/guardCheckout.js'
+import { guardStripeWebhook } from './routes/guardStripeWebhook.js'
 
 const app = express()
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
 
-// Predisposizione proxy Render.
-// Disattivata per impostazione predefinita.
-// Attivare solo dopo aver verificato il percorso dei proxy.
+// Configurazione proxy Render.
+// Rimane disattivata fino alla verifica dei proxy.
 if (process.env.GUARD_TRUST_PROXY === 'one-hop') {
   app.set('trust proxy', 1)
 }
 
+// WEBHOOK STRIPE
+// Deve precedere express.json(), perché la verifica della firma
+// richiede il corpo originale della richiesta.
+app.post(
+  '/api/guard/stripe/webhook',
+  express.raw({
+    type: 'application/json',
+    limit: '256kb'
+  }),
+  guardStripeWebhook
+)
+
+// Parser JSON per tutte le altre API.
 app.use(express.json())
 
 app.use(cors({
@@ -63,19 +67,31 @@ app.get('/api/health', (_req, res) => {
   })
 })
 
+// Servizi Orvex già esistenti.
 app.use('/api/breach', breachRouter)
 app.use('/api/domain', domainRouter)
+
+// Orvex Guard.
 app.use('/api/guard', guardRouter)
 app.use('/api/guard/analyze', guardAnalyzeRouter)
 app.use('/api/guard/profile', guardProfileRouter)
 
+// Orvex Guard — creazione link di pagamento autenticati.
+app.use('/api/guard/checkout', guardCheckoutRouter)
+
+// Gestione rotte inesistenti.
 app.use((_req, res) => {
-  res.status(404).json({ error: 'Route not found' })
+  res.status(404).json({
+    error: 'Route not found'
+  })
 })
 
+// Gestione errori.
 app.use((err, _req, res, _next) => {
   console.error('[Orvex Server] Uncaught error:', err)
-  res.status(500).json({ error: 'Internal server error' })
+  res.status(500).json({
+    error: 'Internal server error'
+  })
 })
 
 app.listen(PORT, () => {

@@ -59,7 +59,7 @@ nav{background:#071428;border-bottom:1px solid var(--dim);padding:14px 32px;disp
 <body>
 
 <nav>
-  <a href="index.html" class="nav-brand"><div class="nav-diamond"></div>ORVEX GUARD</a>
+  <a href="orvex-guard.html" class="nav-brand"><div class="nav-diamond"></div>ORVEX GUARD</a>
   <div style="display:flex;gap:8px;align-items:center">
     <span id="nav-username" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)"></span>
     <button class="btn btn-ghost" onclick="goHome()">← HOME</button>
@@ -110,7 +110,7 @@ nav{background:#071428;border-bottom:1px solid var(--dim);padding:14px 32px;disp
           <span class="field-label">MEMBRO DAL</span>
           <span class="field-value" id="field-since">—</span>
         </div>
-        <button class="btn btn-ghost" style="margin-top:8px;width:100%;justify-content:center;display:flex" onclick="toggleEdit()">MODIFICA DATI</button>
+        <button class="btn btn-ghost" style="margin-top:8px;width:100%;justify-content:center;display:flex" disabled title="Funzione in preparazione">MODIFICA DATI (NON DISPONIBILE)</button>
       </div>
       <div id="personal-edit" style="display:none">
         <div class="field-row">
@@ -153,7 +153,7 @@ nav{background:#071428;border-bottom:1px solid var(--dim);padding:14px 32px;disp
         <div class="progress-bar">
           <div id="analyses-progress" class="progress-fill" style="width:0%;background:var(--blue)"></div>
         </div>
-        <p style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center">3 analisi/giorno · Reset alle mezzanotte</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center">Limiti applicati dal server; contatore in questa pagina non ancora sincronizzato</p>
       </div>
 
       <div id="plan-features" style="margin:16px 0;display:flex;flex-direction:column;gap:8px"></div>
@@ -207,8 +207,9 @@ nav{background:#071428;border-bottom:1px solid var(--dim);padding:14px 32px;disp
         <span class="field-label">CAMBIO PASSWORD</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <input id="new-password" class="field-input" type="password" placeholder="Nuova password (min. 8 caratteri)"/>
-        <input id="confirm-password" class="field-input" type="password" placeholder="Conferma nuova password"/>
+        <input id="current-password" class="field-input" type="password" autocomplete="current-password" placeholder="Password attuale"/>
+        <input id="new-password" class="field-input" type="password" autocomplete="new-password" placeholder="Nuova password (min. 8 caratteri)"/>
+        <input id="confirm-password" class="field-input" type="password" autocomplete="new-password" placeholder="Conferma nuova password"/>
         <button class="btn btn-ghost" onclick="changePassword()" style="width:100%">AGGIORNA PASSWORD</button>
       </div>
     </div>
@@ -231,26 +232,40 @@ nav{background:#071428;border-bottom:1px solid var(--dim);padding:14px 32px;disp
 </div>
 
 <script>
-var API_URL = 'https://i1l5qitfsa.execute-api.eu-south-1.amazonaws.com/prod';
+var API_URL = 'https://orvex-server.onrender.com/api/guard'; // STAGING: pubblicare solo dopo deploy e verifiche
 var currentUser = null;
 var authToken = null;
 
-// Carica sessione
+// Sessione Supabase: non utilizzare i vecchi token AWS.
 try {
-  var _st = localStorage.getItem('orvex_token');
-  var _su = localStorage.getItem('orvex_user');
-  if (_st && _su) { authToken = _st; currentUser = JSON.parse(_su); }
+  authToken = localStorage.getItem('orvex_guard_access_token');
+  currentUser = JSON.parse(localStorage.getItem('orvex_guard_user') || 'null');
 } catch(e) {}
 
-if (!currentUser || !authToken) {
-  window.location.href = 'index.html';
+async function guardProfileRequest(path, options) {
+  options = options || {};
+  var headers = Object.assign({'Content-Type':'application/json'},options.headers || {});
+  if (authToken && !options.noAuth) headers.Authorization = 'Bearer ' + authToken;
+  var response = await fetch(API_URL + path,Object.assign({},options,{headers:headers}));
+  return {status:response.status,data:await response.json().catch(function(){return {};})};
 }
-
-function goHome() { window.location.href = 'index.html'; }
-
+async function ensureGuardSession() {
+  if (!authToken) return false;
+  var me = await guardProfileRequest('/me');
+  if (me.status === 200) return true;
+  var rt = localStorage.getItem('orvex_guard_refresh_token');
+  if (!rt) return false;
+  var r = await guardProfileRequest('/refresh',{method:'POST',noAuth:true,body:JSON.stringify({refresh_token:rt})});
+  if (r.status !== 200) return false;
+  authToken = r.data.access_token;
+  localStorage.setItem('orvex_guard_access_token',authToken);
+  localStorage.setItem('orvex_guard_refresh_token',r.data.refresh_token);
+  return true;
+}
+function goHome() { window.location.href = 'orvex-guard.html'; }
 function logout() {
-  try { localStorage.removeItem('orvex_token'); localStorage.removeItem('orvex_user'); } catch(e) {}
-  window.location.href = 'index.html';
+  ['orvex_guard_access_token','orvex_guard_refresh_token','orvex_guard_user','orvex_token','orvex_user'].forEach(function(key){localStorage.removeItem(key);});
+  goHome();
 }
 
 function showToast(msg) {
@@ -295,12 +310,16 @@ function getPlanFeatures(plan) {
   return features[plan] || features.free;
 }
 
-function loadProfile() {
-  fetch(API_URL + '/users/profile', {
-    headers: {'Authorization': 'Bearer ' + authToken}
-  }).then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data.error) { window.location.href = 'index.html'; return; }
+async function loadProfile() {
+  if (!await ensureGuardSession()) { logout(); return; }
+  guardProfileRequest('/profile').then(function(result) {
+    if (result.status !== 200) {
+      document.getElementById('loading').textContent = result.status === 404
+        ? 'Profilo Guard non associato: contatta l’assistenza per il recupero.'
+        : (result.data.error || 'Profilo non disponibile');
+      return;
+    }
+    var data = result.data;
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('profile-content').style.display = 'block';
@@ -335,8 +354,7 @@ function loadProfile() {
     document.getElementById('plan-features').innerHTML = featHtml;
 
     // Analisi giornaliere
-    var today = data.lastAnalysisDate === new Date().toISOString().split('T')[0];
-    var usedToday = today ? (data.analysesToday || 0) : 0;
+    var usedToday = Number.isFinite(Number(data.analysesToday)) ? Number(data.analysesToday) : 0; // Da sincronizzare con guard_usage_daily
     var remaining = plan === 'free' ? Math.max(0, 3 - usedToday) : null;
 
     document.getElementById('analyses-today').textContent = usedToday;
@@ -351,7 +369,7 @@ function loadProfile() {
     }
 
     // Attivazione
-    if (!data.activated) {
+    if (data.activated === false) {
       document.getElementById('activation-dot').style.background = '#f97316';
       document.getElementById('activation-status').textContent = 'In attesa di attivazione email';
       document.getElementById('activation-status').style.color = '#f97316';
@@ -361,7 +379,7 @@ function loadProfile() {
     loadAnalysisHistory();
 
   }).catch(function() {
-    window.location.href = 'index.html';
+    document.getElementById('loading').textContent = 'Errore nel caricamento del profilo';
   });
 }
 
@@ -416,32 +434,28 @@ function toggleEdit() {
 }
 
 function saveProfile() {
-  var name = document.getElementById('edit-name').value.trim();
-  if (!name) { showToast('⚠ Nome obbligatorio'); return; }
-
-  // Aggiorna localStorage
-  currentUser.name = name;
-  currentUser.phone = document.getElementById('edit-phone').value.trim();
-  currentUser.company = document.getElementById('edit-company').value.trim();
-  try { localStorage.setItem('orvex_user', JSON.stringify(currentUser)); } catch(e) {}
-
-  document.getElementById('field-name').textContent = name;
-  document.getElementById('field-phone').textContent = currentUser.phone || '—';
-  document.getElementById('field-company').textContent = currentUser.company || '—';
-  document.getElementById('nav-username').textContent = name;
-  toggleEdit();
-  showToast('✓ Profilo aggiornato!');
+  showToast('Le modifiche dei dati personali saranno disponibili dopo l’attivazione del relativo servizio. Nessun dato è stato modificato.');
 }
 
-function changePassword() {
+async function changePassword() {
+  var current = document.getElementById('current-password').value;
   var pwd = document.getElementById('new-password').value;
   var confirm = document.getElementById('confirm-password').value;
-  if (pwd.length < 8) { showToast('⚠ Password minimo 8 caratteri'); return; }
-  if (pwd !== confirm) { showToast('⚠ Le password non coincidono'); return; }
-  // TODO: chiamata API cambio password
-  showToast('✓ Password aggiornata!');
-  document.getElementById('new-password').value = '';
-  document.getElementById('confirm-password').value = '';
+  if (!current) { showToast('Inserisci la password attuale'); return; }
+  if (pwd.length < 8 || pwd.length > 128) { showToast('La nuova password deve avere 8-128 caratteri'); return; }
+  if (pwd !== confirm) { showToast('Le password non coincidono'); return; }
+  try {
+    if (!await ensureGuardSession()) { logout(); return; }
+    var r = await guardProfileRequest('/password', {
+      method:'POST', body:JSON.stringify({currentPassword:current,newPassword:pwd})
+    });
+    if (r.status !== 200) throw new Error(r.data.error || 'Password non aggiornata');
+    document.getElementById('current-password').value = '';
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+    showToast('Password aggiornata. Effettua nuovamente il login.');
+    setTimeout(logout,1500);
+  } catch(e) { showToast(e.message || 'Errore di aggiornamento password'); }
 }
 
 // Intercetta le analisi fatte nella home per salvarle nello storico
