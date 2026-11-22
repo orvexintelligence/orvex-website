@@ -25,6 +25,7 @@ dotenv.config({ path: path.join(__dirname, '..', '.env.local') })
 import breachRouter from './routes/breach.js'
 import domainRouter from './routes/domain.js'
 import guardRouter from './routes/guard.js'
+import guardAnalyzeRouter from './routes/guardAnalyze.js'
 
 const app = express()
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
@@ -57,6 +58,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/breach', breachRouter)
 app.use('/api/domain', domainRouter)
 app.use('/api/guard', guardRouter)
+app.use('/api/guard/analyze', guardAnalyzeRouter)
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Route not found' })
