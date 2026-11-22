@@ -162,7 +162,7 @@ nav{background:#071428;border-bottom:1px solid var(--dim);padding:14px 32px;disp
         <div class="upgrade-box">
           <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);font-weight:700;margin-bottom:8px">PASSA A PREMIUM</div>
           <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Analisi illimitate, screenshot, alert live e molto altro.</div>
-          <button class="btn btn-primary" onclick="window.open('https://buy.stripe.com/5kQbJ1aZp7mO5pA8hybEA07','_blank')" style="width:100%">€4,99/mese →</button>
+          <button class="btn btn-primary" onclick="upgradeGuardPremium()" style="width:100%">€4,99/mese →</button>
         </div>
       </div>
     </div>
@@ -262,6 +262,30 @@ async function ensureGuardSession() {
   localStorage.setItem('orvex_guard_refresh_token',r.data.refresh_token);
   return true;
 }
+async function upgradeGuardPremium() {
+  try {
+    if (!await ensureGuardSession()) {
+      showToast('Accedi nuovamente per continuare');
+      return;
+    }
+    var response = await guardProfileRequest('/checkout/link', {
+      method:'POST',
+      body:JSON.stringify({selection:'premium_month'})
+    });
+    if (response.status !== 200 || !response.data.checkout_url) {
+      throw new Error(response.data.error || 'Checkout non disponibile');
+    }
+    var target = new URL(response.data.checkout_url);
+    if (target.protocol !== 'https:' ||
+        !(target.hostname === 'buy.stripe.com' || target.hostname.endsWith('.stripe.com'))) {
+      throw new Error('Destinazione pagamento non valida');
+    }
+    window.location.assign(target.toString());
+  } catch(error) {
+    showToast(error.message || 'Errore durante il checkout');
+  }
+}
+
 function goHome() { window.location.href = 'orvex-guard.html'; }
 function logout() {
   ['orvex_guard_access_token','orvex_guard_refresh_token','orvex_guard_user','orvex_token','orvex_user'].forEach(function(key){localStorage.removeItem(key);});

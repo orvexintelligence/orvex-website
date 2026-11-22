@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { getGuardPlanFromPrice } from '../guardStripePrices.js'
 import { processGuardCheckout } from '../guardStripeProcessCheckout.js'
+import { processGuardLifecycleEvent } from '../guardStripeLifecycle.js'
 
 let stripe
 let supabaseAdmin
@@ -227,12 +228,38 @@ export async function guardStripeWebhook(req, res) {
 
     if (saveError) throw saveError
 
-    // Per ora registriamo gli altri eventi per la
-    // futura gestione di rinnovi e cancellazioni.
+    // Rinnovi, mancati pagamenti e cancellazioni.
     if (event.type !== 'checkout.session.completed') {
+      const result = await processGuardLifecycleEvent(
+        getStripe(),
+        admin,
+        event
+      )
+
+      if (!result.handled) {
+        // Conserva l'evento come pending.
+        // Stripe potra riprovare se Checkout non
+        // e ancora stato collegato all'account.
+        console.warn(
+          '[Guard Stripe] Evento da riconciliare:',
+          event.id,
+          result.reason
+        )
+
+        return res.status(503).json({
+          error: 'Riconciliazione in sospeso'
+        })
+      }
+
+      await updateEventStatus(
+        admin,
+        event.id,
+        'processed'
+      )
+
       return res.status(200).json({
         received: true,
-        status: 'pending'
+        action: result.action
       })
     }
 
@@ -260,6 +287,34 @@ export async function guardStripeWebhook(req, res) {
         received: true,
         status: 'rejected'
       })
+    }
+
+    // Dopo aver collegato il Checkout, recuperiamo
+    // anche la prima fattura: potrebbe essere
+    // arrivata prima dell'evento Checkout.
+    const subscription = await getStripe()
+      .subscriptions.retrieve(result.subscriptionId)
+
+    const invoiceId = id(subscription.latest_invoice)
+
+    if (invoiceId) {
+      const invoice = await getStripe()
+        .invoices.retrieve(invoiceId)
+
+      if (invoice.status === 'paid' && invoice.paid === true) {
+        const paidResult = await processGuardLifecycleEvent(
+          getStripe(),
+          admin,
+          {
+            type: 'invoice.paid',
+            data: { object: { id: invoice.id } }
+          }
+        )
+
+        if (!paidResult.handled) {
+          throw new Error('Prima fattura non riconciliata')
+        }
+      }
     }
 
     await updateEventStatus(

@@ -721,9 +721,9 @@ async function handleAuth() {
     localStorage.setItem('orvex_guard_user', JSON.stringify(currentUser));
     closeAuth(); updateUserUI();
     if (window._pendingPlan) {
-      var links = STRIPE_LINKS[window._pendingPlan];
-      if (links) window.open(isAnnual ? links.annual : links.monthly, '_blank', 'noopener,noreferrer');
+      var selectedPlan = window._pendingPlan;
       window._pendingPlan = null;
+      await startGuardCheckout(selectedPlan);
     }
   } catch(e) { showAuthError(e.message || 'Errore di connessione'); }
   finally { btn.disabled = false; btn.textContent = mode === 'login' ? T[currentLang].authLogin : T[currentLang].authRegister + ' →'; }
@@ -856,10 +856,39 @@ var PLANS=[
 ];
 var isAnnual=false;
 
-var STRIPE_LINKS={
-  'PREMIUM':{monthly:'https://buy.stripe.com/5kQbJ1aZp7mO5pA8hybEA07',annual:'https://buy.stripe.com/8x2cN5ffFbD405gfK0bEA08'},
-  'SMALL B2B':{monthly:'https://buy.stripe.com/4gM9AT8Rh36y4lw41ibEA05',annual:'https://buy.stripe.com/dRm14nebB4aC5pAbtKbEA06'}
+// I Payment Links non devono piu' essere aperti direttamente:
+// il backend crea un'intenzione di acquisto associata al JWT Supabase.
+var GUARD_CHECKOUT_SELECTIONS = {
+  'PREMIUM': { monthly:'premium_month', annual:'premium_year' },
+  'SMALL B2B': { monthly:'small_b2b_month', annual:'small_b2b_year' }
 };
+
+async function startGuardCheckout(planName) {
+  var selection = GUARD_CHECKOUT_SELECTIONS[planName];
+  if (!selection) return;
+  if (!authToken || !await restoreGuardSession()) {
+    window._pendingPlan = planName;
+    openAuth('login');
+    return;
+  }
+  try {
+    var result = await guardRequest('/checkout/link', {
+      method:'POST',
+      body:JSON.stringify({selection:isAnnual ? selection.annual : selection.monthly})
+    });
+    if (result.status !== 200 || !result.data.checkout_url) {
+      throw new Error(result.data.error || 'Checkout temporaneamente non disponibile');
+    }
+    var destination = new URL(result.data.checkout_url);
+    if (destination.protocol !== 'https:' ||
+        !(destination.hostname === 'buy.stripe.com' || destination.hostname.endsWith('.stripe.com'))) {
+      throw new Error('Destinazione pagamento non valida');
+    }
+    window.location.assign(destination.toString());
+  } catch (error) {
+    alert(error.message || 'Impossibile avviare il pagamento');
+  }
+}
 
 function toggleBilling(){
   isAnnual=!isAnnual;
@@ -889,14 +918,16 @@ function renderPricing(){
 renderPricing();
 
 function handlePlanClick(planName){
-  if(planName==='FREE'){
-    var links=STRIPE_LINKS['PREMIUM'];
-    var url=isAnnual?links.annual:links.monthly;
-    window.open(url,'_blank');
+  if (planName === 'FREE') {
+    if (!authToken) openAuth('register');
+    else document.getElementById('analyzer-title').scrollIntoView({behavior:'smooth'});
     return;
   }
-  var links=STRIPE_LINKS[planName];
-  if(links){var url=isAnnual?links.annual:links.monthly;window.open(url,'_blank');}
+  if (planName === 'ENTERPRISE') {
+    alert('Contatta il team Orvex per il piano Enterprise.');
+    return;
+  }
+  void startGuardCheckout(planName);
 }
 
 // ── LIVE ANALYZER ──
