@@ -1,17 +1,17 @@
 
-// ─────────────────────────────────────────────────────────────────
-//  ORVEX — Backend Express
-//
-//  Ruolo: proxy tra il frontend React e l'API HaveIBeenPwned.
-//  La chiave API rimane QUI (lato server) e non viene mai esposta
-//  nel bundle JavaScript del browser.
-//
-//  Avvio:
-//    node server/index.js          (produzione)
-//    npm run server                (con nodemon in dev)
-//
-//  Porta: 3001 (il frontend Vite gira su 3000, vedi vite.config.js)
-// ─────────────────────────────────────────────────────────────────
+ // ─────────────────────────────────────────────────────────────────
+ //  ORVEX — Backend Express
+ //
+ //  Ruolo: proxy tra il frontend React e l'API HaveIBeenPwned.
+ //  La chiave API rimane QUI (lato server) e non viene mai esposta
+ //  nel bundle JavaScript del browser.
+ //
+ //  Avvio:
+ //    node server/index.js          (produzione)
+ //    npm run server                (con nodemon in dev)
+ //
+ //  Porta: 3001 (il frontend Vite gira su 3000, vedi vite.config.js)
+ // ─────────────────────────────────────────────────────────────────
 
 import express from 'express'
 import cors from 'cors'
@@ -29,6 +29,13 @@ import guardAnalyzeRouter from './routes/guardAnalyze.js'
 
 const app = express()
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
+
+// Predisposizione proxy Render.
+// Disattivata per impostazione predefinita.
+// Attivare solo dopo aver verificato il percorso dei proxy.
+if (process.env.GUARD_TRUST_PROXY === 'one-hop') {
+  app.set('trust proxy', 1)
+}
 
 app.use(express.json())
 
