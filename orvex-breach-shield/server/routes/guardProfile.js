@@ -204,7 +204,7 @@ router.post('/initialize', async (req, res, next) => {
         name,
         account_type: 'personal',
         plan: 'free',
-        activated: true,
+        actived: true,
         analyses_today: 0,
         last_analysis_date: null
       })

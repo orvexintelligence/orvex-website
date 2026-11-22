@@ -39,5 +39,6 @@ export async function verifyGuardToken(accessToken) {
   return {
     id: data.user.id,
     email: data.user.email ?? null,
+    email_confirmed_at: data.user.email_confirmed_at ?? null,
   }
 }
