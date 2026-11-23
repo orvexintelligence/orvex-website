@@ -205,7 +205,7 @@ export async function processGuardLifecycleEvent(
     const { data: applied, error: applyError } = await admin.rpc('guard_sync_paid_invoice', {
       p_subscription_id: subscriptionId, p_customer_id: record.stripe_customer_id,
       p_price_id: record.stripe_price_id, p_invoice_id: invoice.id,
-      p_paid_through: new Date(newExpiry).toISOString(), p_status: subscription.status
+      p_paid_through: paidUntil, p_status: subscription.status
     })
     if (applyError || applied !== true) throw new Error('Fattura non sincronizzata')
 
