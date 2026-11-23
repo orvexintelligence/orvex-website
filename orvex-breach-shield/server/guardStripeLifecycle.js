@@ -171,6 +171,34 @@ export async function processGuardLifecycleEvent(
       Date.parse(paidUntil)
     )
 
+    if (lease) {
+      const { data, error } = await admin.rpc(
+        'guard_apply_paid_invoice',
+        {
+          p_event_id: lease.eventId,
+          p_attempt: lease.attempt,
+          p_subscription_id: subscriptionId,
+          p_customer_id: record.stripe_customer_id,
+          p_price_id: record.stripe_price_id,
+          p_invoice_id: invoice.id,
+          p_paid_through: new Date(newExpiry).toISOString(),
+          p_status: subscription.status
+        }
+      )
+
+      if (error) throw error
+
+      if (data !== true) {
+        throw new Error('Fattura atomica non confermata')
+      }
+
+      return {
+        handled: true,
+        action: 'invoice_paid',
+        eventFinalized: true
+      }
+    }
+
     await updateSubscription(admin, subscriptionId, {
       status: subscription.status,
       paid_through: new Date(newExpiry).toISOString(),
@@ -218,6 +246,31 @@ export async function processGuardLifecycleEvent(
       }
       // L'abbonamento è terminato.
       // Non concediamo ulteriori periodi di accesso.
+      if (lease) {
+        const { data, error } = await admin.rpc(
+          'guard_apply_subscription_cancellation',
+          {
+            p_event_id: lease.eventId,
+            p_attempt: lease.attempt,
+            p_subscription_id: subscriptionId,
+            p_customer_id: record.stripe_customer_id,
+            p_price_id: record.stripe_price_id
+          }
+        )
+
+        if (error) throw error
+
+        if (data !== true) {
+          throw new Error('Cancellazione atomica non confermata')
+        }
+
+        return {
+          handled: true,
+          action: 'canceled',
+          eventFinalized: true
+        }
+      }
+
       await updateSubscription(admin, subscriptionId, {
         status: 'canceled',
         paid_through: null
