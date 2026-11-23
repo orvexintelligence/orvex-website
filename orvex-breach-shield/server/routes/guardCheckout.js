@@ -2,7 +2,7 @@
 import { Router } from 'express'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { getGuardPlanFromPrice } from '../guardStripePrices.js'
+import { getGuardPlanFromPrice, getGuardStripeMode } from '../guardStripePrices.js'
 
 const router = Router()
 
@@ -56,6 +56,16 @@ function getStripe() {
   if (!stripe) {
     const key = process.env.STRIPE_SECRET_KEY?.trim()
     if (!key) throw new Error('Stripe non configurato')
+
+    const mode = getGuardStripeMode()
+
+    if (mode === 'test' && !/^(sk_test_|rk_test_)/.test(key)) {
+      throw new Error('Modalita Test con chiave Stripe non Test')
+    }
+
+    if (mode === 'live' && !/^(sk_live_|rk_live_)/.test(key)) {
+      throw new Error('Modalita Live con chiave Stripe non Live')
+    }
     stripe = new Stripe(key)
   }
 
@@ -63,6 +73,12 @@ function getStripe() {
 }
 
 router.post('/link', async (req, res) => {
+  // In Sandbox non utilizzare il Supabase condiviso.
+  if (getGuardStripeMode() === 'test') {
+    return res.status(503).json({
+      error: 'Checkout Sandbox in preparazione'
+    })
+  }
   try {
     const token = req.headers.authorization
       ?.match(/^Bearer\s+(.+)$/i)?.[1]

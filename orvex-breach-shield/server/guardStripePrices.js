@@ -1,5 +1,5 @@
 
-const GUARD_PRICES = [
+const LIVE_GUARD_PRICES = [
   {
     env: 'STRIPE_GUARD_PREMIUM_MONTHLY_PRICE_ID',
     plan: 'premium',
@@ -22,18 +22,42 @@ const GUARD_PRICES = [
   }
 ]
 
+const TEST_GUARD_PRICES = [
+  {
+    priceId: 'price_1UehhlCm02DXEmv1gaYfVI1a',
+    plan: 'premium',
+    interval: 'month'
+  }
+]
+
+export function getGuardStripeMode() {
+  const mode = process.env.STRIPE_GUARD_MODE ?? 'live'
+
+  if (mode !== 'live' && mode !== 'test') {
+    throw new Error('STRIPE_GUARD_MODE non valido')
+  }
+
+  return mode
+}
+
 export function getGuardPlanFromPrice(priceId) {
   if (typeof priceId !== 'string' || !priceId) {
     return null
   }
 
-  const match = GUARD_PRICES.find(
-    item => process.env[item.env]?.trim() === priceId
-  )
+  const mode = getGuardStripeMode()
 
-  if (!match) {
-    return null
-  }
+  const prices = mode === 'test'
+    ? TEST_GUARD_PRICES
+    : LIVE_GUARD_PRICES.map(item => ({
+        priceId: process.env[item.env]?.trim(),
+        plan: item.plan,
+        interval: item.interval
+      }))
+
+  const match = prices.find(item => item.priceId === priceId)
+
+  if (!match) return null
 
   return {
     plan: match.plan,
@@ -43,9 +67,7 @@ export function getGuardPlanFromPrice(priceId) {
 }
 
 export function getGuardPlansFromPrices(priceIds) {
-  if (!Array.isArray(priceIds)) {
-    return []
-  }
+  if (!Array.isArray(priceIds)) return []
 
   return priceIds
     .map(getGuardPlanFromPrice)

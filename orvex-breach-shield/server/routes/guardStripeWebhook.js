@@ -1,7 +1,7 @@
 
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { getGuardPlanFromPrice } from '../guardStripePrices.js'
+import { getGuardPlanFromPrice, getGuardStripeMode } from '../guardStripePrices.js'
 import { processGuardCheckout } from '../guardStripeProcessCheckout.js'
 import { processGuardLifecycleEvent } from '../guardStripeLifecycle.js'
 import {
@@ -118,6 +118,12 @@ export function createGuardStripeWebhook(deps = {}) {
   const getAdminClient = () => deps.admin ?? getAdmin()
 
   return async function handleGuardStripeWebhook(req, res) {
+    // Blocca ogni scrittura nel database condiviso in modalita Sandbox.
+    if (getGuardStripeMode() === 'test') {
+      return res.status(503).json({
+        error: 'Webhook Sandbox non ancora isolato'
+      })
+    }
     const secret = deps.secret ??
       process.env.STRIPE_GUARD_WEBHOOK_SECRET?.trim()
 
