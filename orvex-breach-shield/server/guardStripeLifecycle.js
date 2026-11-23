@@ -63,7 +63,8 @@ async function refreshPlan(admin, userId) {
 export async function processGuardLifecycleEvent(
   stripe,
   admin,
-  event
+  event,
+  lease = null
 ) {
   const type = event.type
   const object = event.data?.object ?? {}
@@ -253,6 +254,32 @@ export async function processGuardLifecycleEvent(
       return {
         handled: false,
         reason: 'Modifica prezzo da riconciliare'
+      }
+    }
+
+    if (lease) {
+      const { data, error } = await admin.rpc(
+        'guard_apply_subscription_update',
+        {
+          p_event_id: lease.eventId,
+          p_attempt: lease.attempt,
+          p_subscription_id: subscriptionId,
+          p_customer_id: record.stripe_customer_id,
+          p_price_id: record.stripe_price_id,
+          p_status: subscription.status
+        }
+      )
+
+      if (error) throw error
+
+      if (data !== true) {
+        throw new Error('Aggiornamento atomico non confermato')
+      }
+
+      return {
+        handled: true,
+        action: 'subscription_updated',
+        eventFinalized: true
       }
     }
 

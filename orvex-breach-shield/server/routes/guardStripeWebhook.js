@@ -263,7 +263,11 @@ export function createGuardStripeWebhook(deps = {}) {
       const result = await processGuardLifecycleEvent(
         getStripeClient(),
         admin,
-        event
+        event,
+        {
+          eventId: event.id,
+          attempt: leaseAttempt
+        }
       )
 
       if (!result.handled) {
@@ -286,7 +290,13 @@ export function createGuardStripeWebhook(deps = {}) {
         })
       }
 
-      await finishGuardStripeEvent(admin, event.id, leaseAttempt, 'processed')
+      if (!result.eventFinalized) {
+        await finishGuardStripeEvent(
+          admin, event.id, leaseAttempt, 'processed'
+        )
+      }
+
+      leaseAttempt = null
 
       return res.status(200).json({
         received: true,

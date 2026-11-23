@@ -1,4 +1,4 @@
-﻿import test from 'node:test'
+import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createGuardStripeWebhook } from './server/routes/guardStripeWebhook.js'
 
@@ -125,6 +125,20 @@ test('Due webhook contemporanei elaborano una sola volta', async () => {
         return { data: null, error: null }
       }
 
+      if (name === 'guard_apply_subscription_update') {
+        assert.equal(args.p_event_id, eventId)
+        assert.equal(args.p_attempt, attempts)
+        assert.equal(args.p_subscription_id, subscriptionId)
+        assert.equal(args.p_customer_id, customerId)
+        assert.equal(args.p_price_id, priceId)
+        assert.equal(args.p_status, 'active')
+
+        updates++
+        refreshes++
+        eventState = 'processed'
+
+        return { data: true, error: null }
+      }
       throw new Error('RPC inattesa: ' + name)
     }
   }
