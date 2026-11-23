@@ -2,6 +2,7 @@
 import { Router } from 'express'
 import { createClient } from '@supabase/supabase-js'
 import { verifyGuardToken } from '../supabaseGuard.js'
+import { claimGuardPurchases } from '../guardDirectPurchase.js'
 
 const router = Router()
 
@@ -69,6 +70,7 @@ router.get('/', async (req, res, next) => {
       })
     }
 
+    await claimGuardPurchases(createAdminClient(), user)
     const supabase = createUserClient(token)
 
     const { data, error } = await supabase

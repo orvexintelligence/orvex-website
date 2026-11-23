@@ -6,11 +6,13 @@ import { analyzeGuardTextWithAI, isGuardAIConfigured } from '../guardOpenAI.js'
 import { verifyGuardToken } from '../supabaseGuard.js'
 import { getGuardGuestKey } from '../guardGuest.js'
 
+export function createGuardAnalyzeRouter(deps = {}) {
 const router = Router()
 
 let supabaseAdmin
 
 function getAdmin() {
+  if (deps.admin) return deps.admin
   if (!supabaseAdmin) {
     const url = process.env.SUPABASE_URL
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -43,7 +45,7 @@ function readLimit(name, fallback) {
 
 const aiEnabled = () =>
   process.env.GUARD_AI_ENABLED === 'true' &&
-  isGuardAIConfigured()
+  (deps.isAIConfigured ?? isGuardAIConfigured)()
 
 async function consumeUsage(principalKey, limit) {
   const { data, error } = await getAdmin().rpc(
@@ -145,12 +147,15 @@ router.post('/text', async (req, res, next) => {
         })
       }
 
-      user = await verifyGuardToken(match[1].trim())
+      user = await (deps.verifyToken ?? verifyGuardToken)(match[1].trim())
 
       if (!user) {
         return res.status(401).json({
           error: 'Token non valido o scaduto'
         })
+      }
+      if (!user.email_confirmed_at) {
+        return res.status(403).json({ error: 'Conferma email richiesta' })
       }
     }
 
@@ -225,7 +230,9 @@ router.post('/text', async (req, res, next) => {
       })
     }
 
-    const aiResult = await analyzeGuardTextWithAI(cleanText)
+    let aiResult
+    try { aiResult = await (deps.analyzeAI ?? analyzeGuardTextWithAI)(cleanText) }
+    catch { return res.status(503).json({ error: 'Analisi AI non disponibile' }) }
 
     if (
       !aiResult?.available ||
@@ -250,4 +257,6 @@ router.post('/text', async (req, res, next) => {
   }
 })
 
-export default router
+return router
+}
+export default createGuardAnalyzeRouter()

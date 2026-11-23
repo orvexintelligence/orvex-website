@@ -19,6 +19,7 @@ test('Dopo una risposta SQL persa, il retry non ripete aggiornamenti', async () 
   }
 
   const event = {
+    livemode: true,
     id: eventId,
     type: 'customer.subscription.updated',
     data: {

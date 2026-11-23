@@ -27,6 +27,18 @@ export function isGuardAIConfigured() {
   return Boolean(process.env.OPENAI_API_KEY?.trim())
 }
 
+export function validateGuardAIResult(result) {
+  if (!result || typeof result !== 'object' || !Number.isFinite(result.score) ||
+      result.score < 0 || result.score > 100 || !['safe','warning','danger'].includes(result.level) ||
+      !['label','summary','advice'].every(key => typeof result[key] === 'string' && result[key].trim() && result[key].length <= 4000) ||
+      !Array.isArray(result.signals) || result.signals.length > 20 ||
+      !result.signals.every(s => s && typeof s.type === 'string' && s.type.length <= 100 && typeof s.text === 'string' && s.text.length <= 1000)) {
+    throw new Error('Risposta AI non valida')
+  }
+  return { score: result.score, level: result.level, label: result.label,
+    summary: result.summary, advice: result.advice, signals: result.signals }
+}
+
 export async function analyzeGuardTextWithAI(text) {
   const ai = getClient()
 
@@ -67,6 +79,6 @@ export async function analyzeGuardTextWithAI(text) {
 
   return {
     available: true,
-    result: JSON.parse(content),
+    result: validateGuardAIResult(JSON.parse(content)),
   }
 }

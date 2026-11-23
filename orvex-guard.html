@@ -383,7 +383,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--dim);padding:40px;
 </div>
 
 <script>
-var API_URL = 'https://orvex-server.onrender.com/api/guard'; // STAGING: pubblicare solo dopo deploy e verifiche
+var API_URL = 'https://orvex-guard-staging.onrender.com/api/guard'; // STAGING: pubblicare solo dopo deploy e verifiche
 var currentUser = null;
 var authToken = null;
 var authMode = 'login';
@@ -856,38 +856,13 @@ var PLANS=[
 ];
 var isAnnual=false;
 
-// I Payment Links non devono piu' essere aperti direttamente:
-// il backend crea un'intenzione di acquisto associata al JWT Supabase.
-var GUARD_CHECKOUT_SELECTIONS = {
-  'PREMIUM': { monthly:'premium_month', annual:'premium_year' },
-  'SMALL B2B': { monthly:'small_b2b_month', annual:'small_b2b_year' }
+var STRIPE_LINKS={
+  'PREMIUM':{monthly:'https://buy.stripe.com/5kQbJ1aZp7mO5pA8hybEA07',annual:'https://buy.stripe.com/8x2cN5ffFbD405gfK0bEA08'},
+  'SMALL B2B':{monthly:'https://buy.stripe.com/4gM9AT8Rh36y4lw41ibEA05',annual:'https://buy.stripe.com/dRm14nebB4aC5pAbtKbEA06'}
 };
-
-async function startGuardCheckout(planName) {
-  var selection = GUARD_CHECKOUT_SELECTIONS[planName];
-  if (!selection) return;
-  if (!authToken || !await restoreGuardSession()) {
-    window._pendingPlan = planName;
-    openAuth('login');
-    return;
-  }
-  try {
-    var result = await guardRequest('/checkout/link', {
-      method:'POST',
-      body:JSON.stringify({selection:isAnnual ? selection.annual : selection.monthly})
-    });
-    if (result.status !== 200 || !result.data.checkout_url) {
-      throw new Error(result.data.error || 'Checkout temporaneamente non disponibile');
-    }
-    var destination = new URL(result.data.checkout_url);
-    if (destination.protocol !== 'https:' ||
-        !(destination.hostname === 'buy.stripe.com' || destination.hostname.endsWith('.stripe.com'))) {
-      throw new Error('Destinazione pagamento non valida');
-    }
-    window.location.assign(destination.toString());
-  } catch (error) {
-    alert(error.message || 'Impossibile avviare il pagamento');
-  }
+function startGuardCheckout(planName) {
+  var links = STRIPE_LINKS[planName];
+  if (links) window.open(isAnnual ? links.annual : links.monthly, '_blank', 'noopener');
 }
 
 function toggleBilling(){
@@ -951,6 +926,10 @@ async function runLiveAnalysis() {
   try {
     if (authToken) await restoreGuardSession();
     var r = await guardRequest('/analyze/text', {method:'POST',body:JSON.stringify({text:text})});
+    if (r.status === 429 && r.data.upgradeRequired && !currentUser) {
+      el.textContent = T[currentLang].guestLimitTitle + ' — ' + T[currentLang].guestLimitSub;
+      return;
+    }
     if (r.status !== 200) {
       var explanation = r.status === 429 ? 'Limite giornaliero raggiunto.'
         : r.status === 503 ? 'Analisi AI temporaneamente non disponibile. Non considerare sicuro questo messaggio.'

@@ -19,6 +19,8 @@ import guardAnalyzeRouter from './routes/guardAnalyze.js'
 import guardProfileRouter from './routes/guardProfile.js'
 import guardCheckoutRouter from './routes/guardCheckout.js'
 import { guardStripeWebhook } from './routes/guardStripeWebhook.js'
+import { guardRateLimit } from './guardRateLimit.js'
+import { getGuardAdmin } from './guardAdmin.js'
 
 const app = express()
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
@@ -41,9 +43,7 @@ app.post(
   guardStripeWebhook
 )
 
-// Parser JSON per tutte le altre API.
-app.use(express.json())
-
+// CORS precede il parser, anche per le risposte JSON non valide.
 app.use(cors({
   origin: [
     process.env.VITE_APP_URL || 'https://app.orvexintelligence.com',
@@ -72,11 +72,15 @@ app.get('/api/health', (_req, res) => {
   })
 })
 
+app.use(express.json({ limit: '16kb' }))
+
 // Servizi Orvex già esistenti.
 app.use('/api/breach', breachRouter)
 app.use('/api/domain', domainRouter)
 
 // Orvex Guard.
+app.get('/api/guard/health', (_req, res) => res.json({ status: 'ok', service: 'Orvex Guard API' }))
+app.use('/api/guard', guardRateLimit(getGuardAdmin))
 app.use('/api/guard', guardRouter)
 app.use('/api/guard/analyze', guardAnalyzeRouter)
 app.use('/api/guard/profile', guardProfileRouter)
@@ -93,9 +97,10 @@ app.use((_req, res) => {
 
 // Gestione errori.
 app.use((err, _req, res, _next) => {
-  console.error('[Orvex Server] Uncaught error:', err)
-  res.status(500).json({
-    error: 'Internal server error'
+  console.error('[Orvex Server] Request failed:', err.type || err.name)
+  const status = err.type === 'entity.too.large' ? 413 : err.type === 'entity.parse.failed' ? 400 : 503
+  res.status(status).json({
+    error: status === 413 ? 'Richiesta troppo grande' : status === 400 ? 'JSON non valido' : 'Servizio temporaneamente non disponibile'
   })
 })
 

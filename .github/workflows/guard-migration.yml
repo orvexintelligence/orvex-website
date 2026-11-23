@@ -1,0 +1,29 @@
+name: Guard migration checks
+on:
+  pull_request:
+    paths:
+      - 'orvex-breach-shield/**'
+      - 'orvex-guard.html'
+      - 'orvex-guard-profile.html'
+      - '.github/workflows/guard-migration.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: orvex-breach-shield
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: orvex-breach-shield/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm audit --omit=dev

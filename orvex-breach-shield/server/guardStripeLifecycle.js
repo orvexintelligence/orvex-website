@@ -34,7 +34,7 @@ async function findGuardSubscription(admin, subscriptionId) {
   if (error) throw error
 
   // Non associamo abbonamenti usando soltanto l'email.
-  if (!data?.auth_user_id) return null
+  if (!data) return null
 
   return data
 }
@@ -52,6 +52,7 @@ async function updateSubscription(admin, subscriptionId, changes) {
 }
 
 async function refreshPlan(admin, userId) {
+  if (!userId) return
   const { error } = await admin.rpc(
     'guard_refresh_user_plan',
     { p_auth_user_id: userId }
@@ -199,13 +200,14 @@ export async function processGuardLifecycleEvent(
       }
     }
 
-    await updateSubscription(admin, subscriptionId, {
-      status: subscription.status,
-      paid_through: new Date(newExpiry).toISOString(),
-      last_paid_invoice_id: invoice.id
+    // Checkout reconciliation can race invoice webhooks. Preserve the greatest
+    // paid-through date and terminal cancellation inside one SQL transaction.
+    const { data: applied, error: applyError } = await admin.rpc('guard_sync_paid_invoice', {
+      p_subscription_id: subscriptionId, p_customer_id: record.stripe_customer_id,
+      p_price_id: record.stripe_price_id, p_invoice_id: invoice.id,
+      p_paid_through: new Date(newExpiry).toISOString(), p_status: subscription.status
     })
-
-    await refreshPlan(admin, record.auth_user_id)
+    if (applyError || applied !== true) throw new Error('Fattura non sincronizzata')
 
     return { handled: true, action: 'invoice_paid' }
   }

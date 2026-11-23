@@ -6,21 +6,23 @@ import { createClient } from '@supabase/supabase-js'
 // Le richieste di autenticazione restano disabilitate
 // quando Supabase non e' configurato.
 
-const supabaseUrl = process.env.SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_PUBLISHABLE_KEY
-
-export const supabaseGuard =
-  supabaseUrl && supabaseKey
-    ? createClient(supabaseUrl, supabaseKey, {
+let supabaseGuard
+function getAuthClient() {
+  const supabaseUrl = process.env.SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_PUBLISHABLE_KEY
+  if (!supabaseUrl || !supabaseKey) return null
+  if (!supabaseGuard) supabaseGuard = createClient(supabaseUrl, supabaseKey, {
         auth: {
           persistSession: false,
           autoRefreshToken: false,
           detectSessionInUrl: false
         }
       })
-    : null
+  return supabaseGuard
+}
 
 export async function verifyGuardToken(accessToken) {
+  const supabaseGuard = getAuthClient()
   if (
     !supabaseGuard ||
     typeof accessToken !== 'string' ||

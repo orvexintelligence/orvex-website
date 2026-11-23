@@ -1,5 +1,6 @@
 
 import { verifyGuardCheckout } from './guardStripeReconcile.js'
+import { processDirectGuardPurchase } from './guardDirectPurchase.js'
 
 // Da chiamare esclusivamente dal backend,
 // dopo la verifica della firma del webhook Stripe.
@@ -11,6 +12,17 @@ export async function processGuardCheckout(
   admin,
   checkoutSessionId
 ) {
+  if (typeof checkoutSessionId !== 'string' || !checkoutSessionId.startsWith('cs_')) {
+    return { recorded: false, reason: 'ID sessione non valido' }
+  }
+  const session = await stripe.checkout.sessions.retrieve(checkoutSessionId)
+  if (session.livemode !== true || session.status !== 'complete' ||
+      session.payment_status !== 'paid' || session.mode !== 'subscription') {
+    return { recorded: false, reason: 'Checkout non pagato o non Live' }
+  }
+  // A client_reference_id on a public Payment Link is user-controlled. Direct
+  // purchases always require verified email ownership, even if one is supplied.
+  if (session.payment_link) return processDirectGuardPurchase(stripe, admin, session)
   // 1. Controlla il pagamento direttamente su Stripe.
   const result = await verifyGuardCheckout(
     stripe,

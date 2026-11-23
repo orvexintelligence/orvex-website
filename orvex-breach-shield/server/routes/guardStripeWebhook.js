@@ -43,6 +43,7 @@ function getAdmin() {
 
 const EVENTS = new Set([
   'checkout.session.completed',
+  'checkout.session.async_payment_succeeded',
   'invoice.paid',
   'invoice.payment_failed',
   'customer.subscription.updated',
@@ -64,7 +65,7 @@ function linePriceId(line) {
 async function getEventPrices(event, api) {
   const object = event.data.object
 
-  if (event.type === 'checkout.session.completed') {
+  if (event.type.startsWith('checkout.session.')) {
     const prices = []
 
     for await (const line of api.checkout.sessions.listLineItems(
@@ -119,7 +120,11 @@ export function createGuardStripeWebhook(deps = {}) {
 
   return async function handleGuardStripeWebhook(req, res) {
     // Blocca ogni scrittura nel database condiviso in modalita Sandbox.
-    if (getGuardStripeMode() === 'test') {
+    let mode
+    try { mode = getGuardStripeMode() } catch {
+      return res.status(503).json({ error: 'Configurazione Stripe non valida' })
+    }
+    if (mode === 'test') {
       return res.status(503).json({
         error: 'Webhook Sandbox non ancora isolato'
       })
@@ -158,6 +163,10 @@ export function createGuardStripeWebhook(deps = {}) {
     return res.status(400).json({
       error: 'Firma non valida'
     })
+  }
+
+  if (event.livemode !== true) {
+    return res.status(400).json({ error: 'Evento non Live' })
   }
 
   if (!EVENTS.has(event.type)) {
@@ -209,12 +218,12 @@ export function createGuardStripeWebhook(deps = {}) {
         ),
 
       client_reference_id:
-        event.type === 'checkout.session.completed'
+        event.type.startsWith('checkout.session.')
           ? object.client_reference_id ?? null
           : null,
 
       payment_link_id:
-        event.type === 'checkout.session.completed'
+        event.type.startsWith('checkout.session.')
           ? id(object.payment_link)
           : null,
 
@@ -265,7 +274,7 @@ export function createGuardStripeWebhook(deps = {}) {
     leaseAdmin = admin
 
     // Rinnovi, mancati pagamenti e cancellazioni.
-    if (event.type !== 'checkout.session.completed') {
+    if (!event.type.startsWith('checkout.session.')) {
       const result = await processGuardLifecycleEvent(
         getStripeClient(),
         admin,
@@ -391,7 +400,7 @@ export function createGuardStripeWebhook(deps = {}) {
       result.plan
     )
 
-    // Non concediamo ancora accesso Premium.
+    // Accesso concesso soltanto dopo fattura verificata e associazione account.
     return res.status(200).json({
       received: true,
       status: 'recorded'

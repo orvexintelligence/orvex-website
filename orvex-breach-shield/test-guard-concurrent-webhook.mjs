@@ -36,9 +36,9 @@ test('Due webhook contemporanei elaborano una sola volta', async () => {
   }
 
   const event = {
+    livemode: true,
     id: eventId,
     type: 'customer.subscription.updated',
-    livemode: false,
     data: {
       object: {
         id: subscriptionId,

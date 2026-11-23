@@ -250,7 +250,6 @@ test('Registra una fattura Guard pagata e aggiorna la scadenza', async () => {
   }
 
   let savedChanges = null
-  let refreshedUser = null
 
   const fakeAdmin = {
     from: () => ({
@@ -270,9 +269,11 @@ test('Registra una fattura Guard pagata e aggiorna la scadenza', async () => {
       })
     }),
     rpc: async (name, params) => {
-      assert.equal(name, 'guard_refresh_user_plan')
-      refreshedUser = params.p_auth_user_id
-      return { error: null }
+      assert.equal(name, 'guard_sync_paid_invoice')
+      savedChanges = { status: params.p_status, last_paid_invoice_id: params.p_invoice_id, paid_through: params.p_paid_through }
+      assert.equal(params.p_subscription_id, subscriptionId)
+      assert.equal(params.p_customer_id, customerId)
+      return { data: true, error: null }
     }
   }
 
@@ -324,5 +325,4 @@ test('Registra una fattura Guard pagata e aggiorna la scadenza', async () => {
     savedChanges.paid_through,
     new Date(expiry * 1000).toISOString()
   )
-  assert.equal(refreshedUser, userId)
 })
