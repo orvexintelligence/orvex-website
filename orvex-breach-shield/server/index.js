@@ -45,7 +45,12 @@ app.post(
 app.use(express.json())
 
 app.use(cors({
-  origin: process.env.VITE_APP_URL || 'https://app.orvexintelligence.com',
+  origin: [
+    process.env.VITE_APP_URL || 'https://app.orvexintelligence.com',
+    'https://orvexintelligence.com',
+    'https://www.orvexintelligence.com',
+    'http://localhost:8080'
+  ],
   methods: ['GET', 'POST', 'OPTIONS'],
 }))
 
