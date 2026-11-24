@@ -1,3 +1,4 @@
+import { GUARD_STRIPE_API_VERSION, GUARD_STRIPE_EVENTS, isGuardInvoicePaid } from '../guardStripeConfig.js'
 
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
@@ -16,7 +17,7 @@ function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY?.trim()
   if (!key) throw new Error('STRIPE_SECRET_KEY mancante')
 
-  if (!stripe) stripe = new Stripe(key)
+  if (!stripe) stripe = new Stripe(key, { apiVersion: GUARD_STRIPE_API_VERSION })
   return stripe
 }
 
@@ -41,14 +42,7 @@ function getAdmin() {
   return supabaseAdmin
 }
 
-const EVENTS = new Set([
-  'checkout.session.completed',
-  'checkout.session.async_payment_succeeded',
-  'invoice.paid',
-  'invoice.payment_failed',
-  'customer.subscription.updated',
-  'customer.subscription.deleted'
-])
+const EVENTS = new Set(GUARD_STRIPE_EVENTS)
 
 function id(value) {
   if (typeof value === 'string') return value
@@ -376,7 +370,7 @@ export function createGuardStripeWebhook(deps = {}) {
       const invoice = await getStripeClient()
         .invoices.retrieve(invoiceId)
 
-      if (invoice.status === 'paid' && invoice.paid === true) {
+      if (isGuardInvoicePaid(invoice)) {
         const paidResult = await processGuardLifecycleEvent(
           getStripeClient(),
           admin,

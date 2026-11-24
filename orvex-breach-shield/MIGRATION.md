@@ -1,5 +1,16 @@
 # Orvex Guard — verifica e passaggio da AWS
 
+## Aggiornamento 24 novembre 2026
+
+Procedura operativa corrente: [ops/RUNBOOK.md](ops/RUNBOOK.md). Evidenze in sola lettura: [service-audit.json](ops/evidence/service-audit.json). I dettagli del 23 novembre sotto restano come storico.
+
+- **51 test superati**, build riuscita e audit dipendenze produzione senza vulnerabilità. Aggiunti flussi account FREE/sessione/password, stack HTTP, formato Stripe corrente, preflight e rollback atomico delle due migrazioni.
+- Compatibilità di colonne pubbliche e firma RPC verificata con lo schema REST effettivo; catalogo SQL completo, policy, grant, vincoli e vecchie funzioni richiedono ancora accesso PostgreSQL. Nessuna migrazione o backup del database operativo eseguito.
+- Preparati bundle transazionale verificato, preflight, esportazione catalogo, script backup cifrato e rollback senza eliminazione di dati. Configurazioni esatte in `ops/stripe-webhook.live.json` e `ops/render-staging.yaml`, senza segreti.
+- Corretto il controllo `invoice.paid` rimosso dalle API recenti e fissata la versione Stripe `2026-11-18.endive`. Nessuna variazione alla versione dell'account Stripe.
+- Auth remoto richiede conferma email. Render ora risponde 503 al gate antiabuso prima di profilo/scanner, non 401 come nella fotografia precedente: la configurazione proxy non è ancora verificata. Endpoint Stripe ancora non leggibili con la chiave disponibile (403).
+- Sito pubblico e link Stripe riconfermati invariati. Non occorre modificarli prima del collaudo; gli interventi del proprietario si limitano agli accessi Supabase SQL/backup, Render staging e Stripe webhook/Sandbox, elencati nel runbook. Nessun test manuale richiesto.
+
 Verifica del 23 novembre 2026. Ramo `guard-migration-test`, base di lavoro `5edf9b7`.
 **Non pronto per spegnere AWS o pubblicare il frontend.** Questa PR prepara e verifica il codice; non sostituisce il collaudo dei servizi operativi.
 

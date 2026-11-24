@@ -4,7 +4,7 @@ create function public.guard_sync_paid_invoice(p_subscription_id text,p_customer
 returns boolean language plpgsql security definer set search_path = '' as $$
 declare sub public.guard_stripe_subscriptions;
 begin
-  if p_status not in ('active','past_due') or p_paid_through is null then raise exception 'Invalid invoice'; end if;
+  if p_status is null or p_status not in ('active','past_due') or p_paid_through is null or p_invoice_id is null then raise exception 'Invalid invoice'; end if;
   select * into sub from public.guard_stripe_subscriptions where stripe_subscription_id=p_subscription_id for update;
   if not found or sub.stripe_customer_id is distinct from p_customer_id or sub.stripe_price_id is distinct from p_price_id then
     raise exception 'Invoice mismatch';

@@ -9,8 +9,10 @@ create table public.guard_direct_purchases (
   created_at timestamptz not null default now(),
   claimed_at timestamptz
 );
+create index guard_direct_purchases_unclaimed_email on public.guard_direct_purchases(checkout_email)
+  where claimed_by is null;
 alter table public.guard_direct_purchases enable row level security;
-revoke all on public.guard_direct_purchases from anon, authenticated;
+revoke all on public.guard_direct_purchases from public, anon, authenticated;
 grant all on public.guard_direct_purchases to service_role;
 
 create function public.guard_record_direct_purchase(
@@ -19,7 +21,7 @@ create function public.guard_record_direct_purchase(
 ) returns boolean language plpgsql security definer set search_path = '' as $$
 declare existing public.guard_stripe_subscriptions; purchase public.guard_direct_purchases;
 begin
-  if p_plan not in ('premium','small_b2b') or p_checkout_email is null or
+  if p_plan is null or p_plan not in ('premium','small_b2b') or p_checkout_email is null or
      length(p_checkout_email) > 254 or position('@' in p_checkout_email) < 2 then
     raise exception 'Invalid purchase';
   end if;
@@ -72,13 +74,13 @@ create table public.guard_request_windows (
   principal_key text primary key, window_start timestamptz not null, request_count integer not null
 );
 alter table public.guard_request_windows enable row level security;
-revoke all on public.guard_request_windows from anon, authenticated;
+revoke all on public.guard_request_windows from public, anon, authenticated;
 grant all on public.guard_request_windows to service_role;
 create function public.guard_take_request(p_key text,p_limit integer)
 returns boolean language plpgsql security definer set search_path = '' as $$
 declare n integer; bucket timestamptz := date_trunc('minute',now());
 begin
-  if p_limit < 1 or p_limit > 300 or p_key not like 'guest:%' or length(p_key)>100 then
+  if p_limit is null or p_key is null or p_limit < 1 or p_limit > 300 or p_key not like 'guest:%' or length(p_key)>100 then
     raise exception 'Invalid limit';
   end if;
   insert into public.guard_request_windows values(p_key,bucket,1)

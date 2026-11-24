@@ -4,7 +4,9 @@ import { createClient } from '@supabase/supabase-js'
 import { verifyGuardToken } from '../supabaseGuard.js'
 import { claimGuardPurchases } from '../guardDirectPurchase.js'
 
+export function createGuardProfileRouter(deps = {}) {
 const router = Router()
+const verifyToken = deps.verifyToken ?? verifyGuardToken
 
 function getBearerToken(req) {
   const authorization = req.headers.authorization || ''
@@ -13,6 +15,7 @@ function getBearerToken(req) {
 }
 
 function createUserClient(token) {
+  if (deps.createUserClient) return deps.createUserClient(token)
   return createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_PUBLISHABLE_KEY,
@@ -33,6 +36,7 @@ function createUserClient(token) {
 
 // Solo backend: non esporre mai questa chiave al frontend.
 function createAdminClient() {
+  if (deps.admin) return deps.admin
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error('SUPABASE_SERVICE_ROLE_KEY non configurata')
   }
@@ -62,7 +66,7 @@ router.get('/', async (req, res, next) => {
       })
     }
 
-    const user = await verifyGuardToken(token)
+    const user = await verifyToken(token)
 
     if (!user) {
       return res.status(401).json({
@@ -120,7 +124,7 @@ router.post('/initialize', async (req, res, next) => {
       })
     }
 
-    const user = await verifyGuardToken(token)
+    const user = await verifyToken(token)
 
     if (!user) {
       return res.status(401).json({
@@ -233,4 +237,6 @@ router.post('/initialize', async (req, res, next) => {
   }
 })
 
-export default router
+return router
+}
+export default createGuardProfileRouter()

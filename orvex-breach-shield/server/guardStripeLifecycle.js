@@ -1,3 +1,4 @@
+import { isGuardInvoicePaid } from './guardStripeConfig.js'
 
 import { getGuardPlanFromPrice } from './guardStripePrices.js'
 
@@ -121,8 +122,7 @@ export async function processGuardLifecycleEvent(
     // Non basta l'evento invoice.paid:
     // controlliamo il documento attuale su Stripe.
     if (
-      invoice.status !== 'paid' ||
-      invoice.paid !== true
+      !isGuardInvoicePaid(invoice)
     ) {
       throw new Error('Fattura non confermata come pagata')
     }

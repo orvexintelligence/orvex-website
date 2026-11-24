@@ -1,3 +1,4 @@
+import { GUARD_STRIPE_API_VERSION } from '../guardStripeConfig.js'
 
 import { Router } from 'express'
 import Stripe from 'stripe'
@@ -66,7 +67,7 @@ function getStripe() {
     if (mode === 'live' && !/^(sk_live_|rk_live_)/.test(key)) {
       throw new Error('Modalita Live con chiave Stripe non Live')
     }
-    stripe = new Stripe(key)
+    stripe = new Stripe(key, { apiVersion: GUARD_STRIPE_API_VERSION })
   }
 
   return stripe

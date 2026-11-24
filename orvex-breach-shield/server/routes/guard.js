@@ -2,9 +2,12 @@ import { Router } from 'express'
 import { createClient } from '@supabase/supabase-js'
 import { verifyGuardToken } from '../supabaseGuard.js'
 
+export function createGuardAuthRouter(deps = {}) {
 const router = Router()
+const verifyToken = deps.verifyToken ?? verifyGuardToken
 
 function createAuthClient() {
+  if (deps.createAuthClient) return deps.createAuthClient()
   return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
   })
@@ -73,7 +76,7 @@ router.get('/me', async (req, res, next) => {
   try {
     const token = bearer(req)
     if (!token) return res.status(401).json({error:'Authentication required'})
-    const user = await verifyGuardToken(token)
+    const user = await verifyToken(token)
     if (!user) return res.status(401).json({error:'Invalid or expired token'})
     return res.json({authenticated:true, user:{id:user.id,email:user.email}})
   } catch (error) { next(error) }
@@ -85,7 +88,7 @@ router.post('/password', async (req, res, next) => {
   try {
     const token = bearer(req)
     if (!token) return res.status(401).json({error:'Autenticazione richiesta'})
-    const user = await verifyGuardToken(token)
+    const user = await verifyToken(token)
     if (!user || !user.email) return res.status(401).json({error:'Sessione non valida'})
     const {currentPassword,newPassword} = req.body ?? {}
     if (typeof currentPassword !== 'string' || !currentPassword ||
@@ -105,4 +108,6 @@ router.post('/password', async (req, res, next) => {
   } catch (error) { next(error) }
 })
 
-export default router
+return router
+}
+export default createGuardAuthRouter()
