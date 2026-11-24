@@ -47,7 +47,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Migrazione non applicata: arresto' }
 
 Lo script backup passa i byte direttamente da `pg_dump` ad `age`, senza dump in chiaro su disco; verifica gli exit code di entrambi e produce un manifest SHA256 con `restoreVerified:false`. **Un manifest o `pg_restore --list` riuscito non dimostra ripristinabilità**. Decifrare in un percorso privato soltanto durante la prova e confrontare schema, dati, indici, FK, RLS, grant e utenti Auth ripristinati. Conservare separatamente configurazione Auth/SMTP, ruoli globali e oggetti Storage: `pg_dump` non salva impostazioni di servizio o file Storage. Non registrare artificialmente `restoreVerified:true` senza prova.
 
-`ops/preflight.sql` verifica tipi/colonne, nullable per l'utente dell'abbonamento, unicità profilo, RLS attiva, funzione refresh con ritorno void, permessi e search_path esplicito, assenza di installazione precedente. Un fallimento è una discrepanza da esaminare, non un invito a rimuovere i controlli. La verifica delle policy effettive e dei vecchi corpi SQL è aggiuntiva e non viene simulata dal preflight.
+`ops/preflight.sql` verifica tipi/colonne, nullable per l'utente dell'abbonamento, unicità profilo, RLS attiva, funzione refresh con ritorno text o void (il risultato viene ignorato da PERFORM), permessi e search_path esplicito, assenza di installazione precedente. Un fallimento è una discrepanza da esaminare, non un invito a rimuovere i controlli. La verifica delle policy effettive e dei vecchi corpi SQL è aggiuntiva e non viene simulata dal preflight.
 
 ### Rollback senza perdita degli acquisti
 

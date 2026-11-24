@@ -21,6 +21,7 @@ import guardCheckoutRouter from './routes/guardCheckout.js'
 import { guardStripeWebhook } from './routes/guardStripeWebhook.js'
 import { guardRateLimit } from './guardRateLimit.js'
 import { getGuardAdmin } from './guardAdmin.js'
+import { guardProxyDiagnostic } from './guardProxyDiagnostic.js'
 
 export function createApp(deps = {}) {
 const app = express()
@@ -79,7 +80,12 @@ app.use('/api/breach', breachRouter)
 app.use('/api/domain', domainRouter)
 
 // Orvex Guard.
-app.get('/api/guard/health', (_req, res) => res.json({ status: 'ok', service: 'Orvex Guard API' }))
+app.get('/api/guard/health', (_req, res) => res.json({
+  status: 'ok', service: 'Orvex Guard API',
+  nodeMajor: Number(process.versions.node.split('.')[0]),
+  revision: process.env.RENDER_GIT_COMMIT || null
+}))
+app.get('/api/guard/diagnostics/proxy', guardProxyDiagnostic)
 app.use('/api/guard', guardRateLimit(deps.getAdmin ?? getGuardAdmin))
 app.use('/api/guard', deps.authRouter ?? guardRouter)
 app.use('/api/guard/analyze', deps.analyzeRouter ?? guardAnalyzeRouter)

@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-11-24T08:53:22.646Z",
+  "source": "direct-api",
+  "noDatabaseMutation": true,
+  "anonymousSchema": {
+    "http": 401,
+    "guardRpc": null,
+    "guardTables": null,
+    "limits": "REST visibility only. If HTTP is not 200 privileges cannot be inferred; authenticated role and RLS predicates remain unverified"
+  },
+  "stripeKeyMode": "live",
+  "historicalCheckout": {
+    "readable": true,
+    "checkedSessions": 67,
+    "guardSessions": 27,
+    "paidCompleteGuardSessions": 0,
+    "missingCheckoutEmail": 27,
+    "completeListing": true,
+    "backfillPerformed": false,
+    "limitations": "Available Checkout sessions only; not a proof about manual, archived, different-account or legacy purchases."
+  },
+  "openAI": {
+    "realRequest": true,
+    "available": true,
+    "score": 95,
+    "level": "danger",
+    "validSchema": true,
+    "throughRender": false
+  },
+  "historicalSubscriptions": {
+    "readable": true,
+    "checkedSubscriptions": 0,
+    "guardSubscriptions": 0,
+    "statuses": {},
+    "completeListing": true
+  }
+}

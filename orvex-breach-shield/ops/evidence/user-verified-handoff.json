@@ -1,0 +1,24 @@
+{
+  "source": "User-provided results from a separate connected ChatGPT session",
+  "reportedDate": "2026-11-24",
+  "independentlyReverifiedInThisSession": false,
+  "supabase": {
+    "project": "Orvex Intelligence",
+    "active": true,
+    "importedGuardProfiles": 14,
+    "newMigrationsApplied": false,
+    "refreshUserPlanReturnType": "text",
+    "authColumnsCompatible": true
+  },
+  "render": {
+    "service": "orvex-guard-staging",
+    "deployedCommit": "e452fdf",
+    "nodeMajor": 26,
+    "autoDeployEnabled": true
+  },
+  "stripe": {
+    "accountName": "OVERXINTELLIGENCE",
+    "mode": "live",
+    "webhookEndpoints": 0
+  }
+}

@@ -38,8 +38,10 @@ begin
     raise exception 'guard_profiles RLS must be enabled';
   end if;
   target:=to_regprocedure('public.guard_refresh_user_plan(uuid)');
-  if target is null or (select prorettype from pg_proc where oid=target)<>'void'::regtype then
-    raise exception 'Expected guard_refresh_user_plan(uuid) returns void';
+  -- Both contracts are compatible: callers use PERFORM and discard the result.
+  -- The existing operational function returns text; do not replace it with void.
+  if target is null or (select prorettype from pg_proc where oid=target) not in ('text'::regtype,'void'::regtype) then
+    raise exception 'Expected guard_refresh_user_plan(uuid) returns text or void';
   end if;
   if has_function_privilege('anon',target,'EXECUTE') or has_function_privilege('authenticated',target,'EXECUTE') then
     raise exception 'Plan refresh must not be directly callable by browser roles';

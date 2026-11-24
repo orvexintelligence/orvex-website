@@ -2,7 +2,7 @@
   "name": "orvex-breach-shield",
   "version": "0.1.0",
   "private": true,
-  "description": "Orvex Breach & Identity Shield — MVP application",
+  "description": "Orvex Breach & Identity Shield \u2014 MVP application",
   "author": "Orvex Intelligence",
   "license": "UNLICENSED",
   "type": "module",
@@ -47,7 +47,7 @@
     "vite": "^5.3.4"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": "24.x",
     "npm": ">=9.0.0"
   }
 }

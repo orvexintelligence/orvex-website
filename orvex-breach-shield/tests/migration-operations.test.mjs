@@ -47,3 +47,36 @@ test('Captured REST contract matches migration public-column requirements',async
   assert.equal(audit.supabase.tables.guard_direct_purchases,undefined)
   assert.equal(audit.supabase.tables.guard_request_windows,undefined)
 })
+
+test('Existing text-returning plan refresh is preserved and works through both secure wrappers',async()=>{
+  const db=new PGlite()
+  try {
+    // Mirror the return contract verified on Supabase, without pretending this
+    // synthetic body is the operational definition.
+    const textBaseline=baseline.replace('returns void language sql','returns text language sql')
+      .replace('where auth_user_id=p_auth_user_id;','where auth_user_id=p_auth_user_id returning plan;')
+    await db.exec(textBaseline)
+    const definition=async()=> (await db.query("select pg_get_functiondef('guard_refresh_user_plan(uuid)'::regprocedure) as source")).rows[0].source
+    const before=await definition()
+    await db.exec(bundle)
+    assert.equal(await definition(),before)
+    await db.query("select guard_record_direct_purchase('cs_text','sub_text','cus_text','price_text','premium','buyer@example.com')")
+    await db.query("select guard_sync_paid_invoice('sub_text','cus_text','price_text','in_text','2099-01-01','active')")
+    await db.query("select guard_claim_direct_purchases('11111111-1111-4111-8111-111111111111')")
+    assert.equal((await db.query("select plan from guard_profiles where auth_user_id='11111111-1111-4111-8111-111111111111'")).rows[0].plan,'premium')
+    await db.query("select guard_sync_paid_invoice('sub_text','cus_text','price_text','in_renew','2099-02-01','active')")
+    assert.equal(await definition(),before)
+    assert.equal((await db.query('select count(*)::int as n from guard_profiles')).rows[0].n,3)
+  } finally {await db.close()}
+})
+
+test('Preflight still rejects incompatible plan-refresh return types',async()=>{
+  const db=new PGlite()
+  try {
+    await db.exec(baseline.replace('returns void language sql','returns integer language sql')
+      .replace('where auth_user_id=p_auth_user_id;','where auth_user_id=p_auth_user_id returning 1;'))
+    await assert.rejects(db.exec(bundle),/returns text or void/)
+    await db.exec('rollback')
+    assert.equal((await db.query("select to_regclass('guard_direct_purchases') as t")).rows[0].t,null)
+  } finally {await db.close()}
+})
