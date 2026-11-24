@@ -1,0 +1,56 @@
+# Reference configuration only: do not import as a new paid service or sync a
+# Blueprint automatically. Apply to the EXISTING staging service after DB checks.
+services:
+  - type: web
+    name: orvex-guard-staging
+    runtime: node
+    repo: https://github.com/orvexintelligence/orvex-website
+    branch: guard-migration-test
+    rootDir: orvex-breach-shield
+    autoDeployTrigger: off
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/guard/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: VITE_APP_URL
+        value: https://orvexintelligence.com
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GUARD_IP_HASH_SECRET
+        sync: false
+      - key: GUARD_AI_ENABLED
+        value: "true"
+      - key: GUARD_TRUST_PROXY
+        value: one-hop
+      - key: GUARD_GUEST_IP_VERIFIED
+        value: "false"
+      - key: GUARD_PREMIUM_DAILY_LIMIT
+        value: "10"
+      - key: GUARD_SMALL_B2B_DAILY_LIMIT
+        value: "20"
+      - key: GUARD_AI_DAILY_CAP
+        value: "20"
+      - key: STRIPE_GUARD_MODE
+        value: live
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_GUARD_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_GUARD_PREMIUM_MONTHLY_PRICE_ID
+        value: price_1TfQR5EOeFY4IpjhH4Kl0wbF
+      - key: STRIPE_GUARD_PREMIUM_YEARLY_PRICE_ID
+        value: price_1TfQTiEOeFY4IpjhwmGZUe7S
+      - key: STRIPE_GUARD_SMALL_B2B_MONTHLY_PRICE_ID
+        value: price_1TfQWeEOeFY4Ipjhh3U5YB3P
+      - key: STRIPE_GUARD_SMALL_B2B_YEARLY_PRICE_ID
+        value: price_1TfQXUEOeFY4IpjhsDTAI8dO

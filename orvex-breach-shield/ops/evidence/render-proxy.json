@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-11-24T09:04:17.423Z",
+  "readOnly": true,
+  "signedProbeAccepted": false,
+  "headerSpoofChangedIdentity": null,
+  "observations": [
+    {
+      "spoofedHeader": false,
+      "http": 403
+    },
+    {
+      "spoofedHeader": true,
+      "http": 403
+    },
+    {
+      "spoofedHeader": true,
+      "http": 403
+    }
+  ],
+  "limitations": "Single-origin probe. Unchanged identity alone does not prove distinct clients receive distinct quotas; no flag is enabled automatically."
+}

@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-11-24T09:04:59.993572+00:00",
+  "url": "https://orvex-guard-staging.onrender.com/api/guard/health",
+  "readOnly": true,
+  "response": {
+    "status": "ok",
+    "service": "Orvex Guard API",
+    "nodeMajor": 24,
+    "revision": "69faf86ab64c4ab88f61a5aaaef47e3dcd0d51f9"
+  }
+}

@@ -1,0 +1,428 @@
+{
+  "checkedAt": "2026-11-24T09:04:29.913Z",
+  "readOnly": true,
+  "supabase": {
+    "http": 200,
+    "tables": {
+      "guard_stripe_subscriptions": {
+        "required": [
+          "stripe_subscription_id",
+          "stripe_customer_id",
+          "status",
+          "updated_at"
+        ],
+        "columns": {
+          "stripe_subscription_id": "text",
+          "stripe_customer_id": "text",
+          "auth_user_id": "uuid",
+          "stripe_price_id": "text",
+          "plan": "text",
+          "status": "text",
+          "current_period_end": "timestamp with time zone",
+          "updated_at": "timestamp with time zone",
+          "paid_through": "timestamp with time zone",
+          "last_paid_invoice_id": "text"
+        }
+      },
+      "guard_usage_daily": {
+        "required": [
+          "principal_key",
+          "usage_date",
+          "analysis_count"
+        ],
+        "columns": {
+          "principal_key": "text",
+          "usage_date": "date",
+          "analysis_count": "int32"
+        }
+      },
+      "guard_checkout_intents": {
+        "required": [
+          "id",
+          "auth_user_id",
+          "stripe_price_id",
+          "stripe_payment_link_id",
+          "created_at",
+          "expires_at"
+        ],
+        "columns": {
+          "id": "uuid",
+          "auth_user_id": "uuid",
+          "stripe_price_id": "text",
+          "stripe_payment_link_id": "text",
+          "stripe_checkout_session_id": "text",
+          "stripe_subscription_id": "text",
+          "created_at": "timestamp with time zone",
+          "expires_at": "timestamp with time zone",
+          "completed_at": "timestamp with time zone"
+        }
+      },
+      "guard_stripe_events": {
+        "required": [
+          "stripe_event_id",
+          "event_type",
+          "processing_status",
+          "received_at",
+          "attempt_count"
+        ],
+        "columns": {
+          "stripe_event_id": "text",
+          "event_type": "text",
+          "processed_at": "timestamp with time zone",
+          "event_payload": "jsonb",
+          "processing_status": "text",
+          "received_at": "timestamp with time zone",
+          "processing_started_at": "timestamp with time zone",
+          "attempt_count": "int32"
+        }
+      },
+      "guard_profiles": {
+        "required": [
+          "id",
+          "created_at"
+        ],
+        "columns": {
+          "id": "uuid",
+          "created_at": "timestamp with time zone",
+          "aws_user_id": "text",
+          "auth_user_id": "uuid",
+          "email": "text",
+          "name": "text",
+          "account_type": "text",
+          "plan": "text",
+          "actived": "boolean",
+          "analyses_today": "int32",
+          "last_analysis_date": "date"
+        }
+      }
+    },
+    "rpc": {
+      "guard_consume_daily_usage": {
+        "properties": {
+          "p_daily_limit": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "p_principal_key": {
+            "format": "text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_principal_key",
+          "p_daily_limit"
+        ],
+        "type": "object"
+      },
+      "guard_record_verified_checkout": {
+        "properties": {
+          "p_checkout_session_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_customer_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_intent_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "p_price_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_subscription_id": {
+            "format": "text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_intent_id",
+          "p_checkout_session_id",
+          "p_subscription_id",
+          "p_customer_id",
+          "p_price_id"
+        ],
+        "type": "object"
+      },
+      "guard_apply_subscription_cancellation": {
+        "properties": {
+          "p_attempt": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "p_customer_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_event_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_price_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_subscription_id": {
+            "format": "text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_event_id",
+          "p_attempt",
+          "p_subscription_id",
+          "p_customer_id",
+          "p_price_id"
+        ],
+        "type": "object"
+      },
+      "guard_finish_stripe_event": {
+        "properties": {
+          "p_attempt": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "p_event_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_status": {
+            "format": "text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_event_id",
+          "p_attempt",
+          "p_status"
+        ],
+        "type": "object"
+      },
+      "guard_refresh_user_plan": {
+        "properties": {
+          "p_auth_user_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_auth_user_id"
+        ],
+        "type": "object"
+      },
+      "guard_consume_daily_usage_v2": {
+        "properties": {
+          "p_limit": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "p_principal_key": {
+            "format": "text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_principal_key",
+          "p_limit"
+        ],
+        "type": "object"
+      },
+      "guard_apply_subscription_update": {
+        "properties": {
+          "p_attempt": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "p_customer_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_event_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_price_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_status": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_subscription_id": {
+            "format": "text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_event_id",
+          "p_attempt",
+          "p_subscription_id",
+          "p_customer_id",
+          "p_price_id",
+          "p_status"
+        ],
+        "type": "object"
+      },
+      "guard_apply_paid_invoice": {
+        "properties": {
+          "p_attempt": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "p_customer_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_event_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_invoice_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_paid_through": {
+            "format": "timestamp with time zone",
+            "type": "string"
+          },
+          "p_price_id": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_status": {
+            "format": "text",
+            "type": "string"
+          },
+          "p_subscription_id": {
+            "format": "text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_event_id",
+          "p_attempt",
+          "p_subscription_id",
+          "p_customer_id",
+          "p_price_id",
+          "p_invoice_id",
+          "p_paid_through",
+          "p_status"
+        ],
+        "type": "object"
+      },
+      "guard_claim_stripe_event": {
+        "properties": {
+          "p_event_id": {
+            "format": "text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p_event_id"
+        ],
+        "type": "object"
+      }
+    },
+    "notObservable": [
+      "auth.users columns",
+      "CHECK/UNIQUE constraints",
+      "RLS policies",
+      "function bodies",
+      "role grants",
+      "triggers",
+      "backups"
+    ]
+  },
+  "auth": {
+    "http": 200,
+    "signupEnabled": true,
+    "emailEnabled": true,
+    "emailConfirmationRequired": true
+  },
+  "public": {
+    "http": 200,
+    "api": "https://i1l5qitfsa.execute-api.eu-south-1.amazonaws.com/prod",
+    "staticMarkupIdentical": true,
+    "sha256": "74c68fd920f4daa7135465c5cb04e390fa142fb17882640423e8294d20f46636",
+    "liveLinksIdentical": true,
+    "links": [
+      "https://buy.stripe.com/4gM9AT8Rh36y4lw41ibEA05",
+      "https://buy.stripe.com/5kQbJ1aZp7mO5pA8hybEA07",
+      "https://buy.stripe.com/8x2cN5ffFbD405gfK0bEA08",
+      "https://buy.stripe.com/dRm14nebB4aC5pAbtKbEA06"
+    ]
+  },
+  "stripe": {
+    "apiVersion": "2026-11-18.endive",
+    "links": [
+      {
+        "id": "plink_1TfQccEOeFY4Ipjh5hUupwtd",
+        "url": "https://buy.stripe.com/5kQbJ1aZp7mO5pA8hybEA07",
+        "live": true,
+        "active": true,
+        "configuredPriceMatches": true,
+        "completion": "hosted_confirmation"
+      },
+      {
+        "id": "plink_1TfQdEEOeFY4IpjhHQ5d1JD8",
+        "url": "https://buy.stripe.com/8x2cN5ffFbD405gfK0bEA08",
+        "live": true,
+        "active": true,
+        "configuredPriceMatches": true,
+        "completion": "hosted_confirmation"
+      },
+      {
+        "id": "plink_1TfQabEOeFY4Ipjh27RyOfjb",
+        "url": "https://buy.stripe.com/4gM9AT8Rh36y4lw41ibEA05",
+        "live": true,
+        "active": true,
+        "configuredPriceMatches": true,
+        "completion": "hosted_confirmation"
+      },
+      {
+        "id": "plink_1TfQbfEOeFY4Ipjho7fLQvPo",
+        "url": "https://buy.stripe.com/dRm14nebB4aC5pAbtKbEA06",
+        "live": true,
+        "active": true,
+        "configuredPriceMatches": true,
+        "completion": "hosted_confirmation"
+      }
+    ],
+    "webhooks": {
+      "readable": false,
+      "http": 403,
+      "code": "more_permissions_required"
+    }
+  },
+  "render": [
+    {
+      "path": "/health",
+      "method": "GET",
+      "status": 200,
+      "cors": null
+    },
+    {
+      "path": "/analyze/text",
+      "method": "OPTIONS",
+      "status": 204,
+      "cors": "https://orvexintelligence.com"
+    },
+    {
+      "path": "/profile",
+      "method": "GET",
+      "status": 503,
+      "cors": null,
+      "error": "Protezione richieste non configurata"
+    },
+    {
+      "path": "/analyze/text",
+      "method": "POST",
+      "status": 503,
+      "cors": "https://orvexintelligence.com",
+      "error": "Protezione richieste non configurata"
+    }
+  ]
+}

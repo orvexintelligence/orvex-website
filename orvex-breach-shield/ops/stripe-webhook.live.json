@@ -1,0 +1,14 @@
+{
+  "url": "https://orvex-guard-staging.onrender.com/api/guard/stripe/webhook",
+  "api_version": "2026-11-18.endive",
+  "connect": false,
+  "description": "Orvex Guard - verified subscription lifecycle",
+  "enabled_events": [
+    "checkout.session.completed",
+    "checkout.session.async_payment_succeeded",
+    "invoice.paid",
+    "invoice.payment_failed",
+    "customer.subscription.updated",
+    "customer.subscription.deleted"
+  ]
+}

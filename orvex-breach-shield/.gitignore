@@ -6,3 +6,6 @@ dist/
 .env.production
 .env*.local
 *.log
+ops/private/
+*.dump
+*.dump.age

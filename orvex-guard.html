@@ -383,18 +383,49 @@ footer{position:relative;z-index:1;border-top:1px solid var(--dim);padding:40px;
 </div>
 
 <script>
-var API_URL = 'https://i1l5qitfsa.execute-api.eu-south-1.amazonaws.com/prod';
+var API_URL = 'https://orvex-guard-staging.onrender.com/api/guard'; // STAGING: pubblicare solo dopo deploy e verifiche
 var currentUser = null;
 var authToken = null;
 var authMode = 'login';
 var currentLang = 'it';
 
-// ── RIPRISTINA SESSIONE ──
+// Sessione Supabase Guard; eventuali vecchi token AWS non sono riutilizzabili.
 try {
-  var _st = localStorage.getItem('orvex_token');
-  var _su = localStorage.getItem('orvex_user');
+  var _st = localStorage.getItem('orvex_guard_access_token');
+  var _su = localStorage.getItem('orvex_guard_user');
   if (_st && _su) { authToken = _st; currentUser = JSON.parse(_su); }
 } catch(e) {}
+
+async function guardRequest(path, options) {
+  options = options || {};
+  var headers = Object.assign({'Content-Type':'application/json'}, options.headers || {});
+  if (authToken && !options.noAuth) headers.Authorization = 'Bearer ' + authToken;
+  var result = await fetch(API_URL + path, Object.assign({}, options, {headers: headers}));
+  var data = await result.json().catch(function(){return {};});
+  return {status: result.status, data: data};
+}
+async function restoreGuardSession() {
+  if (!authToken) return false;
+  var me = await guardRequest('/me');
+  if (me.status === 200) return true;
+  var refreshToken = localStorage.getItem('orvex_guard_refresh_token');
+  if (!refreshToken) { logout(); return false; }
+  var r = await guardRequest('/refresh', {method:'POST',noAuth:true,body:JSON.stringify({refresh_token:refreshToken})});
+  if (r.status !== 200) { logout(); return false; }
+  saveGuardSession(r.data);
+  return true;
+}
+function saveGuardSession(data) {
+  authToken = data.access_token;
+  currentUser = {id:data.user.id,email:data.user.email,name:data.user.email.split('@')[0],plan:'free'};
+  localStorage.setItem('orvex_guard_access_token', authToken);
+  localStorage.setItem('orvex_guard_refresh_token', data.refresh_token);
+  localStorage.setItem('orvex_guard_user', JSON.stringify(currentUser));
+}
+function clearGuardSession() {
+  authToken = null; currentUser = null;
+  ['orvex_guard_access_token','orvex_guard_refresh_token','orvex_guard_user','orvex_token','orvex_user'].forEach(function(key){localStorage.removeItem(key);});
+}
 
 // ── TRADUZIONI ──
 var T = {
@@ -641,84 +672,61 @@ function switchTab(mode) {
   document.getElementById('auth-success').style.display = 'none';
 }
 
-function handleAuth() {
-  var email, password, name, phone, company, type;
+async function handleAuth() {
   var btn = document.getElementById('auth-submit');
-  var errEl = document.getElementById('auth-error');
-  var succEl = document.getElementById('auth-success');
-  errEl.style.display = 'none';
-  succEl.style.display = 'none';
-  var l = T[currentLang];
-  if (authMode === 'login') {
+  var errorEl = document.getElementById('auth-error');
+  var successEl = document.getElementById('auth-success');
+  errorEl.style.display = 'none'; successEl.style.display = 'none';
+  var mode = authMode;
+  var email, password, name = '';
+  if (mode === 'login') {
     email = document.getElementById('auth-email').value.trim();
     password = document.getElementById('auth-password').value;
-    if (!email || !password) { showAuthError(currentLang==='it'?'Email e password obbligatorie':'Email and password required'); return; }
   } else {
-    var firstname = document.getElementById('auth-firstname').value.trim();
-    var lastname = document.getElementById('auth-lastname').value.trim();
-    name = (firstname + ' ' + lastname).trim();
+    name = (document.getElementById('auth-firstname').value.trim() + ' ' + document.getElementById('auth-lastname').value.trim()).trim();
     email = document.getElementById('auth-email-reg').value.trim();
     password = document.getElementById('auth-password-reg').value;
-    var confirm = document.getElementById('auth-password-confirm').value;
-    phone = document.getElementById('auth-phone').value.trim();
-    company = document.getElementById('auth-company').value.trim();
-    type = document.getElementById('auth-type').value;
-    if (!firstname || !lastname) { showAuthError(currentLang==='it'?'Nome e cognome obbligatori':'First and last name required'); return; }
-    if (!email) { showAuthError(currentLang==='it'?'Email obbligatoria':'Email required'); return; }
-    if (!phone) { showAuthError(currentLang==='it'?'Telefono obbligatorio':'Phone required'); return; }
-    if (!password) { showAuthError(currentLang==='it'?'Password obbligatoria':'Password required'); return; }
-    if (password.length < 8) { showAuthError(currentLang==='it'?'Password minimo 8 caratteri':'Password minimum 8 characters'); return; }
-    if (password !== confirm) { showAuthError(currentLang==='it'?'Le password non coincidono':'Passwords do not match'); return; }
+    if (!name || !document.getElementById('auth-firstname').value.trim() || !document.getElementById('auth-lastname').value.trim()) { showAuthError('Nome e cognome obbligatori'); return; }
+    if (password !== document.getElementById('auth-password-confirm').value) { showAuthError('Le password non coincidono'); return; }
   }
+  if (!email.includes('@') || !password || (mode === 'register' && password.length < 8)) { showAuthError('Controlla email e password (minimo 8 caratteri per registrarti)'); return; }
   btn.disabled = true;
-  btn.textContent = currentLang==='it' ? 'CARICAMENTO...' : 'LOADING...';
-  var url = API_URL + (authMode === 'login' ? '/auth/login' : '/auth/register');
-  var body = authMode === 'login'
-    ? {email: email, password: password}
-    : {email: email, password: password, name: name, phone: phone, company: company || '', type: type};
-  fetch(url, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(body)
-  }).then(function(r) {
-    return r.json().then(function(d) { return {status: r.status, data: d}; });
-  }).then(function(res) {
-    if (res.status !== 200 && res.status !== 201) {
-      throw new Error(res.data.error || (currentLang==='it'?'Errore di autenticazione':'Authentication error'));
+  try {
+    var r = await guardRequest(mode === 'login' ? '/login' : '/register', {
+      method:'POST',noAuth:true,body:JSON.stringify({email:email,password:password})
+    });
+    if (mode === 'register') {
+      if (r.status !== 202) throw new Error(r.data.error || 'Registrazione non riuscita');
+      successEl.textContent = 'Registrazione ricevuta. Controlla la tua email per confermare l’account, poi effettua il login. Se possedevi già un account AWS, contatta l’assistenza per il recupero.';
+      successEl.style.display = 'block';
+      return;
     }
-    currentUser = res.data;
-    authToken = res.data.token;
-    try {
-      localStorage.setItem('orvex_token', res.data.token);
-      localStorage.setItem('orvex_user', JSON.stringify(res.data));
-    } catch(e) {}
-    if (authMode === 'register') {
-      closeAuth();
-      updateUserUI();
-      setTimeout(function() {
-        document.getElementById('try').scrollIntoView({behavior: 'smooth'});
-        var result = document.getElementById('live-result');
-        result.innerHTML = '<div style="background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:2px;padding:16px;text-align:center">' +
-          '<div style="color:#22c55e;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">' + (currentLang==='it'?'✓ Benvenuto su Orvex Guard!':'✓ Welcome to Orvex Guard!') + '</div>' +
-          '<div style="color:#4a7ab5;font-size:13px;margin-bottom:8px">' + (currentLang==='it'?"Controlla la tua email per attivare l'account.":'Check your email to activate your account.') + '</div>' +
-          '<div style="color:#8ab4d4;font-size:12px">' + (currentLang==='it'?'Hai 3 analisi gratuite al giorno. Incolla un messaggio sospetto per iniziare!':'You have 3 free analyses per day. Paste a suspicious message to start!') + '</div>' +
-          '</div>';
-      }, 300);
-    } else {
-      closeAuth();
-      updateUserUI();
+    if (r.status !== 200 || !r.data.access_token || !r.data.refresh_token) throw new Error(r.data.error || 'Accesso non riuscito');
+    saveGuardSession(r.data);
+    var p = await guardRequest('/profile');
+    if (p.status === 404) {
+      var initial = await guardRequest('/profile/initialize', {method:'POST',body:JSON.stringify({name:name})});
+      if (initial.status === 409) {
+        clearGuardSession();
+        throw new Error('Account Guard storico: contatta l’assistenza per recuperare il tuo profilo. Non creare un nuovo account a pagamento.');
+      }
+      if (initial.status !== 201 && initial.status !== 200) {
+        clearGuardSession();
+        throw new Error(initial.data.error || 'Impossibile creare il profilo Guard');
+      }
+      p = await guardRequest('/profile');
     }
+    if (p.status !== 200) { clearGuardSession(); throw new Error(p.data.error || 'Profilo Guard non disponibile'); }
+    currentUser = Object.assign({}, currentUser, {name:p.data.name || currentUser.name, plan:p.data.plan || 'free'});
+    localStorage.setItem('orvex_guard_user', JSON.stringify(currentUser));
+    closeAuth(); updateUserUI();
     if (window._pendingPlan) {
-      var links = STRIPE_LINKS[window._pendingPlan];
-      if (links) { var stripeUrl = isAnnual ? links.annual : links.monthly; window.open(stripeUrl, '_blank'); }
+      var selectedPlan = window._pendingPlan;
       window._pendingPlan = null;
+      await startGuardCheckout(selectedPlan);
     }
-  }).catch(function(e) {
-    showAuthError(e.message);
-  }).finally(function() {
-    btn.disabled = false;
-    btn.textContent = authMode === 'login' ? T[currentLang].authLogin : T[currentLang].authRegister + ' →';
-  });
+  } catch(e) { showAuthError(e.message || 'Errore di connessione'); }
+  finally { btn.disabled = false; btn.textContent = mode === 'login' ? T[currentLang].authLogin : T[currentLang].authRegister + ' →'; }
 }
 
 function showAuthError(msg) {
@@ -728,9 +736,7 @@ function showAuthError(msg) {
 }
 
 function logout() {
-  currentUser = null;
-  authToken = null;
-  try { localStorage.removeItem('orvex_token'); localStorage.removeItem('orvex_user'); } catch(e) {}
+  clearGuardSession();
   updateUserUI();
 }
 
@@ -740,13 +746,13 @@ function updateUserUI() {
   var l = T[currentLang];
   if (currentUser) {
     banner.style.display = 'flex';
-    document.getElementById('banner-name').textContent = currentUser.name;
+    document.getElementById('banner-name').textContent = currentUser.name || currentUser.email;
     document.getElementById('banner-plan').textContent = l.bannerPlan + ' ' + (currentUser.plan||'FREE').toUpperCase();
     if (currentUser.plan === 'free') {
       document.getElementById('banner-limit').textContent = currentLang==='it'?'3 analisi/giorno':'3 analyses/day';
     }
-    ctaBtn.textContent = currentUser.name.split(' ')[0].toUpperCase();
-    ctaBtn.onclick = function(){ window.location.href = 'profile.html'; };
+    ctaBtn.textContent = (currentUser.name || currentUser.email || 'UTENTE').split(' ')[0].toUpperCase();
+    ctaBtn.onclick = function(){ window.location.href = 'orvex-guard-profile.html'; };
     ctaBtn.style.borderColor = '#22c55e';
     ctaBtn.style.color = '#22c55e';
   } else {
@@ -854,6 +860,10 @@ var STRIPE_LINKS={
   'PREMIUM':{monthly:'https://buy.stripe.com/5kQbJ1aZp7mO5pA8hybEA07',annual:'https://buy.stripe.com/8x2cN5ffFbD405gfK0bEA08'},
   'SMALL B2B':{monthly:'https://buy.stripe.com/4gM9AT8Rh36y4lw41ibEA05',annual:'https://buy.stripe.com/dRm14nebB4aC5pAbtKbEA06'}
 };
+function startGuardCheckout(planName) {
+  var links = STRIPE_LINKS[planName];
+  if (links) window.open(isAnnual ? links.annual : links.monthly, '_blank', 'noopener');
+}
 
 function toggleBilling(){
   isAnnual=!isAnnual;
@@ -883,14 +893,16 @@ function renderPricing(){
 renderPricing();
 
 function handlePlanClick(planName){
-  if(planName==='FREE'){
-    var links=STRIPE_LINKS['PREMIUM'];
-    var url=isAnnual?links.annual:links.monthly;
-    window.open(url,'_blank');
+  if (planName === 'FREE') {
+    if (!authToken) openAuth('register');
+    else document.getElementById('analyzer-title').scrollIntoView({behavior:'smooth'});
     return;
   }
-  var links=STRIPE_LINKS[planName];
-  if(links){var url=isAnnual?links.annual:links.monthly;window.open(url,'_blank');}
+  if (planName === 'ENTERPRISE') {
+    alert('Contatta il team Orvex per il piano Enterprise.');
+    return;
+  }
+  void startGuardCheckout(planName);
 }
 
 // ── LIVE ANALYZER ──
@@ -904,111 +916,75 @@ var EXAMPLES=[
 ];
 function loadEx(i){document.getElementById('live-input').value=EXAMPLES[i];}
 
-function runLiveAnalysis(){
-  var text=document.getElementById('live-input').value.trim();
-  if(!text)return;
-  var btn=document.getElementById('live-btn');
-  var resEl=document.getElementById('live-result');
-  var l=T[currentLang];
-
-  // ── LIMITE OSPITI NON LOGGATI ──
-  if(!currentUser){
-    var guestCount=parseInt(localStorage.getItem('orvex_guest_count')||'0');
-    if(guestCount>=2){
-      resEl.innerHTML='<div style="background:rgba(59,130,246,0.1);border:1px solid #3b82f6;border-radius:2px;padding:20px;text-align:center">' +
-        '<div style="color:#3b82f6;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">🛡 '+l.guestLimitTitle+'</div>' +
-        '<div style="color:#4a7ab5;font-size:13px;margin-bottom:16px">'+l.guestLimitSub+'</div>' +
-        '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:13px;font-weight:700;padding:10px 24px;cursor:pointer;border-radius:2px">PASSA A PREMIUM — €4,99/mese →</button>' +
-        '</div>';
+async function runLiveAnalysis() {
+  var text = document.getElementById('live-input').value.trim();
+  if (!text) return;
+  var btn = document.getElementById('live-btn');
+  var el = document.getElementById('live-result');
+  btn.disabled = true;
+  el.textContent = currentLang === 'it' ? 'Analisi in corso...' : 'Analyzing...';
+  try {
+    if (authToken) await restoreGuardSession();
+    var r = await guardRequest('/analyze/text', {method:'POST',body:JSON.stringify({text:text})});
+    if (r.status === 429 && r.data.upgradeRequired && !currentUser) {
+      el.textContent = T[currentLang].guestLimitTitle + ' — ' + T[currentLang].guestLimitSub;
       return;
     }
-    localStorage.setItem('orvex_guest_count', guestCount+1);
-  }
-
-  btn.textContent=l.analyzerBtn==='RUN ANALYSIS'?'ANALYZING...':'ANALISI...';
-  btn.disabled=true;
-  resEl.innerHTML='<div style="color:#4a7ab5;font-family:monospace;font-size:12px;padding:12px;text-align:center">'+(currentLang==='it'?'Analisi in corso...':'Analyzing...')+'</div>';
-
-  var headers={'Content-Type':'application/json'};
-  if(authToken)headers['Authorization']='Bearer '+authToken;
-
-  fetch(API_URL+'/analyze/text',{method:'POST',headers:headers,body:JSON.stringify({text:text})})
-  .then(function(r){return r.json().then(function(d){return{status:r.status,data:d};});})
-  .then(function(res2){
-    if(res2.status===429){
-      resEl.innerHTML='<div style="background:rgba(249,115,22,0.1);border:1px solid #f97316;border-radius:2px;padding:16px;text-align:center">' +
-        '<div style="color:#f97316;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">'+(currentLang==='it'?'LIMITE RAGGIUNTO':'LIMIT REACHED')+'</div>' +
-        '<div style="color:#4a7ab5;font-size:13px;margin-bottom:12px">'+(currentLang==='it'?'Hai esaurito le 3 analisi gratuite di oggi.':'You have used all 3 free analyses for today.')+'</div>' +
-        '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:12px;font-weight:700;padding:8px 20px;cursor:pointer;border-radius:2px">'+(currentLang==='it'?'PASSA A PREMIUM — €4,99/mese →':'GO PREMIUM — €4.99/month →')+'</button>' +
-        '</div>';
-      btn.textContent=l.analyzerBtn;btn.disabled=false;return;
+    if (r.status !== 200) {
+      var explanation = r.status === 429 ? 'Limite giornaliero raggiunto.'
+        : r.status === 503 ? 'Analisi AI temporaneamente non disponibile. Non considerare sicuro questo messaggio.'
+        : (r.data.error || 'Analisi non disponibile');
+      throw new Error(explanation);
     }
-    if(res2.data.error)throw new Error(res2.data.error);
-    var d=res2.data;
-    var col=d.level==='danger'?'#ef4444':d.level==='warning'?'#f97316':'#22c55e';
-    resEl.innerHTML='<div style="border:1px solid '+col+'44;border-radius:2px;padding:16px;background:'+col+'08">' +
-      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">' +
-      '<div style="width:52px;height:52px;border-radius:50%;border:2px solid '+col+';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:'+col+'">'+d.score+'</div>' +
-      '<div><div style="color:'+col+';font-size:14px;font-weight:700;letter-spacing:1px">'+(d.label||'').toUpperCase()+'</div>' +
-      '<div style="color:#4a7ab5;font-size:12px;margin-top:2px">'+d.summary+'</div></div></div>' +
-      '<div style="border-left:3px solid #3b82f6;padding:10px 12px;background:rgba(59,130,246,0.05);font-size:12px;color:#8ab4d4;line-height:1.6">' +
-      '<strong style="color:#3b82f6">RECOMMENDATION:</strong> '+d.advice+'</div></div>';
-
-    // Contatore per utenti Free
-    if(currentUser&&currentUser.plan==='free'){
-      if(!window._analysisCount)window._analysisCount=0;
-      window._analysisCount++;
-      var remaining=3-window._analysisCount;
-      var counterHtml=remaining>0
-        ?'<div style="margin-top:10px;padding:10px;background:rgba(59,130,246,0.05);border:1px solid #1e3a5f;border-radius:2px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
-          '<span style="font-family:monospace;font-size:11px;color:#4a7ab5">'+(currentLang==='it'?'Analisi rimanenti oggi:':'Analyses remaining today:')+' <strong style="color:#3b82f6">'+remaining+'/3</strong></span>' +
-          '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer;border-radius:2px">'+(currentLang==='it'?'PASSA A PREMIUM →':'GO PREMIUM →')+'</button>' +
-          '</div>'
-        :'<div style="margin-top:10px;padding:12px;background:rgba(249,115,22,0.1);border:1px solid #f97316;border-radius:2px;text-align:center">' +
-          '<div style="color:#f97316;font-family:monospace;font-size:12px;font-weight:700;margin-bottom:8px">'+(currentLang==='it'?'⚠ Ultima analisi gratuita usata!':'⚠ Last free analysis used!')+'</div>' +
-          '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:12px;font-weight:700;padding:8px 20px;cursor:pointer;border-radius:2px">'+(currentLang==='it'?'PASSA A PREMIUM — €4,99/mese →':'GO PREMIUM — €4.99/month →')+'</button>' +
-          '</div>';
-      resEl.insertAdjacentHTML('beforeend',counterHtml);
+    var d = r.data;
+    // Presentare il risultato del backend senza eseguire HTML proveniente dai dati.
+    el.replaceChildren();
+    var result = document.createElement('div');
+    result.style.cssText = 'padding:16px;border:1px solid #1e3a5f;background:#071428;border-radius:3px;line-height:1.7';
+    var title = document.createElement('div');
+    title.style.cssText = 'font-size:18px;font-weight:700;color:#3b82f6';
+    title.textContent = (d.label || 'Risultato analisi') + ' — ' + (Number.isFinite(Number(d.score)) ? d.score + '/100' : '');
+    var summary = document.createElement('p'); summary.style.color='#8ab4d4'; summary.textContent = d.summary || '';
+    var advice = document.createElement('p'); advice.style.cssText='margin-top:12px;color:#f0f6ff'; advice.textContent = d.advice || '';
+    result.append(title,summary,advice);
+    if (d.preliminary || d.ai === false || d.method === 'heuristic') {
+      var note = document.createElement('p');
+      note.textContent = 'Valutazione preliminare: non sostituisce una verifica di sicurezza.';
+      note.style.cssText = 'margin-top:10px;color:#f97316;font-size:12px';
+      result.append(note);
     }
-
-    // Salva storico
-    if(currentUser){
-      try{
-        var history=JSON.parse(localStorage.getItem('orvex_history')||'[]');
+    el.append(result);
+    if (currentUser) {
+      try {
+        var history = JSON.parse(localStorage.getItem('orvex_history') || '[]');
         history.push({score:d.score,level:d.level,label:d.label,text:text.substring(0,100),date:new Date().toISOString()});
-        if(history.length>50)history=history.slice(-50);
-        localStorage.setItem('orvex_history',JSON.stringify(history));
-      }catch(e){}
+        localStorage.setItem('orvex_history', JSON.stringify(history.slice(-50)));
+      } catch(e) {}
     }
-
-    btn.textContent=l.analyzerBtn;btn.disabled=false;
-  }).catch(function(e){
-    resEl.innerHTML='<div style="color:#ef4444;font-size:12px;padding:8px;font-family:monospace">'+e.message+'</div>';
-    btn.textContent=l.analyzerBtn;btn.disabled=false;
-  });
+  } catch(e) {
+    el.textContent = e.message || 'Impossibile completare l’analisi';
+    el.style.color = '#ef4444';
+  } finally {
+    btn.textContent = T[currentLang].analyzerBtn;
+    btn.disabled = false;
+  }
 }
 
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth();});
-window.addEventListener('load',function(){
-  updateUserUI();
-  (function(){
-    var params=new URLSearchParams(window.location.search);
-    var activateToken=params.get('activate');
-    if(activateToken){
-      fetch(API_URL+'/auth/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:activateToken})})
-      .then(function(r){return r.json();})
-      .then(function(data){
-        window.history.replaceState({},'',window.location.pathname);
-        document.getElementById('try').scrollIntoView({behavior:'smooth'});
-        var result=document.getElementById('live-result');
-        if(data.message){
-          result.innerHTML='<div style="background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:2px;padding:16px;text-align:center"><div style="color:#22c55e;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">✓ Account attivato con successo!</div><div style="color:#8ab4d4;font-size:12px">Ora puoi usare tutte le funzionalità di Orvex Guard.</div></div>';
-        } else {
-          result.innerHTML='<div style="background:rgba(239,68,68,0.1);border:1px solid #ef4444;border-radius:2px;padding:16px;text-align:center"><div style="color:#ef4444;font-family:monospace;font-size:13px">Link di attivazione non valido o già usato.</div></div>';
+window.addEventListener('load', async function() {
+  if (authToken) {
+    try {
+      if (await restoreGuardSession()) {
+        var p = await guardRequest('/profile');
+        if (p.status === 200) {
+          currentUser.name = p.data.name || currentUser.name;
+          currentUser.plan = p.data.plan || 'free';
+          localStorage.setItem('orvex_guard_user', JSON.stringify(currentUser));
         }
-      }).catch(function(){});
-    }
-  })();
+      }
+    } catch(e) { clearGuardSession(); }
+  }
+  updateUserUI();
 });
 </script>
 </body>
