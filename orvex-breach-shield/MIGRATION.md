@@ -1,3 +1,5 @@
+> Stato aggiornato dopo `e452fdf`: [verbale finale del 24 novembre](ops/FINAL-READINESS.md). 54/54 test locali superati; il seguito conserva le verifiche precedenti. Pubblicazione ancora bloccata.
+
 # Orvex Guard — verifica e passaggio da AWS
 
 ## Aggiornamento 24 novembre 2026
