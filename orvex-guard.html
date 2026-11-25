@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Orvex Guard — Cyber Threat Detection</title>
+<meta name="description" content="Orvex Guard: analisi delle comunicazioni sospette e supporto alla valutazione dei rischi digitali, su richiesta. Contatta Orvex Intelligence."/>
+<title>Orvex Guard — Cyber Threat Intelligence &amp; Phishing Analysis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -136,103 +137,87 @@ footer{position:relative;z-index:1;border-top:1px solid var(--dim);padding:40px;
 .user-banner{background:#0a1628;border:1px solid #1e3a5f;border-bottom:2px solid #3b82f6;padding:8px 20px;display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11px;position:relative;z-index:90;flex-wrap:wrap}
 @media(max-width:768px){nav{padding:16px 20px}.nav-links{display:none}.hero{padding:80px 20px 40px}section{padding:60px 20px}.threat-wrap,.b2b-wrap{grid-template-columns:1fr;gap:40px}.b2b-wrap{padding:0 20px}.pricing-wrap{padding:0 20px}.stats-row{gap:24px;padding:24px 16px}}
 </style>
+<style>
+/* Fit the new copy to small screens without changing the original visual system. */
+.nav-cta{text-decoration:none;text-align:center}
+.threat-section{position:relative;z-index:1}
+#features,#demo,#contact,#b2b{scroll-margin-top:110px}
+@media(min-width:769px) and (max-width:1024px){nav{gap:16px}.nav-links{gap:16px}}
+@media(max-width:768px){
+  .hero{padding-top:104px}
+  .features-grid{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+  .threat-wrap>div,.b2b-wrap>div,.b2b-kpi{min-width:0}
+  .demo-input,.demo-signal,.b2b-kpi{overflow-wrap:anywhere}
+  .btn-primary,.btn-secondary{max-width:100%;justify-content:center;text-align:center}
+}
+</style>
 </head>
 <body>
-<canvas id="canvas-bg"></canvas>
-<div class="scanline"></div>
-
-<div id="user-banner" class="user-banner" style="display:none">
-  <span style="color:#22c55e">◆ CONNESSO:</span>
-  <span id="banner-name" style="color:#f0f6ff;font-weight:600"></span>
-  <span id="banner-plan" style="color:#3b82f6;padding:2px 8px;border:1px solid #1e3a5f;border-radius:2px;margin-left:4px"></span>
-  <span id="banner-limit" style="color:#4a7ab5;margin-left:8px"></span>
-  <button onclick="logout()" style="margin-left:auto;background:transparent;border:1px solid #1e3a5f;color:#4a7ab5;font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;cursor:pointer;border-radius:2px">ESCI</button>
-</div>
-
-<nav>
+<canvas id="canvas-bg" aria-hidden="true"></canvas>
+<div class="scanline" aria-hidden="true"></div>
+<nav aria-label="Navigazione principale" data-en-aria-label="Main navigation">
   <div class="nav-brand"><div class="nav-diamond"></div>ORVEX INTELLIGENCE</div>
   <ul class="nav-links">
-    <li><a href="#try">ANALIZZA</a></li>
-    <li><a href="#features">FEATURES</a></li>
-    <li><a href="#pricing">PRICING</a></li>
-    <li><a href="#b2b">ENTERPRISE</a></li>
-  </ul>
+<li><a href="#demo" class="" data-en="EXAMPLE">ESEMPIO</a></li>
+<li><a href="#features" class="" data-en="FEATURES">FUNZIONALITÀ</a></li>
+<li><a href="#contact" class="" data-en="CONTACT">CONTATTI</a></li>
+<li><a href="#b2b" class="" data-en="BUSINESS">AZIENDE</a></li>
+</ul>
   <div style="display:flex;align-items:center;gap:8px">
-    <button id="lang-toggle" onclick="toggleLang()" style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;color:#7a92aa;background:transparent;border:1px solid #1e3a5f;border-radius:4px;padding:4px 10px;cursor:pointer;transition:all .2s">IT / EN</button>
-    <button class="nav-cta" id="nav-cta-btn" onclick="handlePlanClick('PREMIUM')">PREMIUM →</button>
+    <button id="lang-toggle" type="button" onclick="toggleLang()" aria-label="Switch to English" style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;color:#7a92aa;background:transparent;border:1px solid #1e3a5f;border-radius:4px;padding:4px 10px;cursor:pointer;transition:all .2s">IT / EN</button>
+<a href="#contact" class="nav-cta" data-en="CONTACT →">CONTATTI →</a>
   </div>
 </nav>
-
+<main>
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-tag"><span class="hero-tag-dot"></span>PIATTAFORMA DI RILEVAMENTO MINACCE</div>
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Cyber Threat Intelligence &amp; Phishing Analysis</div>
     <h1 class="hero-title"><span class="line1">ORVEX</span><span class="line2">GUARD</span></h1>
-    <p class="hero-sub">Protezione anti-truffa in tempo reale per privati e aziende. Powered by AI — conforme NIS2.</p>
+<p class="hero-sub" data-en="Digital threat analysis, identification of phishing indicators and cybersecurity support for professionals and organisations.">Analisi delle minacce digitali, identificazione dei segnali di phishing e supporto alla sicurezza informatica per professionisti e organizzazioni.</p>
     <div class="hero-btns">
-      <a href="#try" class="btn-primary">PROVA ORA</a>
-      <a href="#features" class="btn-secondary">SCOPRI DI PIU</a>
+<a href="#contact" class="btn-primary" data-en="REQUEST INFORMATION">RICHIEDI INFORMAZIONI</a><a href="#features" class="btn-secondary" data-en="DISCOVER ORVEX GUARD">SCOPRI ORVEX GUARD</a>
     </div>
     <div class="stats-row">
-      <div class="stat"><span class="stat-num" id="c1">0</span><span class="stat-lbl">Truffe rilevate oggi</span></div>
-      <div class="stat"><span class="stat-num" id="c2">0</span><span class="stat-lbl">Utenti protetti</span></div>
-      <div class="stat"><span class="stat-num" id="c3">0</span><span class="stat-lbl">Aziende NIS2-compliant</span></div>
-      <div class="stat"><span class="stat-num" id="c4">0%</span><span class="stat-lbl">Accuracy AI</span></div>
-    </div>
-  </div>
-</section>
-
-<div id="try" style="position:relative;z-index:1;padding:80px 40px;max-width:800px;margin:0 auto">
-  <div id="analyzer-tag" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:#3b82f6;margin-bottom:16px;text-align:center">// ANALIZZATORE LIVE</div>
-  <h2 id="analyzer-title" style="font-size:36px;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:-1px">Prova subito</h2>
-  <p id="analyzer-sub" style="text-align:center;color:#4a7ab5;margin-bottom:32px;font-size:15px">Incolla un messaggio sospetto o usa uno degli esempi</p>
-  <div style="background:#071428;border:1px solid #1e3a5f;border-radius:4px;overflow:hidden">
-    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #1e3a5f">
-      <div style="width:10px;height:10px;border-radius:50%;background:#ef4444"></div>
-      <div style="width:10px;height:10px;border-radius:50%;background:#f97316"></div>
-      <div style="width:10px;height:10px;border-radius:50%;background:#22c55e"></div>
-      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#4a7ab5;margin-left:8px">ORVEX GUARD — THREAT ANALYZER</span>
-    </div>
-    <div style="padding:20px">
-      <textarea id="live-input" style="width:100%;min-height:100px;background:#020810;border:1px solid #1e3a5f;border-radius:2px;color:#f0f6ff;font-family:'JetBrains Mono',monospace;font-size:13px;padding:12px;resize:none;outline:none;line-height:1.6" placeholder="Incolla qui SMS, email, WhatsApp sospetti..."></textarea>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
-        <button onclick="loadEx(0)" style="padding:5px 12px;border:1px solid #1e3a5f;background:#0a1628;color:#4a7ab5;font-size:11px;cursor:pointer;border-radius:2px;font-family:'JetBrains Mono',monospace">SMS BANCA</button>
-        <button onclick="loadEx(1)" style="padding:5px 12px;border:1px solid #1e3a5f;background:#0a1628;color:#4a7ab5;font-size:11px;cursor:pointer;border-radius:2px;font-family:'JetBrains Mono',monospace">DHL</button>
-        <button onclick="loadEx(2)" style="padding:5px 12px;border:1px solid #1e3a5f;background:#0a1628;color:#4a7ab5;font-size:11px;cursor:pointer;border-radius:2px;font-family:'JetBrains Mono',monospace">WHATSAPP</button>
-        <button onclick="loadEx(3)" style="padding:5px 12px;border:1px solid #1e3a5f;background:#0a1628;color:#4a7ab5;font-size:11px;cursor:pointer;border-radius:2px;font-family:'JetBrains Mono',monospace">INSTAGRAM</button>
-        <button onclick="loadEx(4)" style="padding:5px 12px;border:1px solid #1e3a5f;background:#0a1628;color:#4a7ab5;font-size:11px;cursor:pointer;border-radius:2px;font-family:'JetBrains Mono',monospace">FACEBOOK</button>
-        <button onclick="loadEx(5)" style="padding:5px 12px;border:1px solid #1e3a5f;background:#0a1628;color:#4a7ab5;font-size:11px;cursor:pointer;border-radius:2px;font-family:'JetBrains Mono',monospace">YOUTUBE</button>
-      </div>
-      <button onclick="runLiveAnalysis()" id="live-btn" style="width:100%;padding:12px;background:#3b82f6;border:none;color:white;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;border-radius:2px">RUN ANALYSIS</button>
-      <div id="live-result" style="margin-top:16px"></div>
-    </div>
-  </div>
-</div>
-
+<div class="stat"><span class="stat-num" aria-hidden="true">⌁</span><span class="stat-lbl" data-en="Phishing">Phishing</span></div>
+<div class="stat"><span class="stat-num" aria-hidden="true">◇</span><span class="stat-lbl" data-en="Social engineering">Social engineering</span></div>
+<div class="stat"><span class="stat-num" aria-hidden="true">◎</span><span class="stat-lbl" data-en="Awareness">Awareness</span></div>
+<div class="stat"><span class="stat-num" aria-hidden="true">↗</span><span class="stat-lbl" data-en="Business">Business</span></div>
+</div></div></section>
 <section id="features">
-  <div class="section-tag">FUNZIONALITA</div>
-  <h2 class="section-title">Protezione su<br>ogni livello</h2>
-  <p class="section-sub">Moduli integrati per una difesa completa contro le minacce digitali.</p>
-  <div class="features-grid">
-    <div class="feature-card"><div class="feature-icon">🛡</div><div class="feature-title">Analizzatore AI</div><div class="feature-desc">Incolla qualsiasi messaggio — SMS, email, WhatsApp. L'AI lo analizza in secondi con punteggio di pericolosita.</div><span class="feature-tag">GPT-4o POWERED</span></div>
-    <div class="feature-card"><div class="feature-icon">📷</div><div class="feature-title">Analisi Screenshot</div><div class="feature-desc">Carica uno screenshot di un messaggio sospetto. L'AI lo legge e lo analizza visivamente.</div><span class="feature-tag">VISION AI</span></div>
-    <div class="feature-card"><div class="feature-icon">🎯</div><div class="feature-title">Threat Simulator</div><div class="feature-desc">Allena il tuo team con scenari reali di phishing, smishing e vishing.</div><span class="feature-tag">GAMIFICATION</span></div>
-    <div class="feature-card"><div class="feature-icon">🔔</div><div class="feature-title">Alert Italia Live</div><div class="feature-desc">Database aggiornato delle truffe attive su territorio nazionale. Fonte: CERT-AGID e Polizia Postale.</div><span class="feature-tag">CERT-AGID FEED</span></div>
-    <div class="feature-card"><div class="feature-icon">🏢</div><div class="feature-title">Dashboard B2B</div><div class="feature-desc">Gestisci la formazione del team e monitora il livello di awareness. Report NIS2 con un click.</div><span class="feature-tag">NIS2 COMPLIANT</span></div>
-    <div class="feature-card"><div class="feature-icon">💎</div><div class="feature-title">Piani Flessibili</div><div class="feature-desc">Da privati a grandi imprese. Freemium per iniziare, Enterprise per la conformita NIS2.</div><span class="feature-tag">FREEMIUM TO ENTERPRISE</span></div>
-  </div>
-</section>
-
+<div class="section-tag" data-en="APPLICATION AREAS">AREE DI APPLICAZIONE</div>
+<h2 class="section-title" data-en="What Orvex Guard does">Cosa fa Orvex Guard</h2>
+<p class="section-sub" data-en="An Orvex Intelligence solution dedicated to analysing suspicious communications, identifying phishing indicators and supporting digital risk assessment for professionals and organisations.">Una soluzione Orvex Intelligence dedicata all’analisi delle comunicazioni sospette, all’identificazione dei segnali di phishing e al supporto nella valutazione dei rischi digitali per professionisti e organizzazioni.</p>
+<div class="features-grid">
+<div class="feature-card"><div class="feature-icon" aria-hidden="true">🛡</div>
+<div class="feature-title" data-en="Phishing Analysis">Phishing Analysis</div>
+<div class="feature-desc" data-en="Preliminary analysis of suspicious messages, emails and communications. Text analysis tested on sample messages; assessments available on request.">Analisi preliminare di messaggi, email e comunicazioni sospette. Analisi testuale sperimentata su esempi di prova; valutazioni disponibili su richiesta.</div><span class="feature-tag" data-en="EXPERIMENTAL · ON REQUEST">SPERIMENTAZIONE · SU RICHIESTA</span></div>
+<div class="feature-card"><div class="feature-icon" aria-hidden="true">📷</div>
+<div class="feature-title" data-en="Social Engineering Detection">Social Engineering Detection</div>
+<div class="feature-desc" data-en="Identification of common signs of manipulation, impersonation and attempted fraud. Further assessment by arrangement.">Identificazione di segnali tipici di manipolazione, impersonificazione e tentativi di frode. Approfondimenti da concordare.</div><span class="feature-tag" data-en="ASSESSMENT ON REQUEST">APPROFONDIMENTI SU RICHIESTA</span></div>
+<div class="feature-card"><div class="feature-icon" aria-hidden="true">🎯</div>
+<div class="feature-title" data-en="Suspicious Links Assessment">Suspicious Links Assessment</div>
+<div class="feature-desc" data-en="Preliminary assessment of potentially risky links and indicators, on request. This page does not automatically check URLs.">Valutazione preliminare di collegamenti e indicatori potenzialmente rischiosi, su richiesta. Nessuna verifica automatica degli URL su questa pagina.</div><span class="feature-tag" data-en="PRELIMINARY ASSESSMENT">VALUTAZIONE PRELIMINARE</span></div>
+<div class="feature-card"><div class="feature-icon" aria-hidden="true">🔔</div>
+<div class="feature-title" data-en="Cybersecurity Awareness">Cybersecurity Awareness</div>
+<div class="feature-desc" data-en="Support for digital security awareness and recognising common threats. Activities and materials by arrangement.">Supporto alla sensibilizzazione sulla sicurezza digitale e al riconoscimento delle minacce comuni. Attività e contenuti da concordare.</div><span class="feature-tag" data-en="ACTIVITIES BY ARRANGEMENT">ATTIVITÀ DA CONCORDARE</span></div>
+<div class="feature-card"><div class="feature-icon" aria-hidden="true">🏢</div>
+<div class="feature-title" data-en="Business Security Support">Business Security Support</div>
+<div class="feature-desc" data-en="Potential further investigations and tailored assessments for organisations, scoped to their needs.">Possibili attività di approfondimento e valutazioni personalizzate per organizzazioni, definite in base alle esigenze.</div><span class="feature-tag" data-en="SOLUTIONS ON REQUEST">SOLUZIONI SU RICHIESTA</span></div>
+<div class="feature-card"><div class="feature-icon" aria-hidden="true">💎</div>
+<div class="feature-title" data-en="An on-request approach">Un approccio su richiesta</div>
+<div class="feature-desc" data-en="Scope, availability and delivery are agreed with Orvex Intelligence. This page presents the solution and does not perform analysis.">Ambito, disponibilità e modalità delle attività vengono concordati con Orvex Intelligence. La pagina presenta la soluzione e non esegue analisi.</div><span class="feature-tag" data-en="DIRECT CONTACT">CONTATTO DIRETTO</span></div>
+</div></section>
 <div class="threat-section" id="demo">
   <div class="threat-wrap">
     <div>
-      <div class="section-tag">LIVE DEMO</div>
-      <h2 class="section-title">Vedi l'AI<br>in azione</h2>
-      <p class="section-sub">In meno di 2 secondi, Orvex Guard identifica phishing, smishing e social engineering con una precisione del 97,3%.</p>
+      <div class="section-tag" data-en="ILLUSTRATIVE DEMO">DEMO ILLUSTRATIVA</div>
+      <h2 class="section-title" data-en="Analysis example">Esempio di analisi</h2>
+      <p class="section-sub" data-en="A static example of interpreting phishing indicators. The message and score are illustrative, not the result of a newly performed scan.">Un esempio statico di lettura dei segnali di phishing. Il messaggio e il punteggio sono illustrativi, non il risultato di una scansione appena effettuata.</p>
       <div style="margin-top:32px;display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)"><span style="color:var(--green);font-weight:700">+</span> <span class="demo-point-1">Analisi in meno di 2 secondi</span></div>
-        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)"><span style="color:var(--green);font-weight:700">+</span> <span class="demo-point-2">15 tipi di truffa riconosciuti</span></div>
-        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)"><span style="color:var(--green);font-weight:700">+</span> <span class="demo-point-3">Spiegazione in italiano</span></div>
-        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)"><span style="color:var(--green);font-weight:700">+</span> <span class="demo-point-4">Raccomandazione personalizzata</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)"><span style="color:var(--green);font-weight:700">+</span> <span class="demo-point-1" data-en="Examine the sender’s domain">Osservare il dominio del mittente</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)"><span style="color:var(--green);font-weight:700">+</span> <span class="demo-point-2" data-en="Recognise urgent requests">Riconoscere richieste urgenti</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)"><span style="color:var(--green);font-weight:700">+</span> <span class="demo-point-3" data-en="Assess suspicious indicators">Valutare gli indicatori sospetti</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)"><span style="color:var(--green);font-weight:700">+</span> <span class="demo-point-4" data-en="Verify through an official channel">Verificare tramite un canale ufficiale</span></div>
       </div>
     </div>
     <div class="threat-demo">
@@ -242,522 +227,87 @@ footer{position:relative;z-index:1;border-top:1px solid var(--dim);padding:40px;
           <div class="demo-dot" style="background:#f97316"></div>
           <div class="demo-dot" style="background:#22c55e"></div>
         </div>
-        <span class="demo-title">ORVEX GUARD — THREAT ANALYSIS</span>
+        <span class="demo-title" data-en="ORVEX GUARD — ANALYSIS EXAMPLE">ORVEX GUARD — ESEMPIO DI ANALISI</span>
       </div>
-      <div class="demo-input"><span>AVVISO BANCA INTESA: Attivita sospetta rilevata. Accedi subito: </span><span style="color:var(--red)">http://intesa-sicurezza.net/verifica?token=8x92k</span></div>
-      <div class="demo-result">
+      <div class="demo-input"><span data-en="INTESA BANK NOTICE: Suspicious activity detected. Sign in now: ">AVVISO BANCA INTESA: Attività sospetta rilevata. Accedi subito: </span><span style="color:var(--red)">http://intesa-sicurezza.net/verifica?token=8x92k</span></div>
+      <div class="demo-result"><p style="font-size:12px;line-height:1.6;margin-bottom:14px" data-en="Illustrative example. No real-time scan is performed.">Esempio illustrativo. Non viene eseguita una scansione in tempo reale.</p>
         <div class="demo-result-header">
           <div class="threat-score">92</div>
-          <div><div class="threat-label">PHISHING RILEVATO</div><div class="threat-sub">Messaggio fraudolento — alto rischio</div></div>
+          <div><div class="threat-label" data-en="PHISHING EXAMPLE">ESEMPIO DI PHISHING</div>
+<div class="threat-sub" data-en="Illustrative score — high risk">Punteggio illustrativo — alto rischio</div></div>
         </div>
         <div class="demo-signals">
-          <div class="demo-signal"><span>!</span> Dominio non ufficiale: intesa-sicurezza.net</div>
-          <div class="demo-signal"><span>!</span> Urgenza artificiale nel testo</div>
-          <div class="demo-signal"><span>!</span> Token sospetto nell'URL</div>
+          <div class="demo-signal"><span>!</span><span style="color:var(--muted)" data-en="Unofficial domain: intesa-sicurezza.net">Dominio non ufficiale: intesa-sicurezza.net</span></div>
+          <div class="demo-signal"><span>!</span><span style="color:var(--muted)" data-en="Artificial urgency in the text">Urgenza artificiale nel testo</span></div>
+          <div class="demo-signal"><span>!</span><span style="color:var(--muted)" data-en="Suspicious token in the URL">Token sospetto nell’URL</span></div>
         </div>
-        <div class="demo-advice"><strong>RECOMMENDATION:</strong> Non cliccare il link. Contatta la banca al numero ufficiale.</div>
+        <div class="demo-advice"><strong data-en="RECOMMENDATION:">RACCOMANDAZIONE:</strong> <span data-en="Do not click the link. Contact the bank using its official number.">Non cliccare il link. Contatta la banca al numero ufficiale.</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="pricing-section" id="pricing">
-  <div class="pricing-wrap">
-    <div class="pricing-header">
-      <div class="section-tag" style="justify-content:center">PREZZI</div>
-      <h2 class="section-title">Piani per ogni<br>esigenza</h2>
-      <div class="pricing-toggle">
-        <span class="toggle-lbl active" id="lbl-monthly">MENSILE</span>
-        <div class="toggle-track" id="billing-toggle" onclick="toggleBilling()"><div class="toggle-thumb"></div></div>
-        <span class="toggle-lbl" id="lbl-annual">ANNUALE</span>
-        <span class="save-badge" id="save-badge" style="display:none">RISPARMIA 33%</span>
-      </div>
-    </div>
-    <div class="pricing-grid" id="pricing-grid"></div>
-  </div>
+<div class="pricing-section" id="contact"><div class="pricing-wrap"><div class="pricing-header">
+<div class="section-tag" style="justify-content:center" data-en="CONTACT">CONTATTI</div>
+<h2 class="section-title" data-en="Need to investigate a digital threat?">Hai bisogno di approfondire una minaccia digitale?</h2>
+<p class="section-sub" style="margin:24px auto 32px" data-en="Contact Orvex Intelligence for information about Orvex Guard, on-request assessments and potential solutions for your organisation.">Contatta Orvex Intelligence per informazioni su Orvex Guard, valutazioni su richiesta e possibili soluzioni per la tua organizzazione.</p><a href="mailto:contact@orvexintelligence.com?subject=Richiesta%20informazioni%20%E2%80%94%20Orvex%20Guard" class="btn-primary" data-en="CONTACT ORVEX INTELLIGENCE">CONTATTA ORVEX INTELLIGENCE</a><p style="margin-top:20px;color:var(--muted);font-size:14px">contact@orvexintelligence.com</p></div></div></div>
+<div class="b2b-section" id="b2b"><div class="b2b-wrap"><div><div class="section-tag" data-en="BUSINESS SOLUTIONS">SOLUZIONI PER AZIENDE</div>
+<h2 class="section-title" data-en="Cybersecurity Intelligence for your organisation">Cybersecurity Intelligence per la tua organizzazione</h2>
+<p class="section-sub" style="margin-bottom:24px" data-en="Orvex Guard offers tailored assessments and solutions to support understanding of digital threats and promote greater awareness of cybersecurity risks.">Orvex Guard propone approfondimenti e soluzioni personalizzate per supportare la comprensione delle minacce digitali e promuovere una maggiore consapevolezza dei rischi informatici.</p>
+<div class="nis2-bar">
+<div class="nis2-row"><div class="nis2-hdr"><span data-en="Suspicious communication analysis on request">Analisi di comunicazioni sospette su richiesta</span></div>
+<div class="nis2-track" aria-hidden="true"><div class="nis2-fill" style="width:0%;background:#22c55e" data-w="76"></div></div></div>
+<div class="nis2-row"><div class="nis2-hdr"><span data-en="Cybersecurity awareness support">Supporto alla cybersecurity awareness</span></div>
+<div class="nis2-track" aria-hidden="true"><div class="nis2-fill" style="width:0%;background:#3b82f6" data-w="91"></div></div></div>
+<div class="nis2-row"><div class="nis2-hdr"><span data-en="Preliminary digital risk assessment">Valutazione preliminare dei rischi digitali</span></div>
+<div class="nis2-track" aria-hidden="true"><div class="nis2-fill" style="width:0%;background:#f97316" data-w="54"></div></div></div>
+<div class="nis2-row"><div class="nis2-hdr"><span data-en="Phishing and social engineering insights">Approfondimenti su phishing e social engineering</span></div>
+<div class="nis2-track" aria-hidden="true"><div class="nis2-fill" style="width:0%;background:#22c55e" data-w="88"></div></div></div>
 </div>
-
-<div class="b2b-section" id="b2b">
-  <div class="b2b-wrap">
-    <div>
-      <div class="section-tag">ENTERPRISE</div>
-      <h2 class="section-title">Conformita NIS2<br>per la tua azienda</h2>
-      <p class="section-sub" style="margin-bottom:24px">La Direttiva NIS2 rende obbligatoria la formazione cybersecurity. Orvex Guard ti mette in regola.</p>
-      <div class="nis2-bar">
-        <div class="nis2-row"><div class="nis2-hdr"><span>Formazione dipendenti</span><span style="color:#22c55e">76%</span></div><div class="nis2-track"><div class="nis2-fill" style="width:0%;background:#22c55e" data-w="76"></div></div></div>
-        <div class="nis2-row"><div class="nis2-hdr"><span>Gestione incidenti</span><span style="color:#3b82f6">91%</span></div><div class="nis2-track"><div class="nis2-fill" style="width:0%;background:#3b82f6" data-w="91"></div></div></div>
-        <div class="nis2-row"><div class="nis2-hdr"><span>Sicurezza supply chain</span><span style="color:#f97316">54%</span></div><div class="nis2-track"><div class="nis2-fill" style="width:0%;background:#f97316" data-w="54"></div></div></div>
-        <div class="nis2-row"><div class="nis2-hdr"><span>Policy aggiornate</span><span style="color:#22c55e">88%</span></div><div class="nis2-track"><div class="nis2-fill" style="width:0%;background:#22c55e" data-w="88"></div></div></div>
-      </div>
-      <a href="#pricing" class="btn-primary b2b-cta-btn" style="margin-top:28px;display:inline-flex">RICHIEDI DEMO ENTERPRISE</a>
-    </div>
-    <div class="b2b-kpis">
-      <div class="b2b-kpi"><div class="b2b-kpi-num" style="color:#3b82f6">47</div><div class="b2b-kpi-lbl">DIPENDENTI</div><div class="b2b-kpi-delta" style="color:#22c55e">+3 questo mese</div></div>
-      <div class="b2b-kpi"><div class="b2b-kpi-num" style="color:#22c55e">76%</div><div class="b2b-kpi-lbl">AWARENESS</div><div class="b2b-kpi-delta" style="color:#22c55e">+12% trimestre</div></div>
-      <div class="b2b-kpi"><div class="b2b-kpi-num" style="color:#f97316">8</div><div class="b2b-kpi-lbl">TRAINING APERTI</div><div class="b2b-kpi-delta" style="color:#22c55e">-2 settimana</div></div>
-      <div class="b2b-kpi"><div class="b2b-kpi-num" style="color:#a855f7">94%</div><div class="b2b-kpi-lbl">NIS2 SCORE</div><div class="b2b-kpi-delta" style="color:#22c55e">+6% febbraio</div></div>
-    </div>
-  </div>
-</div>
-
+<p class="feature-desc" data-en="Potential tailored solutions by arrangement. Bars are decorative elements, not measures of security or compliance.">Possibili soluzioni personalizzate da concordare. Le barre sono elementi decorativi, non misure di sicurezza o conformità.</p><a href="#contact" class="btn-primary b2b-cta-btn" style="margin-top:28px;display:inline-flex" data-en="LET’S TALK">PARLIAMONE</a></div>
+<div class="b2b-kpis">
+<div class="b2b-kpi"><div class="b2b-kpi-num" style="color:#3b82f6" aria-hidden="true">⌁</div>
+<div class="b2b-kpi-lbl" data-en="ANALYSIS">ANALISI</div>
+<div class="b2b-kpi-delta" style="color:#22c55e" data-en="Suspicious communications">Comunicazioni sospette</div></div>
+<div class="b2b-kpi"><div class="b2b-kpi-num" style="color:#22c55e" aria-hidden="true">◎</div>
+<div class="b2b-kpi-lbl" data-en="AWARENESS">AWARENESS</div>
+<div class="b2b-kpi-delta" style="color:#22c55e" data-en="Understand threats">Comprendere le minacce</div></div>
+<div class="b2b-kpi"><div class="b2b-kpi-num" style="color:#f97316" aria-hidden="true">◇</div>
+<div class="b2b-kpi-lbl" data-en="ASSESSMENT">VALUTAZIONE</div>
+<div class="b2b-kpi-delta" style="color:#22c55e" data-en="Digital risks">Rischi digitali</div></div>
+<div class="b2b-kpi"><div class="b2b-kpi-num" style="color:#a855f7" aria-hidden="true">↗</div>
+<div class="b2b-kpi-lbl" data-en="CONSULTATION">CONFRONTO</div>
+<div class="b2b-kpi-delta" style="color:#22c55e" data-en="Your organisation’s needs">Esigenze della tua organizzazione</div></div>
+</div></div></div>
+</main>
 <footer>
   <div class="footer-brand">ORVEX INTELLIGENCE</div>
-  <div class="footer-sub">ENTERPRISE GRADE CYBERSECURITY · ORVEX GUARD · NIS2 COMPLIANT</div>
+  <div class="footer-sub">CYBER THREAT INTELLIGENCE · ORVEX GUARD · PHISHING ANALYSIS</div>
+  <div style="margin:20px auto;display:flex;gap:20px;justify-content:center;flex-wrap:wrap">
+    <a href="/" style="color:var(--muted)">Orvex Intelligence</a>
+    <a href="/osint-fusion/" style="color:var(--muted)">OSINT Fusion</a>
+    <a href="https://app.orvexintelligence.com" style="color:var(--muted)">Launch Intelligence</a>
+  </div>
   <div style="margin-top:20px;padding:16px;border:1px solid #1e3a5f;border-radius:4px;max-width:700px;margin:20px auto 0;background:rgba(59,130,246,0.03)">
-    <p id="disclaimer-text" style="font-size:11px;color:#4a7ab5;line-height:1.7;text-align:center;font-family:'JetBrains Mono',monospace">
-      DISCLAIMER: Orvex Guard fornisce un'analisi indicativa basata su intelligenza artificiale. I risultati non costituiscono consulenza legale, finanziaria o di sicurezza certificata. In caso di dubbio, contatta le autorita competenti (Polizia Postale: commissariatodips.it), la tua banca o un esperto di cybersecurity. Orvex Intelligence non si assume responsabilita per decisioni prese sulla base dell'analisi fornita.
-    </p>
-  </div>
-</footer>
-
-<!-- AUTH MODAL -->
-<div id="auth-overlay" class="auth-overlay" style="display:none" onclick="if(event.target===this)closeAuth()">
-  <div class="auth-box">
-    <div class="auth-header">
-      <div style="width:10px;height:10px;border-radius:50%;background:#ef4444"></div>
-      <div style="width:10px;height:10px;border-radius:50%;background:#f97316"></div>
-      <div style="width:10px;height:10px;border-radius:50%;background:#22c55e"></div>
-      <span id="auth-header-title" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#4a7ab5;margin-left:8px">ORVEX GUARD — ACCESSO</span>
-      <button onclick="closeAuth()" style="margin-left:auto;background:transparent;border:none;color:#4a7ab5;cursor:pointer;font-size:18px;line-height:1">×</button>
-    </div>
-    <div class="auth-body">
-      <div class="auth-tabs">
-        <button id="tab-login" class="auth-tab active" onclick="switchTab('login')">LOGIN</button>
-        <button id="tab-register" class="auth-tab" onclick="switchTab('register')">REGISTRATI</button>
-      </div>
-      <div id="login-fields">
-        <div class="auth-field">
-          <label class="auth-label">EMAIL</label>
-          <input id="auth-email" class="auth-input" type="email" placeholder="email@esempio.com"/>
-        </div>
-        <div class="auth-field" style="margin-bottom:20px">
-          <label class="auth-label">PASSWORD</label>
-          <input id="auth-password" class="auth-input" type="password" placeholder="••••••••"/>
-        </div>
-      </div>
-      <div id="register-fields" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div class="auth-field">
-            <label class="auth-label">NOME</label>
-            <input id="auth-firstname" class="auth-input" type="text" placeholder="Mario"/>
-          </div>
-          <div class="auth-field">
-            <label class="auth-label">COGNOME</label>
-            <input id="auth-lastname" class="auth-input" type="text" placeholder="Rossi"/>
-          </div>
-        </div>
-        <div class="auth-field">
-          <label class="auth-label">EMAIL</label>
-          <input id="auth-email-reg" class="auth-input" type="email" placeholder="email@esempio.com"/>
-        </div>
-        <div class="auth-field">
-          <label class="auth-label">TELEFONO</label>
-          <input id="auth-phone" class="auth-input" type="tel" placeholder="+39 333 1234567"/>
-        </div>
-        <div class="auth-field">
-          <label class="auth-label">AZIENDA (facoltativo)</label>
-          <input id="auth-company" class="auth-input" type="text" placeholder="Nome azienda"/>
-        </div>
-        <div class="auth-field">
-          <label class="auth-label">TIPO ACCOUNT</label>
-          <select id="auth-type" class="auth-input" style="cursor:pointer">
-            <option value="personal">👤 Privato</option>
-            <option value="business">🏢 Azienda</option>
-          </select>
-        </div>
-        <div class="auth-field">
-          <label class="auth-label">PASSWORD</label>
-          <input id="auth-password-reg" class="auth-input" type="password" placeholder="Min. 8 caratteri"/>
-        </div>
-        <div class="auth-field" style="margin-bottom:20px">
-          <label class="auth-label">CONFERMA PASSWORD</label>
-          <input id="auth-password-confirm" class="auth-input" type="password" placeholder="Ripeti password"/>
-        </div>
-      </div>
-      <div id="auth-error" class="auth-error" style="display:none"></div>
-      <div id="auth-success" class="auth-success" style="display:none"></div>
-      <button id="auth-submit" class="auth-btn" onclick="handleAuth()">ACCEDI</button>
-      <p id="auth-free-note" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#4a7ab5;text-align:center;margin-top:12px">Piano FREE: 3 analisi/giorno · Nessuna carta richiesta</p>
-    </div>
-  </div>
-</div>
-
+<p id="disclaimer-text" style="font-size:11px;color:#4a7ab5;line-height:1.7;text-align:center;font-family:'JetBrains Mono',monospace" data-en="This page introduces Orvex Guard and an illustrative example. It does not perform scans or provide real-time security assessments. For suspicious communications, verify through an official channel; scope and availability of professional services are by arrangement.">Questa pagina presenta Orvex Guard e un esempio illustrativo. Non esegue scansioni e non fornisce valutazioni di sicurezza in tempo reale. Per una comunicazione sospetta, verifica tramite un canale ufficiale; ambito e disponibilità delle attività professionali sono da concordare.</p></div></footer>
 <script>
-var API_URL = 'https://i1l5qitfsa.execute-api.eu-south-1.amazonaws.com/prod';
-var currentUser = null;
-var authToken = null;
-var authMode = 'login';
+// Static presentation: translations and the original visual effects only.
 var currentLang = 'it';
-
-// ── RIPRISTINA SESSIONE ──
-try {
-  var _st = localStorage.getItem('orvex_token');
-  var _su = localStorage.getItem('orvex_user');
-  if (_st && _su) { authToken = _st; currentUser = JSON.parse(_su); }
-} catch(e) {}
-
-// ── TRADUZIONI ──
-var T = {
-  it: {
-    navAnalyze:'ANALIZZA', navFeatures:'FEATURES', navPricing:'PRICING', navEnterprise:'ENTERPRISE',
-    navCta:'INIZIA GRATIS',
-    heroTag:'PIATTAFORMA DI RILEVAMENTO MINACCE',
-    heroSub:'Protezione anti-truffa in tempo reale per privati e aziende. Powered by AI — conforme NIS2.',
-    heroBtnPrimary:'PROVA ORA', heroBtnSecondary:'SCOPRI DI PIU',
-    stat1:'Truffe rilevate oggi', stat2:'Utenti protetti', stat3:'Aziende NIS2-compliant', stat4:'Accuracy AI',
-    analyzerTag:'// ANALIZZATORE LIVE', analyzerTitle:'Prova subito',
-    analyzerSub:'Incolla un messaggio sospetto o usa uno degli esempi',
-    analyzerPlaceholder:'Incolla qui SMS, email, WhatsApp sospetti...',
-    analyzerBtn:'RUN ANALYSIS',
-    featTag:'FUNZIONALITA', featTitle:'Protezione su<br>ogni livello',
-    featSub:'Moduli integrati per una difesa completa contro le minacce digitali.',
-    features:[
-      {title:'Analizzatore AI', desc:"Incolla qualsiasi messaggio — SMS, email, WhatsApp. L'AI lo analizza in secondi con punteggio di pericolosita."},
-      {title:'Analisi Screenshot', desc:"Carica uno screenshot di un messaggio sospetto. L'AI lo legge e lo analizza visivamente."},
-      {title:'Threat Simulator', desc:'Allena il tuo team con scenari reali di phishing, smishing e vishing.'},
-      {title:'Alert Italia Live', desc:'Database aggiornato delle truffe attive su territorio nazionale. Fonte: CERT-AGID e Polizia Postale.'},
-      {title:'Dashboard B2B', desc:'Gestisci la formazione del team e monitora il livello di awareness. Report NIS2 con un click.'},
-      {title:'Piani Flessibili', desc:'Da privati a grandi imprese. Freemium per iniziare, Enterprise per la conformita NIS2.'}
-    ],
-    demoTag:'LIVE DEMO', demoTitle:"Vedi l'AI<br>in azione",
-    demoPoints:['Analisi in meno di 2 secondi','15 tipi di truffa riconosciuti','Spiegazione in italiano','Raccomandazione personalizzata'],
-    b2bTag:'ENTERPRISE', b2bTitle:'Conformita NIS2<br>per la tua azienda',
-    b2bSub:'La Direttiva NIS2 rende obbligatoria la formazione cybersecurity. Orvex Guard ti mette in regola.',
-    b2bCta:'RICHIEDI DEMO ENTERPRISE',
-    nis2Labels:['Formazione dipendenti','Gestione incidenti','Sicurezza supply chain','Policy aggiornate'],
-    pricingTag:'PREZZI', pricingTitle:'Piani per ogni<br>esigenza',
-    mensile:'MENSILE', annuale:'ANNUALE', risparmia:'RISPARMIA 33%',
-    authHeader:'ORVEX GUARD — ACCESSO',
-    authLogin:'LOGIN', authRegister:'REGISTRATI',
-    authEmailPh:'email@esempio.com', authPwdPh:'••••••••',
-    authFirstPh:'Mario', authLastPh:'Rossi',
-    authPhonePh:'+39 333 1234567', authCompanyPh:'Nome azienda',
-    authPwdPh2:'Min. 8 caratteri', authPwdConfPh:'Ripeti password',
-    authFreeNote:'Piano FREE: 3 analisi/giorno · Nessuna carta richiesta',
-    bannerPlan:'PIANO', logout:'ESCI',
-    disclaimer:"DISCLAIMER: Orvex Guard fornisce un'analisi indicativa basata su intelligenza artificiale. I risultati non costituiscono consulenza legale, finanziaria o di sicurezza certificata. In caso di dubbio, contatta le autorita competenti (Polizia Postale: commissariatodips.it), la tua banca o un esperto di cybersecurity. Orvex Intelligence non si assume responsabilita per decisioni prese sulla base dell'analisi fornita.",
-    planFreeCta:'INIZIA GRATIS', planPremiumCta:'INIZIA ORA', planB2bCta:'INIZIA ORA',
-    planFreeFeatures:['3 analisi/giorno','Simulatore base','Alert Italia (ultimi 5)','Supporto community'],
-    planPremiumFeatures:['Analisi illimitate','Analisi screenshot','Simulatore completo','Alert live','Report mensile','Supporto prioritario'],
-    planB2bFeatures:['25 dipendenti','Dashboard B2B','Training NIS2','Report team','Alert personalizzati'],
-    guestLimitTitle:'Registrati per continuare',
-    guestLimitSub:'Hai usato la tua analisi gratuita. Crea un account FREE per avere 3 analisi al giorno!',
-    guestRegBtn:'REGISTRATI GRATIS',
-    guestLoginBtn:'HAI GIA UN ACCOUNT',
-  },
-  en: {
-    navAnalyze:'ANALYZE', navFeatures:'FEATURES', navPricing:'PRICING', navEnterprise:'ENTERPRISE',
-    navCta:'GET STARTED',
-    heroTag:'CYBER THREAT DETECTION PLATFORM',
-    heroSub:'Real-time anti-fraud protection for individuals and businesses. Powered by AI — NIS2 compliant.',
-    heroBtnPrimary:'TRY NOW', heroBtnSecondary:'LEARN MORE',
-    stat1:'Threats detected today', stat2:'Protected users', stat3:'NIS2-compliant companies', stat4:'AI Accuracy',
-    analyzerTag:'// LIVE ANALYZER', analyzerTitle:'Try it now',
-    analyzerSub:'Paste a suspicious message or use one of the examples',
-    analyzerPlaceholder:'Paste SMS, email, WhatsApp messages here...',
-    analyzerBtn:'RUN ANALYSIS',
-    featTag:'FEATURES', featTitle:'Protection at<br>every level',
-    featSub:'Integrated modules for complete defense against digital threats.',
-    features:[
-      {title:'AI Analyzer', desc:'Paste any message — SMS, email, WhatsApp. The AI analyzes it in seconds with a threat score.'},
-      {title:'Screenshot Analysis', desc:'Upload a screenshot of a suspicious message. The AI reads and analyzes it visually.'},
-      {title:'Threat Simulator', desc:'Train your team with real phishing, smishing and vishing scenarios.'},
-      {title:'Italy Live Alerts', desc:'Updated database of active scams in Italy. Source: CERT-AGID and Postal Police.'},
-      {title:'B2B Dashboard', desc:'Manage team training and monitor awareness levels. NIS2 report with one click.'},
-      {title:'Flexible Plans', desc:'From individuals to large enterprises. Freemium to start, Enterprise for NIS2 compliance.'}
-    ],
-    demoTag:'LIVE DEMO', demoTitle:'See the AI<br>in action',
-    demoPoints:['Analysis in less than 2 seconds','15 types of fraud recognized','Explanation in your language','Personalized recommendation'],
-    b2bTag:'ENTERPRISE', b2bTitle:'NIS2 Compliance<br>for your company',
-    b2bSub:'The NIS2 Directive makes cybersecurity training mandatory. Orvex Guard keeps you compliant.',
-    b2bCta:'REQUEST ENTERPRISE DEMO',
-    nis2Labels:['Employee training','Incident management','Supply chain security','Updated policies'],
-    pricingTag:'PRICING', pricingTitle:'Plans for every<br>need',
-    mensile:'MONTHLY', annuale:'ANNUAL', risparmia:'SAVE 33%',
-    authHeader:'ORVEX GUARD — ACCESS',
-    authLogin:'LOGIN', authRegister:'REGISTER',
-    authEmailPh:'email@example.com', authPwdPh:'••••••••',
-    authFirstPh:'John', authLastPh:'Smith',
-    authPhonePh:'+1 555 1234567', authCompanyPh:'Company name',
-    authPwdPh2:'Min. 8 characters', authPwdConfPh:'Repeat password',
-    authFreeNote:'FREE Plan: 3 analyses/day · No card required',
-    bannerPlan:'PLAN', logout:'LOGOUT',
-    disclaimer:'DISCLAIMER: Orvex Guard provides an indicative analysis based on artificial intelligence. Results do not constitute legal, financial or certified security advice. If in doubt, contact competent authorities, your bank or a cybersecurity expert. Orvex Intelligence assumes no responsibility for decisions made based on the analysis provided.',
-    planFreeCta:'START FREE', planPremiumCta:'START NOW', planB2bCta:'START NOW',
-    planFreeFeatures:['3 analyses/day','Basic simulator','Italy alerts (last 5)','Community support'],
-    planPremiumFeatures:['Unlimited analyses','Screenshot analysis','Full simulator','Live alerts','Monthly report','Priority support'],
-    planB2bFeatures:['25 employees','B2B dashboard','NIS2 training','Team reports','Custom alerts'],
-    guestLimitTitle:'Register to continue',
-    guestLimitSub:'You have used your free analysis. Create a FREE account for 3 analyses per day!',
-    guestRegBtn:'REGISTER FREE',
-    guestLoginBtn:'I ALREADY HAVE AN ACCOUNT',
-  }
-};
-
+var translatedNodes = Array.from(document.querySelectorAll('[data-en]')).map(function(el) {
+  return {el: el, it: el.textContent, en: el.dataset.en};
+});
 function toggleLang() {
   currentLang = currentLang === 'it' ? 'en' : 'it';
+  document.documentElement.lang = currentLang;
+  translatedNodes.forEach(function(item) { item.el.textContent = item[currentLang]; });
   var btn = document.getElementById('lang-toggle');
   btn.textContent = currentLang === 'it' ? 'IT / EN' : 'EN / IT';
+  btn.setAttribute('aria-label', currentLang === 'it' ? 'Switch to English' : 'Passa all’italiano');
   btn.style.color = currentLang === 'en' ? '#3b82f6' : '#7a92aa';
   btn.style.borderColor = currentLang === 'en' ? '#3b82f6' : '#1e3a5f';
-  applyTranslations();
+  document.querySelector('nav').setAttribute('aria-label', currentLang === 'it' ? 'Navigazione principale' : 'Main navigation');
+  document.querySelector('a[href^="mailto:"]').href = 'mailto:contact@orvexintelligence.com?subject=' + encodeURIComponent(currentLang === 'it' ? 'Richiesta informazioni — Orvex Guard' : 'Information request — Orvex Guard');
 }
-
-function applyTranslations() {
-  var l = T[currentLang];
-  if (!currentUser) document.getElementById('nav-cta-btn').textContent = l.navCta;
-  var navLinks = document.querySelectorAll('.nav-links a');
-  if (navLinks[0]) navLinks[0].textContent = l.navAnalyze;
-  if (navLinks[1]) navLinks[1].textContent = l.navFeatures;
-  if (navLinks[2]) navLinks[2].textContent = l.navPricing;
-  if (navLinks[3]) navLinks[3].textContent = l.navEnterprise;
-  var heroTag = document.querySelector('.hero-tag');
-  if (heroTag) heroTag.innerHTML = '<span class="hero-tag-dot"></span>' + l.heroTag;
-  var heroSub = document.querySelector('.hero-sub');
-  if (heroSub) heroSub.textContent = l.heroSub;
-  var heroBtns = document.querySelectorAll('.hero-btns a');
-  if (heroBtns[0]) heroBtns[0].textContent = l.heroBtnPrimary;
-  if (heroBtns[1]) heroBtns[1].textContent = l.heroBtnSecondary;
-  var statLbls = document.querySelectorAll('.stat-lbl');
-  if (statLbls[0]) statLbls[0].textContent = l.stat1;
-  if (statLbls[1]) statLbls[1].textContent = l.stat2;
-  if (statLbls[2]) statLbls[2].textContent = l.stat3;
-  if (statLbls[3]) statLbls[3].textContent = l.stat4;
-  var aTag = document.getElementById('analyzer-tag');
-  if (aTag) aTag.textContent = l.analyzerTag;
-  var aTitle = document.getElementById('analyzer-title');
-  if (aTitle) aTitle.textContent = l.analyzerTitle;
-  var aSub = document.getElementById('analyzer-sub');
-  if (aSub) aSub.textContent = l.analyzerSub;
-  var liveInput = document.getElementById('live-input');
-  if (liveInput) liveInput.placeholder = l.analyzerPlaceholder;
-  var liveBtn = document.getElementById('live-btn');
-  if (liveBtn && !liveBtn.disabled) liveBtn.textContent = l.analyzerBtn;
-  var featSection = document.getElementById('features');
-  if (featSection) {
-    var ft = featSection.querySelector('.section-tag');
-    if (ft) ft.textContent = l.featTag;
-    var fh = featSection.querySelector('.section-title');
-    if (fh) fh.innerHTML = l.featTitle;
-    var fs = featSection.querySelector('.section-sub');
-    if (fs) fs.textContent = l.featSub;
-  }
-  var featureCards = document.querySelectorAll('.feature-card');
-  l.features.forEach(function(f, i) {
-    if (featureCards[i]) {
-      var ft2 = featureCards[i].querySelector('.feature-title');
-      var fd = featureCards[i].querySelector('.feature-desc');
-      if (ft2) ft2.textContent = f.title;
-      if (fd) fd.textContent = f.desc;
-    }
-  });
-  var demoSection = document.getElementById('demo');
-  if (demoSection) {
-    var dt = demoSection.querySelector('.section-tag');
-    if (dt) dt.textContent = l.demoTag;
-    var dh = demoSection.querySelector('.section-title');
-    if (dh) dh.innerHTML = l.demoTitle;
-    ['demo-point-1','demo-point-2','demo-point-3','demo-point-4'].forEach(function(id, i) {
-      var el = document.querySelector('.' + id);
-      if (el && l.demoPoints[i]) el.textContent = l.demoPoints[i];
-    });
-  }
-  var b2bSection = document.getElementById('b2b');
-  if (b2bSection) {
-    var bt = b2bSection.querySelector('.section-tag');
-    if (bt) bt.textContent = l.b2bTag;
-    var bh = b2bSection.querySelector('.section-title');
-    if (bh) bh.innerHTML = l.b2bTitle;
-    var bs = b2bSection.querySelector('.section-sub');
-    if (bs) bs.textContent = l.b2bSub;
-    var bcta = b2bSection.querySelector('.b2b-cta-btn');
-    if (bcta) bcta.textContent = l.b2bCta;
-    var nis2Rows = b2bSection.querySelectorAll('.nis2-hdr span:first-child');
-    l.nis2Labels.forEach(function(lbl, i) { if (nis2Rows[i]) nis2Rows[i].textContent = lbl; });
-  }
-  var pricingSection = document.getElementById('pricing');
-  if (pricingSection) {
-    var ptag = pricingSection.querySelector('.section-tag');
-    if (ptag) ptag.textContent = l.pricingTag;
-    var ph = pricingSection.querySelector('.section-title');
-    if (ph) ph.innerHTML = l.pricingTitle;
-  }
-  document.getElementById('lbl-monthly').textContent = l.mensile;
-  document.getElementById('lbl-annual').textContent = l.annuale;
-  document.getElementById('save-badge').textContent = l.risparmia;
-  var aht = document.getElementById('auth-header-title');
-  if (aht) aht.textContent = l.authHeader;
-  document.getElementById('tab-login').textContent = l.authLogin;
-  document.getElementById('tab-register').textContent = l.authRegister;
-  document.getElementById('auth-email').placeholder = l.authEmailPh;
-  document.getElementById('auth-password').placeholder = l.authPwdPh;
-  document.getElementById('auth-firstname').placeholder = l.authFirstPh;
-  document.getElementById('auth-lastname').placeholder = l.authLastPh;
-  document.getElementById('auth-phone').placeholder = l.authPhonePh;
-  document.getElementById('auth-company').placeholder = l.authCompanyPh;
-  document.getElementById('auth-password-reg').placeholder = l.authPwdPh2;
-  document.getElementById('auth-password-confirm').placeholder = l.authPwdConfPh;
-  var authSubmit = document.getElementById('auth-submit');
-  if (authSubmit) authSubmit.textContent = authMode === 'login' ? l.authLogin : l.authRegister + ' →';
-  var authFreeNote = document.getElementById('auth-free-note');
-  if (authFreeNote) authFreeNote.textContent = l.authFreeNote;
-  var logoutBtn = document.querySelector('#user-banner button');
-  if (logoutBtn) logoutBtn.textContent = l.logout;
-  if (currentUser) {
-    var bp = document.getElementById('banner-plan');
-    if (bp) bp.textContent = l.bannerPlan + ' ' + (currentUser.plan||'FREE').toUpperCase();
-  }
-  var disc = document.getElementById('disclaimer-text');
-  if (disc) disc.textContent = l.disclaimer;
-  PLANS[0].cta = l.planFreeCta;
-  PLANS[1].cta = l.planPremiumCta;
-  PLANS[2].cta = l.planB2bCta;
-  PLANS[0].features = l.planFreeFeatures;
-  PLANS[1].features = l.planPremiumFeatures;
-  PLANS[2].features = l.planB2bFeatures;
-  renderPricing();
-}
-
-// ── AUTH ──
-function openAuth(mode) {
-  authMode = mode || 'login';
-  switchTab(authMode);
-  document.getElementById('auth-overlay').style.display = 'flex';
-}
-function closeAuth() {
-  document.getElementById('auth-overlay').style.display = 'none';
-  document.getElementById('auth-error').style.display = 'none';
-  document.getElementById('auth-success').style.display = 'none';
-}
-function switchTab(mode) {
-  authMode = mode;
-  document.getElementById('tab-login').className = 'auth-tab' + (mode==='login'?' active':'');
-  document.getElementById('tab-register').className = 'auth-tab' + (mode==='register'?' active':'');
-  document.getElementById('login-fields').style.display = mode==='login' ? 'block' : 'none';
-  document.getElementById('register-fields').style.display = mode==='register' ? 'block' : 'none';
-  var l = T[currentLang];
-  document.getElementById('auth-submit').textContent = mode==='login' ? l.authLogin : l.authRegister + ' →';
-  document.getElementById('auth-error').style.display = 'none';
-  document.getElementById('auth-success').style.display = 'none';
-}
-
-function handleAuth() {
-  var email, password, name, phone, company, type;
-  var btn = document.getElementById('auth-submit');
-  var errEl = document.getElementById('auth-error');
-  var succEl = document.getElementById('auth-success');
-  errEl.style.display = 'none';
-  succEl.style.display = 'none';
-  var l = T[currentLang];
-  if (authMode === 'login') {
-    email = document.getElementById('auth-email').value.trim();
-    password = document.getElementById('auth-password').value;
-    if (!email || !password) { showAuthError(currentLang==='it'?'Email e password obbligatorie':'Email and password required'); return; }
-  } else {
-    var firstname = document.getElementById('auth-firstname').value.trim();
-    var lastname = document.getElementById('auth-lastname').value.trim();
-    name = (firstname + ' ' + lastname).trim();
-    email = document.getElementById('auth-email-reg').value.trim();
-    password = document.getElementById('auth-password-reg').value;
-    var confirm = document.getElementById('auth-password-confirm').value;
-    phone = document.getElementById('auth-phone').value.trim();
-    company = document.getElementById('auth-company').value.trim();
-    type = document.getElementById('auth-type').value;
-    if (!firstname || !lastname) { showAuthError(currentLang==='it'?'Nome e cognome obbligatori':'First and last name required'); return; }
-    if (!email) { showAuthError(currentLang==='it'?'Email obbligatoria':'Email required'); return; }
-    if (!phone) { showAuthError(currentLang==='it'?'Telefono obbligatorio':'Phone required'); return; }
-    if (!password) { showAuthError(currentLang==='it'?'Password obbligatoria':'Password required'); return; }
-    if (password.length < 8) { showAuthError(currentLang==='it'?'Password minimo 8 caratteri':'Password minimum 8 characters'); return; }
-    if (password !== confirm) { showAuthError(currentLang==='it'?'Le password non coincidono':'Passwords do not match'); return; }
-  }
-  btn.disabled = true;
-  btn.textContent = currentLang==='it' ? 'CARICAMENTO...' : 'LOADING...';
-  var url = API_URL + (authMode === 'login' ? '/auth/login' : '/auth/register');
-  var body = authMode === 'login'
-    ? {email: email, password: password}
-    : {email: email, password: password, name: name, phone: phone, company: company || '', type: type};
-  fetch(url, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(body)
-  }).then(function(r) {
-    return r.json().then(function(d) { return {status: r.status, data: d}; });
-  }).then(function(res) {
-    if (res.status !== 200 && res.status !== 201) {
-      throw new Error(res.data.error || (currentLang==='it'?'Errore di autenticazione':'Authentication error'));
-    }
-    currentUser = res.data;
-    authToken = res.data.token;
-    try {
-      localStorage.setItem('orvex_token', res.data.token);
-      localStorage.setItem('orvex_user', JSON.stringify(res.data));
-    } catch(e) {}
-    if (authMode === 'register') {
-      closeAuth();
-      updateUserUI();
-      setTimeout(function() {
-        document.getElementById('try').scrollIntoView({behavior: 'smooth'});
-        var result = document.getElementById('live-result');
-        result.innerHTML = '<div style="background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:2px;padding:16px;text-align:center">' +
-          '<div style="color:#22c55e;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">' + (currentLang==='it'?'✓ Benvenuto su Orvex Guard!':'✓ Welcome to Orvex Guard!') + '</div>' +
-          '<div style="color:#4a7ab5;font-size:13px;margin-bottom:8px">' + (currentLang==='it'?"Controlla la tua email per attivare l'account.":'Check your email to activate your account.') + '</div>' +
-          '<div style="color:#8ab4d4;font-size:12px">' + (currentLang==='it'?'Hai 3 analisi gratuite al giorno. Incolla un messaggio sospetto per iniziare!':'You have 3 free analyses per day. Paste a suspicious message to start!') + '</div>' +
-          '</div>';
-      }, 300);
-    } else {
-      closeAuth();
-      updateUserUI();
-    }
-    if (window._pendingPlan) {
-      var links = STRIPE_LINKS[window._pendingPlan];
-      if (links) { var stripeUrl = isAnnual ? links.annual : links.monthly; window.open(stripeUrl, '_blank'); }
-      window._pendingPlan = null;
-    }
-  }).catch(function(e) {
-    showAuthError(e.message);
-  }).finally(function() {
-    btn.disabled = false;
-    btn.textContent = authMode === 'login' ? T[currentLang].authLogin : T[currentLang].authRegister + ' →';
-  });
-}
-
-function showAuthError(msg) {
-  var el = document.getElementById('auth-error');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function logout() {
-  currentUser = null;
-  authToken = null;
-  try { localStorage.removeItem('orvex_token'); localStorage.removeItem('orvex_user'); } catch(e) {}
-  updateUserUI();
-}
-
-function updateUserUI() {
-  var banner = document.getElementById('user-banner');
-  var ctaBtn = document.getElementById('nav-cta-btn');
-  var l = T[currentLang];
-  if (currentUser) {
-    banner.style.display = 'flex';
-    document.getElementById('banner-name').textContent = currentUser.name;
-    document.getElementById('banner-plan').textContent = l.bannerPlan + ' ' + (currentUser.plan||'FREE').toUpperCase();
-    if (currentUser.plan === 'free') {
-      document.getElementById('banner-limit').textContent = currentLang==='it'?'3 analisi/giorno':'3 analyses/day';
-    }
-    ctaBtn.textContent = currentUser.name.split(' ')[0].toUpperCase();
-    ctaBtn.onclick = function(){ window.location.href = 'profile.html'; };
-    ctaBtn.style.borderColor = '#22c55e';
-    ctaBtn.style.color = '#22c55e';
-  } else {
-    banner.style.display = 'none';
-    ctaBtn.textContent = 'PREMIUM \u2192';
-    ctaBtn.onclick = function(){ handlePlanClick('PREMIUM'); };
-    ctaBtn.style.borderColor = '';
-    ctaBtn.style.color = '';
-  }
-}
-
 // ── THREE.JS ──
 var canvas3d=document.getElementById('canvas-bg');
 var renderer=new THREE.WebGLRenderer({canvas:canvas3d,alpha:true,antialias:true});
@@ -806,30 +356,7 @@ function animate(){
 animate();
 window.addEventListener('resize',function(){camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
 
-// ── COUNTERS ──
-function animateCounter(el,target,suffix,duration){
-  suffix=suffix||'';duration=duration||2000;
-  var start=0;var step=target/(duration/16);
-  var timer=setInterval(function(){
-    start+=step;
-    if(start>=target){el.textContent=target.toLocaleString('it-IT')+suffix;clearInterval(timer);return;}
-    el.textContent=Math.floor(start).toLocaleString('it-IT')+suffix;
-  },16);
-}
-var observer=new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting){
-      animateCounter(document.getElementById('c1'),5234);
-      animateCounter(document.getElementById('c2'),28400);
-      animateCounter(document.getElementById('c3'),347);
-      animateCounter(document.getElementById('c4'),97,'%');
-      observer.disconnect();
-    }
-  });
-},{threshold:0.3});
-observer.observe(document.querySelector('.stats-row'));
-
-// ── NIS2 BARS ──
+// Original decorative bar transitions; no statistics or compliance scores.
 var barObs=new IntersectionObserver(function(entries){
   entries.forEach(function(e){
     if(e.isIntersecting){
@@ -841,175 +368,6 @@ var barObs=new IntersectionObserver(function(entries){
 var nis2El=document.querySelector('.nis2-bar');
 if(nis2El)barObs.observe(nis2El);
 
-// ── PRICING ──
-var PLANS=[
-  {name:'FREE',price:0,annual:0,color:'#3b82f6',highlight:false,hidden:true,features:['3 analisi/giorno','Simulatore base','Alert Italia (ultimi 5)','Supporto community'],cta:'INIZIA GRATIS',ctaStyle:'border-color:#3b82f6;color:#3b82f6;background:transparent'},
-  {name:'PREMIUM',price:4.99,annual:39.99,color:'#00d4ff',highlight:true,badge:'MOST POPULAR',features:['Analisi illimitate','Analisi screenshot','Simulatore completo','Alert live','Report mensile','Supporto prioritario'],cta:'INIZIA ORA',ctaStyle:'background:#00d4ff;border-color:#00d4ff;color:#020810'},
-  {name:'SMALL B2B',price:99,annual:599,color:'#8b5cf6',highlight:false,features:['25 dipendenti','Dashboard B2B','Training NIS2','Report team','Alert personalizzati'],cta:'INIZIA ORA',ctaStyle:'border-color:#8b5cf6;color:#8b5cf6;background:transparent'},
-  {name:'ENTERPRISE',price:299,annual:2499,color:'#00e5a0',highlight:true,hidden:true,badge:'BEST VALUE',features:['Dipendenti illimitati','Dashboard avanzata','API integration','NIS2 certificata','Account manager','SLA 99.9%'],cta:'CONTATTA SALES',ctaStyle:'background:#00e5a0;border-color:#00e5a0;color:#020810'},
-];
-var isAnnual=false;
-
-var STRIPE_LINKS={
-  'PREMIUM':{monthly:'https://buy.stripe.com/5kQbJ1aZp7mO5pA8hybEA07',annual:'https://buy.stripe.com/8x2cN5ffFbD405gfK0bEA08'},
-  'SMALL B2B':{monthly:'https://buy.stripe.com/4gM9AT8Rh36y4lw41ibEA05',annual:'https://buy.stripe.com/dRm14nebB4aC5pAbtKbEA06'}
-};
-
-function toggleBilling(){
-  isAnnual=!isAnnual;
-  var tgl=document.getElementById('billing-toggle');
-  tgl.classList.toggle('on',isAnnual);
-  document.getElementById('lbl-monthly').classList.toggle('active',!isAnnual);
-  document.getElementById('lbl-annual').classList.toggle('active',isAnnual);
-  document.getElementById('save-badge').style.display=isAnnual?'inline-block':'none';
-  renderPricing();
-}
-
-function renderPricing(){
-  var grid=document.getElementById('pricing-grid');
-  grid.innerHTML=PLANS.filter(function(p){return !p.hidden;}).map(function(p){
-    return '<div class="plan-card '+(p.highlight?'highlight':'')+'" style="border-top:2px solid '+p.color+'">' +
-      (p.badge?'<div class="plan-badge" style="background:'+p.color+';color:#020810">'+p.badge+'</div>':'') +
-      '<div class="plan-name" style="color:'+p.color+'">'+p.name+'</div>' +
-      '<div class="plan-price" style="color:'+p.color+'">€'+(isAnnual&&p.annual?p.annual:(p.price===0?'0':p.price))+'</div>' +
-      '<div class="plan-period">'+(p.price===0?(currentLang==='it'?'per sempre':'forever'):isAnnual?'/anno':'/mese')+'</div>' +
-      '<div style="height:20px"></div><div class="plan-divider"></div>' +
-      '<div class="plan-features">'+p.features.map(function(f){
-        return '<div class="plan-feature"><span class="plan-feature-icon" style="color:'+p.color+'">+</span>'+f+'</div>';
-      }).join('')+'</div>' +
-      '<button class="plan-btn" style="'+p.ctaStyle+'" onclick="handlePlanClick(\''+p.name+'\')">'+p.cta+'</button></div>';
-  }).join('');
-}
-renderPricing();
-
-function handlePlanClick(planName){
-  if(planName==='FREE'){
-    var links=STRIPE_LINKS['PREMIUM'];
-    var url=isAnnual?links.annual:links.monthly;
-    window.open(url,'_blank');
-    return;
-  }
-  var links=STRIPE_LINKS[planName];
-  if(links){var url=isAnnual?links.annual:links.monthly;window.open(url,'_blank');}
-}
-
-// ── LIVE ANALYZER ──
-var EXAMPLES=[
-  'AVVISO BANCA INTESA: Attivita sospetta rilevata sul tuo conto. Accedi subito: http://intesa-sicurezza.net/verifica?token=8x92k',
-  'Il tuo pacco DHL non puo essere consegnato. Tasse 2,49 euro non pagate. Paga entro oggi: dhl-italia-consegna.com/pagamento',
-  'Ciao mamma, ho cambiato numero. Ho urgente bisogno di 350 euro per un bonifico. Puoi mandarmeli?',
-  'INSTAGRAM: Il tuo account e stato segnalato per violazione delle linee guida. Verifica ora: instagram-verify-account.com/confirm',
-  'FACEBOOK SECURITY: Accesso non autorizzato rilevato. Proteggi il profilo: fb-security-login.com/verify',
-  'YouTube Team: Il tuo canale e stato selezionato per la monetizzazione premium. Inserisci i dati bancari: youtube-creators-pay.com/setup'
-];
-function loadEx(i){document.getElementById('live-input').value=EXAMPLES[i];}
-
-function runLiveAnalysis(){
-  var text=document.getElementById('live-input').value.trim();
-  if(!text)return;
-  var btn=document.getElementById('live-btn');
-  var resEl=document.getElementById('live-result');
-  var l=T[currentLang];
-
-  // ── LIMITE OSPITI NON LOGGATI ──
-  if(!currentUser){
-    var guestCount=parseInt(localStorage.getItem('orvex_guest_count')||'0');
-    if(guestCount>=2){
-      resEl.innerHTML='<div style="background:rgba(59,130,246,0.1);border:1px solid #3b82f6;border-radius:2px;padding:20px;text-align:center">' +
-        '<div style="color:#3b82f6;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">🛡 '+l.guestLimitTitle+'</div>' +
-        '<div style="color:#4a7ab5;font-size:13px;margin-bottom:16px">'+l.guestLimitSub+'</div>' +
-        '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:13px;font-weight:700;padding:10px 24px;cursor:pointer;border-radius:2px">PASSA A PREMIUM — €4,99/mese →</button>' +
-        '</div>';
-      return;
-    }
-    localStorage.setItem('orvex_guest_count', guestCount+1);
-  }
-
-  btn.textContent=l.analyzerBtn==='RUN ANALYSIS'?'ANALYZING...':'ANALISI...';
-  btn.disabled=true;
-  resEl.innerHTML='<div style="color:#4a7ab5;font-family:monospace;font-size:12px;padding:12px;text-align:center">'+(currentLang==='it'?'Analisi in corso...':'Analyzing...')+'</div>';
-
-  var headers={'Content-Type':'application/json'};
-  if(authToken)headers['Authorization']='Bearer '+authToken;
-
-  fetch(API_URL+'/analyze/text',{method:'POST',headers:headers,body:JSON.stringify({text:text})})
-  .then(function(r){return r.json().then(function(d){return{status:r.status,data:d};});})
-  .then(function(res2){
-    if(res2.status===429){
-      resEl.innerHTML='<div style="background:rgba(249,115,22,0.1);border:1px solid #f97316;border-radius:2px;padding:16px;text-align:center">' +
-        '<div style="color:#f97316;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">'+(currentLang==='it'?'LIMITE RAGGIUNTO':'LIMIT REACHED')+'</div>' +
-        '<div style="color:#4a7ab5;font-size:13px;margin-bottom:12px">'+(currentLang==='it'?'Hai esaurito le 3 analisi gratuite di oggi.':'You have used all 3 free analyses for today.')+'</div>' +
-        '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:12px;font-weight:700;padding:8px 20px;cursor:pointer;border-radius:2px">'+(currentLang==='it'?'PASSA A PREMIUM — €4,99/mese →':'GO PREMIUM — €4.99/month →')+'</button>' +
-        '</div>';
-      btn.textContent=l.analyzerBtn;btn.disabled=false;return;
-    }
-    if(res2.data.error)throw new Error(res2.data.error);
-    var d=res2.data;
-    var col=d.level==='danger'?'#ef4444':d.level==='warning'?'#f97316':'#22c55e';
-    resEl.innerHTML='<div style="border:1px solid '+col+'44;border-radius:2px;padding:16px;background:'+col+'08">' +
-      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">' +
-      '<div style="width:52px;height:52px;border-radius:50%;border:2px solid '+col+';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:'+col+'">'+d.score+'</div>' +
-      '<div><div style="color:'+col+';font-size:14px;font-weight:700;letter-spacing:1px">'+(d.label||'').toUpperCase()+'</div>' +
-      '<div style="color:#4a7ab5;font-size:12px;margin-top:2px">'+d.summary+'</div></div></div>' +
-      '<div style="border-left:3px solid #3b82f6;padding:10px 12px;background:rgba(59,130,246,0.05);font-size:12px;color:#8ab4d4;line-height:1.6">' +
-      '<strong style="color:#3b82f6">RECOMMENDATION:</strong> '+d.advice+'</div></div>';
-
-    // Contatore per utenti Free
-    if(currentUser&&currentUser.plan==='free'){
-      if(!window._analysisCount)window._analysisCount=0;
-      window._analysisCount++;
-      var remaining=3-window._analysisCount;
-      var counterHtml=remaining>0
-        ?'<div style="margin-top:10px;padding:10px;background:rgba(59,130,246,0.05);border:1px solid #1e3a5f;border-radius:2px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
-          '<span style="font-family:monospace;font-size:11px;color:#4a7ab5">'+(currentLang==='it'?'Analisi rimanenti oggi:':'Analyses remaining today:')+' <strong style="color:#3b82f6">'+remaining+'/3</strong></span>' +
-          '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer;border-radius:2px">'+(currentLang==='it'?'PASSA A PREMIUM →':'GO PREMIUM →')+'</button>' +
-          '</div>'
-        :'<div style="margin-top:10px;padding:12px;background:rgba(249,115,22,0.1);border:1px solid #f97316;border-radius:2px;text-align:center">' +
-          '<div style="color:#f97316;font-family:monospace;font-size:12px;font-weight:700;margin-bottom:8px">'+(currentLang==='it'?'⚠ Ultima analisi gratuita usata!':'⚠ Last free analysis used!')+'</div>' +
-          '<button onclick="handlePlanClick(\'PREMIUM\')" style="background:#00d4ff;border:none;color:#020810;font-family:monospace;font-size:12px;font-weight:700;padding:8px 20px;cursor:pointer;border-radius:2px">'+(currentLang==='it'?'PASSA A PREMIUM — €4,99/mese →':'GO PREMIUM — €4.99/month →')+'</button>' +
-          '</div>';
-      resEl.insertAdjacentHTML('beforeend',counterHtml);
-    }
-
-    // Salva storico
-    if(currentUser){
-      try{
-        var history=JSON.parse(localStorage.getItem('orvex_history')||'[]');
-        history.push({score:d.score,level:d.level,label:d.label,text:text.substring(0,100),date:new Date().toISOString()});
-        if(history.length>50)history=history.slice(-50);
-        localStorage.setItem('orvex_history',JSON.stringify(history));
-      }catch(e){}
-    }
-
-    btn.textContent=l.analyzerBtn;btn.disabled=false;
-  }).catch(function(e){
-    resEl.innerHTML='<div style="color:#ef4444;font-size:12px;padding:8px;font-family:monospace">'+e.message+'</div>';
-    btn.textContent=l.analyzerBtn;btn.disabled=false;
-  });
-}
-
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAuth();});
-window.addEventListener('load',function(){
-  updateUserUI();
-  (function(){
-    var params=new URLSearchParams(window.location.search);
-    var activateToken=params.get('activate');
-    if(activateToken){
-      fetch(API_URL+'/auth/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:activateToken})})
-      .then(function(r){return r.json();})
-      .then(function(data){
-        window.history.replaceState({},'',window.location.pathname);
-        document.getElementById('try').scrollIntoView({behavior:'smooth'});
-        var result=document.getElementById('live-result');
-        if(data.message){
-          result.innerHTML='<div style="background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:2px;padding:16px;text-align:center"><div style="color:#22c55e;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:8px">✓ Account attivato con successo!</div><div style="color:#8ab4d4;font-size:12px">Ora puoi usare tutte le funzionalità di Orvex Guard.</div></div>';
-        } else {
-          result.innerHTML='<div style="background:rgba(239,68,68,0.1);border:1px solid #ef4444;border-radius:2px;padding:16px;text-align:center"><div style="color:#ef4444;font-family:monospace;font-size:13px">Link di attivazione non valido o già usato.</div></div>';
-        }
-      }).catch(function(){});
-    }
-  })();
-});
 </script>
 </body>
 </html>
